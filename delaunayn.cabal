@@ -1,0 +1,52 @@
+name:                delaunayn
+version:             0.1.0.0
+-- synopsis:
+-- description:
+homepage:            https://github.com/stla/delaunayn#readme
+license:             GPL-3
+author:              Stéphane Laurent
+maintainer:          laurent_step@yahoo.fr
+copyright:           2018 Stéphane Laurent
+category:            Web
+build-type:          Simple
+extra-source-files:  README.md
+cabal-version:       >=1.10
+
+library
+  hs-source-dirs:      src
+  exposed-modules:     Delaunay
+                     , Result
+  build-depends:       base >= 4.7 && < 5
+                     , directory
+                     , split
+  default-language:    Haskell2010
+  include-dirs:        C
+  C-sources:           C/libqhull_r.c
+                     , C/geom_r.c
+                     , C/geom2_r.c
+                     , C/global_r.c
+                     , C/io_r.c
+                     , C/mem_r.c
+                     , C/merge_r.c
+                     , C/poly_r.c
+                     , C/poly2_r.c
+                     , C/qset_r.c
+                     , C/random_r.c
+                     , C/usermem_r.c
+                     , C/userprintf_r.c
+                     , C/user_r.c
+                     , C/stat_r.c
+                     , C/delaunay.c
+  ghc-options:         -O0
+
+executable test
+  buildable:           True
+  hs-source-dirs:      src-exe
+  main-is:             Main.hs
+  default-language:    Haskell2010
+  build-depends:       base >= 4.7 && < 5
+                     , delaunayn
+
+source-repository head
+  type:     git
+  location: https://github.com/stla/delaunayn
