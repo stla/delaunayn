@@ -1,21 +1,21 @@
 {-# LANGUAGE ForeignFunctionInterface #-}
-module Lib
+module Delaunay
   where
-import           Foreign.C.Types
+import           Data.List.Split       (chunksOf)
 import           Foreign.C.String
+import           Foreign.C.Types
 import           Foreign.Marshal.Alloc (free, mallocBytes)
 import           Foreign.Marshal.Array (peekArray, pokeArray)
 import           Foreign.Ptr           (FunPtr, Ptr, freeHaskellFunPtr)
-import           Foreign.Storable      (poke, peek, sizeOf)
+import           Foreign.Storable      (peek, poke, sizeOf)
+import           Result
 import           System.Directory      (getTemporaryDirectory)
-import Data.List.Split (chunksOf)
-import Result
 
 foreign import ccall unsafe "delaunay" c_delaunay
   :: Ptr CDouble -> CUInt -> CUInt -> Ptr CUInt -> Ptr CUInt -> CString
   -> IO (Ptr Result)
 
-delaunay :: [[CDouble]] -> IO ([[CUInt]], [CDouble])
+delaunay :: [[CDouble]] -> IO ([[CUInt]], [[CUInt]], [CDouble])
 delaunay vertices = do
   let n = length vertices
       dim = length (head vertices)
@@ -26,7 +26,8 @@ delaunay vertices = do
   tmpDir <- getTemporaryDirectory
   tmpFile <- newCString (tmpDir ++ "/tmp.txt")
   resultPtr <- c_delaunay
-               verticesPtr (fromIntegral dim) (fromIntegral n) nfPtr exitcodePtr tmpFile
+               verticesPtr (fromIntegral dim) (fromIntegral n) nfPtr
+               exitcodePtr tmpFile
   exitcode <- peek exitcodePtr
   free exitcodePtr
   free verticesPtr
@@ -41,10 +42,13 @@ delaunay vertices = do
       result <- peek resultPtr
       indices <- peekArray ((fromIntegral nf) * (dim+1)) (_indices result)
       areas <- peekArray (fromIntegral nf) (_areas result)
+      neighbors <- peekArray ((fromIntegral nf) * (dim+1)) (_neighbors result)
+      let neighbors' = map ((map (\i -> i-1)).(filter (/=0))) $
+                           chunksOf (dim+1) neighbors
       free resultPtr
-      return (chunksOf (dim+1) indices, areas)
+      return (chunksOf (dim+1) indices, neighbors', areas)
 
-test :: IO ([[CUInt]], [CDouble])
+test :: IO ([[CUInt]], [[CUInt]], [CDouble])
 test = do
   delaunay [[-5,-5,16], [-5,8,3], [4,-1,3], [4,-5,7], [4,-1,-10], [4,-5,-10], [-5,8,-10], [-5,-5,-10]]
 -- [[0,0,0], [1,0,0], [1,1,0], [1,1,1], [0,2,0]]

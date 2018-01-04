@@ -3,4 +3,5 @@ typedef struct Result {
   unsigned length;
   unsigned* indices;
   double* areas;
+  unsigned* neighbors;
 } ResultT;

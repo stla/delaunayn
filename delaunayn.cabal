@@ -7,7 +7,7 @@ license:             GPL-3
 author:              Stéphane Laurent
 maintainer:          laurent_step@yahoo.fr
 copyright:           2018 Stéphane Laurent
-category:            Web
+category:            Math
 build-type:          Simple
 extra-source-files:  README.md
 cabal-version:       >=1.10
