@@ -8,7 +8,7 @@ struct Result* delaunay(
 	unsigned n,
 	unsigned* nf,
 	unsigned* exitcode,
-	char* tmpfile
+	char* tmpFile
 )
 {
 	char flags[250];             /* option flags for qhull, see qh_opt.htm */
@@ -24,9 +24,13 @@ struct Result* delaunay(
 //	int* sizneighbors;
 	unsigned* neighbors;
 
-  FILE* tmpstdout = fopen(tmpfile, "w");
+//  FILE* tmpstdout = fopen(tmpFile, "w");
+	FILE* tmpstdout = tmpfile();
 	exitcode[0] = qh_new_qhull(qh, dim, n, vertices, ismalloc, flags, tmpstdout, errfile);
   fclose(tmpstdout);
+	FILE* summaryFile = fopen(tmpFile, "w");
+	qh_printsummary(qh, summaryFile);
+	fclose(summaryFile);
 	qh_getarea(qh, qh->facet_list);
 	if (!exitcode[0]) {                    /* 0 if no error from qhull */
 		facetT *facet;                  /* set by FORALLfacets */
@@ -77,7 +81,8 @@ struct Result* delaunay(
 			FOREACHneighbor_(facet) {
 				//printf("visitid: %d - id: %d\n", neighbor->visitid, neighbor->id); // ? neighbor->visitid: 0 - neighbor->id));
 				neighbors[i*(dim+1)+j] =
-					neighbor->visitid == 0 || neighbor->id > nf[0] ?
+					//neighbor->visitid == 0 || 
+					neighbor->id > nf[0] ?
 					(unsigned)(0) : (unsigned)(neighbor->id);
 				j++;
 			}

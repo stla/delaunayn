@@ -4,5 +4,5 @@ import Delaunay
 
 main :: IO ()
 main = do
-  r <- test
+  r <- test2
   print r
