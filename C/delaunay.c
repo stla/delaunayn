@@ -37,25 +37,38 @@ struct Result* delaunay(
 		facetT *facet;                  /* set by FORALLfacets */
 		vertexT *vertex, **vertexp;
     facetT *neighbor, **neighborp;
+		int numfacets = qh->num_facets;
 		//coordT *center, **centerp;
     /* Count the number of facets so we know how much space to allocate */
 		nf[0]=0; /* Number of facets */
 		// int* k = malloc(1+sizeof(int)*qh->num_facets);
 		// k[0] = 0;
 		// int l =0;
-		// int m =0;
+		//int m =0;
+		// int* facetsok = malloc(qh->num_facets * sizeof(int));
+		// int* facetsid = malloc(qh->num_facets * sizeof(int));
+		int* facetsvisitid = malloc(numfacets * sizeof(int));
 		FORALLfacets {
 			//printf("visitid: %d - id: %d\n", facet->visitid, facet->id);
 			if (!facet->upperdelaunay && facet->simplicial && !facet->degenerate) {
+				// facetsok[facet->id] = 1;
         nf[0]++;
+				// facetsid[facet->id] = (int)(nf[0]);
 				facet->id = nf[0];
+				facetsvisitid[nf[0]] = facet->visitid;
 //				facet->id = l>0 && facet->id > 0 && facet->id <=m && k[facet->id-1]>0 ? facet->id - k[facet->id-1] : facet->id;
+        // for(int k=0; k<dim; k++){
+				// 	printf("normal[%d]=%f ", k, facet->normal[k]);
+				// 	printf("\n");
+				// }
       }else{
+				// facetsok[facet->id] = 0;
+				// facetsid[facet->id] = 0;
 				qh_removefacet(qh, facet);
 //				l++;
 				// il faut réindexer les neighbours !
 			}
-			// m++;
+			//m++;
 			// k[m] = l;
 			// printf("%d", l);
 		}
@@ -88,14 +101,20 @@ struct Result* delaunay(
 			j=0;
 			FOREACHneighbor_(facet) {
 				//printf("visitid: %d - id: %d\n", neighbor->visitid, neighbor->id); // ? neighbor->visitid: 0 - neighbor->id));
-				neighbors[i*(dim+1)+j] =
-					neighbor->visitid != 0 ||
-					neighbor->id > nf[0] ?
-					(unsigned)(0) : (unsigned)(neighbor->id);
+				//neighbors[i*(dim+1)+j] = neighbor->visitid ? (unsigned)neighbor->visitid: (unsigned)0;
+					// neighbors[i*(dim+1)+j] = neighbor->visitid >= numfacets || neighbor->id > nf[0] ? // marche pas pour test4 !
+					// (unsigned)(0) : (unsigned)(neighbor->id);
+					neighbors[i*(dim+1)+j] = neighbor->id > nf[0] ? // marche pas pour test4 !
+																	(unsigned)(0) :
+																	(neighbor->visitid == facetsvisitid[neighbor->id] ?
+						              				(unsigned)(neighbor->id) : 0);
+					//neighbors[i*(dim+1)+j] = facetsok[neighbor->id] ? (unsigned)(facetsid[i]) : (unsigned)(0);
 				j++;
 			}
 			i++;
 		}
+		//free(facetsok);
+		//free(facetsid);
 	}
   /* Do cleanup regardless of whether there is an error */
 	qh_freeqhull(qh, !qh_ALL);                  /* free long memory */
