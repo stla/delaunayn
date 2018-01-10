@@ -23,6 +23,7 @@ struct Result* delaunay(
 	double* areas;
 //	int* sizneighbors;
 	unsigned* neighbors;
+	double* centers;
 
 //  FILE* tmpstdout = fopen(tmpFile, "w");
 	FILE* tmpstdout = tmpfile();
@@ -36,6 +37,7 @@ struct Result* delaunay(
 		facetT *facet;                  /* set by FORALLfacets */
 		vertexT *vertex, **vertexp;
     facetT *neighbor, **neighborp;
+		//coordT *center, **centerp;
     /* Count the number of facets so we know how much space to allocate */
 		nf[0]=0; /* Number of facets */
 		// int* k = malloc(1+sizeof(int)*qh->num_facets);
@@ -65,6 +67,7 @@ struct Result* delaunay(
 		areas = (double*) malloc(nf[0] * sizeof(double));
 		//sizneighbors = (int*) malloc(nf[0] * sizeof(int));
 		neighbors = (unsigned*) malloc(nf[0] * (dim+1) * sizeof(unsigned));
+		centers = (double*) malloc(nf[0] * dim * sizeof(double));
     /* Iterate through facets to extract information */
     int i=0;
     FORALLfacets {
@@ -73,6 +76,11 @@ struct Result* delaunay(
 			//sizneighbors[i] = qh_setsize(qh, facet->neighbors);
 			//printf("%d\n", sizneighbors[i]); // toujours dim+1
       int j=0;
+			coordT* center = qh_facetcenter(qh, facet->vertices);
+			for(j=0; j<dim; j++){
+				centers[i*dim+j] = center[j];
+			}
+			j=0;
       FOREACHvertex_(facet->vertices) {
         indices[i*(dim+1)+j] = qh_pointid(qh, vertex->point);
         j++;
@@ -81,7 +89,7 @@ struct Result* delaunay(
 			FOREACHneighbor_(facet) {
 				//printf("visitid: %d - id: %d\n", neighbor->visitid, neighbor->id); // ? neighbor->visitid: 0 - neighbor->id));
 				neighbors[i*(dim+1)+j] =
-					//neighbor->visitid == 0 || 
+					neighbor->visitid != 0 ||
 					neighbor->id > nf[0] ?
 					(unsigned)(0) : (unsigned)(neighbor->id);
 				j++;
@@ -95,13 +103,14 @@ struct Result* delaunay(
   // if (exitcode) {
 	// 	error("Received error code %d from qhull.", exitcode);
 	// }
-	struct Result* out = malloc (sizeof(ResultT));
+	struct Result* out = malloc(sizeof(ResultT));
 	if(!exitcode[0]){
 	  out->dim = dim;
 	  out->length = nf[0];
 	  out->indices = indices;
 		out->areas = areas;
 		out->neighbors = neighbors;
+		out->centers = centers;
 	}
   return out;
 }
