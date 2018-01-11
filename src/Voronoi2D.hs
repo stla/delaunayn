@@ -60,7 +60,7 @@ getNeighborsCenters Delaunay {_sites=_, _facets=facets} k =
                              neighbors
                              (findIndex (f [i,j]) neighborsAsIndices)
                              (asPair . _center . (!!) facets)))
-                   [(i1,i2), (i1,i3), (i2,i3)]
+                   [(i1,i2), (i3,i1), (i2,i3)]
   where
     facet = facets!!k
     [i1, i2, i3] = _vertices facet
@@ -116,11 +116,13 @@ update :: Delaunay -> Int -> Map Ridge2 Edge2 -> Map Ridge2 Edge2
 update tess@(Delaunay {_sites=sites, _facets=facets}) i edges =
   M.union edges edgemap
   where
-    center@(cx,cy) = asPair $ _center (facets!!i)--circumcenter (getTriangle sites (_triangle (facets!!i)))
+    facet = facets!!i
+    top = _top facet
+    center@(cx,cy) = asPair $ _center facet--circumcenter (getTriangle sites (_triangle (facets!!i)))
     f (i1,i2) center' =
       if isNothing center'
-        then if vec==(0,0)
-               then Just (IEdge2 (center, (y1-y2,x2-x1))) -- pb orientation
+        then if vec==(0,0) -- orientation: y'a l'ordre dans getNeighborsCenters
+               then Just (IEdge2 (center, if top then (y2-y1,x1-x2) else (y1-y2,x2-x1))) -- pb orientation
                else Just (IEdge2 (center, vec))
         else let c = fromJust center' in
              if c == center

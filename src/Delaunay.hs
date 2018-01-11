@@ -2,7 +2,7 @@
 module Delaunay
   where
 import           Control.Monad         (when, (<$!>))
-import           Data.List             (zipWith4)
+import           Data.List             (zipWith5)
 import           Data.List.Split       (chunksOf)
 import           Foreign.C.String
 import           Foreign.C.Types
@@ -19,6 +19,7 @@ data Facet = Facet {
   , _neighbours :: [Int]
   , _center     :: [Double]
   , _volume     :: Double
+  , _top        :: Bool
 } deriving Show
 
 data Delaunay = Delaunay {
@@ -66,18 +67,20 @@ delaunay vertices = do
                           (peekArray (nf * (dim+1)) (_neighbors result))
       let neighbors' = map ((map (subtract 1)).(filter (/=0))) $
                            chunksOf (dim+1) neighbors
+      toporient <- (<$!>) (map (==1)) (peekArray nf (_toporient result))
       free resultPtr
       (>>=) (readFile tmpFile) putStrLn -- print summary
       return $ Delaunay { _sites = vertices
-                        , _facets = zipWith4 toFacet
+                        , _facets = zipWith5 toFacet
                                     (chunksOf (dim+1) indices) neighbors'
-                                    (chunksOf dim centers) areas }
+                                    (chunksOf dim centers) areas toporient }
   where
-    toFacet :: [Int] -> [Int] -> [Double] -> Double -> Facet
-    toFacet verts neighs center vol = Facet { _vertices   = verts
-                                            , _neighbours = neighs
-                                            , _center     = center
-                                            , _volume     = vol }
+    toFacet :: [Int] -> [Int] -> [Double] -> Double -> Bool -> Facet
+    toFacet verts neighs center vol top = Facet { _vertices   = verts
+                                                , _neighbours = neighs
+                                                , _center     = center
+                                                , _volume     = vol
+                                                , _top        = top }
 
 
 test :: IO Delaunay

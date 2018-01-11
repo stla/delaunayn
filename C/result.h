@@ -5,4 +5,5 @@ typedef struct Result {
   double* areas;
   unsigned* neighbors;
   double* centers;
+  unsigned* toporient;
 } ResultT;
