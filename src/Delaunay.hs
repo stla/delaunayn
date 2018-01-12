@@ -1,4 +1,4 @@
-{-# LANGUAGE ForeignFunctionInterface #-}
+{-# LANGUAGE ForeignFunctionInterface, DuplicateRecordFields #-}
 module Delaunay
   where
 import           Control.Monad         (when, (<$!>))
@@ -24,7 +24,12 @@ data Facet = Facet {
   , _top        :: Bool
 } deriving Show
 
-type Ridges = IntMap [[Int]]
+data CentredPolytope = CentredPolytope {
+    _vertices :: [[Double]]
+  , _center   :: [Double]
+} deriving Show
+
+type Ridges = IntMap [CentredPolytope]
 
 data Delaunay = Delaunay {
     _sites  ::  [[Double]]
@@ -39,23 +44,23 @@ foreign import ccall unsafe "delaunay" c_delaunay
   -> IO (Ptr Result)
 
 delaunay :: [[Double]] -> IO Delaunay
-delaunay vertices = do
-  let n = length vertices
-      dim = length (head vertices)
+delaunay sites = do
+  let n = length sites
+      dim = length (head sites)
   when (n <= dim+1) $
     error "insufficient number of points"
-  verticesPtr <- mallocBytes (n * dim * (sizeOf (undefined :: CDouble)))
-  pokeArray verticesPtr (concat (map (map realToFrac) vertices))
+  sitesPtr <- mallocBytes (n * dim * (sizeOf (undefined :: CDouble)))
+  pokeArray sitesPtr (concat (map (map realToFrac) sites))
   nfPtr <- mallocBytes (sizeOf (undefined :: CUInt))
   exitcodePtr <- mallocBytes (sizeOf (undefined :: CUInt))
   tmpFile <- getTemporaryFile "tmp.txt"
   tmpFile' <- newCString tmpFile
   resultPtr <- c_delaunay
-               verticesPtr (fromIntegral dim) (fromIntegral n) nfPtr
+               sitesPtr (fromIntegral dim) (fromIntegral n) nfPtr
                exitcodePtr tmpFile'
   exitcode <- peek exitcodePtr
   free exitcodePtr
-  free verticesPtr
+  free sitesPtr
   if exitcode /= 0
     then do
       free nfPtr
@@ -77,13 +82,18 @@ delaunay vertices = do
           n_neighbors = sum $ map length neighbors'
       putStrLn $ "*********" ++ show n_neighbors ++ "************"
       toporient <- (<$!>) (map (==1)) (peekArray nf (_toporient result))
-      ridges' <- (<$!>) ((chunksOf (1+dim)) . (map fromIntegral))
-                        (peekArray (n_neighbors * (1+dim)) (__ridges result))
+      ridges'' <- (<$!>) ((chunksOf (1+dim)) . (map fromIntegral))
+                         (peekArray (n_neighbors * (1+dim)) (__ridges result))
+      ridgesCenters <- (<$!>) ((chunksOf dim) . (map realToFrac))
+                              (peekArray (n_neighbors * dim) (_rcenters result))
       free resultPtr
-      let ridges = fromListWith union
-                   (map ((\(a,b) -> (head a, [b])) . (splitAt 1)) ridges')
+      let ridges' = map (\((a,b),c) -> (head a, [doCPolytope b c]))
+                        (zip (map (splitAt 1) ridges'') ridgesCenters)
+          ridges = fromListWith (++) ridges'
+      -- let ridges' = fromListWith union
+      --               (map ((\(a,b) -> (head a, [b])) . (splitAt 1)) ridges'')
       (>>=) (readFile tmpFile) putStrLn -- print summary
-      return $ Delaunay { _sites = vertices
+      return $ Delaunay { _sites = sites
                         , _facets = zipWith5 toFacet
                                     (chunksOf (dim+1) indices) neighbors'
                                     (chunksOf dim centers) areas toporient
@@ -95,6 +105,10 @@ delaunay vertices = do
                                                 , _center     = center
                                                 , _volume     = vol
                                                 , _top        = top }
+    doCPolytope :: [Int] -> [Double] -> CentredPolytope
+    doCPolytope indices center =
+      CentredPolytope { _vertices = map ((!!) sites) indices,
+                        _center   = center }
 
 
 -- test :: IO Delaunay

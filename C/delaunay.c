@@ -2,6 +2,43 @@
 #include "qhull_ra.h"
 #include "result.h"
 
+struct mat3X3 {
+    double mat[3][3];
+};
+
+struct mat3X3 inverse3X3(struct mat3X3 m){
+	double det = det3_(m.mat[0][0], m.mat[0][1], m.mat[0][2],
+	                   m.mat[1][0], m.mat[1][1], m.mat[1][2],
+									   m.mat[2][0], m.mat[2][1], m.mat[2][2]);
+	double d00 = det2_(m.mat[1][1], m.mat[1][2], m.mat[2][1], m.mat[2][2]);
+	double d01 = det2_(m.mat[1][0], m.mat[1][2], m.mat[2][0], m.mat[2][2]);
+	double d02 = det2_(m.mat[1][0], m.mat[1][1], m.mat[2][0], m.mat[2][1]);
+	double d10 = det2_(m.mat[0][1], m.mat[0][2], m.mat[2][1], m.mat[2][2]);
+	double d11 = det2_(m.mat[0][0], m.mat[0][2], m.mat[2][0], m.mat[2][2]);
+	double d12 = det2_(m.mat[0][0], m.mat[0][1], m.mat[2][0], m.mat[2][1]);
+	double d20 = det2_(m.mat[0][1], m.mat[0][2], m.mat[1][1], m.mat[1][2]);
+	double d21 = det2_(m.mat[0][0], m.mat[0][2], m.mat[1][0], m.mat[1][2]);
+	double d22 = det2_(m.mat[0][0], m.mat[0][1], m.mat[1][0], m.mat[1][1]);
+	// static double out[3][3];
+	// out[0][0] = d00/det;
+	// out[0][1] = -d10/det;
+	struct mat3X3 out = {
+												{ { d00/det, -d10/det,  d20/det}
+          					 		, {-d01/det,  d11/det, -d21/det}
+			    			 		 		, { d02/det, -d12/det,  d22/det} }
+											};
+	return out;
+}
+
+double* solve3X3(struct mat3X3 mat, double* vec){
+	struct mat3X3 m = inverse3X3(mat);
+	double* out = malloc(3*sizeof(double));
+	out[0] = m.mat[0][0]*vec[0]+m.mat[0][1]*vec[1]+m.mat[0][2]*vec[2];
+	out[1] = m.mat[1][0]*vec[0]+m.mat[1][1]*vec[1]+m.mat[1][2]*vec[2];
+	out[2] = m.mat[2][0]*vec[0]+m.mat[2][1]*vec[1]+m.mat[2][2]*vec[2];
+	return out;
+}
+
 struct Result* delaunay(
 	double* vertices,
 	unsigned dim,
@@ -25,8 +62,9 @@ struct Result* delaunay(
 	unsigned* neighbors;
 	double* centers;
 	unsigned* toporient;
-	unsigned** ridges; // size n_neighbors X (1+dim) ; first column for id
-	unsigned n_neighbors;
+	unsigned** ridges; // size n_adjacencies X (1+dim) ; first column for id
+	double** ridgesCenters;
+	unsigned n_adjacencies;
 
 //  FILE* tmpstdout = fopen(tmpFile, "w");
 	FILE* tmpstdout = tmpfile();
@@ -136,7 +174,7 @@ struct Result* delaunay(
 		centers = (double*) malloc(nf[0] * dim * sizeof(double));
 		toporient = (unsigned*) malloc(nf[0] * sizeof(unsigned));
 		unsigned* neighborok = malloc(nf[0] * sizeof(unsigned));
-		n_neighbors = 0;
+		n_adjacencies = 0;
 
     /* Iterate through facets to extract information - first pass */
 		unsigned i = 0; // facet counter
@@ -169,7 +207,7 @@ struct Result* delaunay(
 				}else{
 					neighbors[i*(dim+1)+j] = (unsigned)(neighbor->id);
 					neighborok[neighbor->id] = 1;
-					n_neighbors++;
+					n_adjacencies++;
 				}
 				//neighbors[i*(dim+1)+j] = facetsok[neighbor->id] ? (unsigned)(facetsid[i]) : (unsigned)(0);
 				j++;
@@ -178,15 +216,16 @@ struct Result* delaunay(
 			i++;
 		}
 
-		double* distances = malloc(n_neighbors * sizeof(double));
-		ridges = malloc(n_neighbors * sizeof(unsigned*)); // (intersections, adjacencies, ridges)
-		//unsigned* neighborsIndices = malloc(n_neighbors * sizeof(unsigned));
+		double* distances = malloc(n_adjacencies * sizeof(double));
+		ridges = malloc(n_adjacencies * sizeof(unsigned*)); // (intersections, adjacencies, ridges)
+		ridgesCenters = malloc(n_adjacencies * sizeof(double*));
+		//unsigned* neighborsIndices = malloc(n_adjacencies * sizeof(unsigned));
 		// unsigned combinations[4][3] = { {0, 1, 2}
 	  //                               , {0, 1, 3}
 		// 														  , {0, 2, 3}
 		// 														  , {1, 2, 3} };
 
-		unsigned i_neighbor = 0;
+		unsigned i_adjacencies = 0;
 		i = 0; // facet counter
     FORALLfacets {
 
@@ -206,10 +245,10 @@ struct Result* delaunay(
 					       facet->id, i, neighbor->id, dist, dist<0, dist==0);
 
 					// vaudrait mieux un tableau 3d - non va y avoir des vides
-					//neighborsIndices[i_neighbor] = neighbor->id;
+					//neighborsIndices[i_adjacencies] = neighbor->id;
 					// on pourrait mettre le id dans la 1ère colonne
-					ridges[i_neighbor] = (unsigned*) malloc((1+3)*sizeof(unsigned));
-					ridges[i_neighbor][0] = neighbor->id;
+					ridges[i_adjacencies] = (unsigned*) malloc((1+3)*sizeof(unsigned));
+					ridges[i_adjacencies][0] = neighbor->id; // plutôt facet id
 					unsigned* combination = malloc(3*sizeof(unsigned));
 					unsigned k = 0;
 					FOREACHvertex_(neighbor->vertices) {
@@ -218,7 +257,7 @@ struct Result* delaunay(
 							  vertexid == indices[i*(dim+1)+1] ||
 								vertexid == indices[i*(dim+1)+2] ||
 								vertexid == indices[i*(dim+1)+3])
-						{
+						{ // je crois que ce test peut planter : s'il n'y a pas dim adjacences... non dans ce cas c'est pas un neighbor
 							unsigned l = 0;
 							while(1){
 								if(vertexid == indices[i*(dim+1)+l]){
@@ -227,7 +266,7 @@ struct Result* delaunay(
 								l++;
 							}
 							combination[k] = l;
-							ridges[i_neighbor][k+1] = vertexid;
+							ridges[i_adjacencies][k+1] = vertexid;
 							k++;
 						}
 					}
@@ -254,20 +293,35 @@ struct Result* delaunay(
 					normal[2] = det2_(u1, u2, v1, v2);
 					qh_normalize2(qh, normal, 3, 1, NULL, NULL); // 3:dim 1:toporient
 					double offset = -(point1[0]*normal[0]+point1[1]*normal[1]+point1[2]*normal[2]);
-					double mydistance = qh_distnorm(3, center, normal, &offset);
-					distances[i_neighbor] = mydistance;
+					distances[i_adjacencies] = qh_distnorm(3, center, normal, &offset);
+					struct mat3X3 mat ={ { {u1, v1, w1}
+														   , {u2, v2, w2}
+													   	 , {normal[0], normal[1], normal[2]} } };
+					double rhs[3] = { center[0]*u1 + center[1]*v1 + center[2]*w1
+													, center[0]*u2 + center[1]*v2 + center[2]*w2
+												  , -offset };
+													// -- O = center
+													// -- OM.AB = 0: (mx-cx)*u!!0 + (my-cy)*u!!1 + (mz-cz)*u!!2 = 0
+													// -- OM.AC = 0: (mx-cx)*v!!0 + (my-cy)*v!!1 + (mz-cz)*v!!2 = 0
+													// -- AM.normal = 0
+					double* ridgeCenter = solve3X3(mat, rhs);
+					ridgesCenters[i_adjacencies] = (double*) malloc(3*sizeof(double));
+					ridgesCenters[i_adjacencies][0] = ridgeCenter[0];
+					ridgesCenters[i_adjacencies][1] = ridgeCenter[1];
+					ridgesCenters[i_adjacencies][2] = ridgeCenter[2];
 					printf("Vertex1: %f %f %f\n", point1[0], point1[1], point1[2]);
 					printf("Vertex2: %f %f %f\n", point2[0], point2[1], point2[2]);
 					printf("Vertex3: %f %f %f\n", point3[0], point3[1], point3[2]);
 					printf("NORMAL: %f %f %f\n", normal[0], normal[1], normal[2]);
-					printf("MYDISTANCE: %f\n", mydistance);
-					i_neighbor++;
+					printf("MYDISTANCE: %f\n", distances[i_adjacencies]);
+					printf("RIDGE CENTER: %f %f %f\n", ridgeCenter[0], ridgeCenter[1], ridgeCenter[2]);
+					free(ridgeCenter);
+					i_adjacencies++;
+					// ? free(combination);
 				}
 			}
 			i++;
 		}
-
-		printf("BBBBBBBBBBBBBOOOUCLE FINIE");
 
 		free(facetsvisitid);
 		free(neighborok);
@@ -317,18 +371,34 @@ struct Result* delaunay(
 		// qh_memfreeshort (myqh, &mycurlong, &mytotlong);   /* free short memory and memory allocator */
 	}
 
+	/* Do cleanup regardless of whether there is an error */
+	qh_freeqhull(qh, !qh_ALL);                  /* free long memory */
+	qh_memfreeshort (qh, &curlong, &totlong);   /* free short memory and memory allocator */
+	// if (exitcode) {
+	// 	error("Received error code %d from qhull.", exitcode);
+	// }
 
 
 	struct Result* out = malloc(sizeof(ResultT));
 	if(!exitcode[0]){
-		unsigned* ridges_ = malloc(n_neighbors*(1+3)*sizeof(unsigned));
-		for(unsigned l=0; l<n_neighbors; l++){
+		unsigned* ridges_ = malloc(n_adjacencies*(1+3)*sizeof(unsigned));
+		for(unsigned l=0; l<n_adjacencies; l++){
 			printf("l=%d:\n", l);
 			for(unsigned ll=0; ll<4; ll++){
 				ridges_[l*(1+dim)+ll] = ridges[l][ll];
 				printf("ll=%d - id=%d ", ll, ridges_[l*dim+ll]);
 			}
 		}
+		double* ridgesCenters_ = malloc(n_adjacencies*3*sizeof(double));
+		for(unsigned l=0; l<n_adjacencies; l++){
+			for(unsigned ll=0; ll<3; ll++){
+				ridgesCenters_[l*dim+ll] = ridgesCenters[l][ll];
+			}
+		}
+
+		free(ridges);
+		free(ridgesCenters);
+
 	  out->dim       = dim;
 	  out->length    = nf[0];
 	  out->indices   = indices;
@@ -337,15 +407,9 @@ struct Result* delaunay(
 		out->centers   = centers;
 		out->toporient = toporient;
 		out->ridges    = ridges_;
+		out->rcenters  = ridgesCenters_;
 	}
 
-	free(ridges);
-	/* Do cleanup regardless of whether there is an error */
-	qh_freeqhull(qh, !qh_ALL);                  /* free long memory */
-	qh_memfreeshort (qh, &curlong, &totlong);   /* free short memory and memory allocator */
-	// if (exitcode) {
-	// 	error("Received error code %d from qhull.", exitcode);
-	// }
 
   return out;
 }

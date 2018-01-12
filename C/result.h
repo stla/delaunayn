@@ -7,4 +7,5 @@ typedef struct Result {
   double* centers;
   unsigned* toporient;
   unsigned* ridges;
+  double* rcenters;
 } ResultT;

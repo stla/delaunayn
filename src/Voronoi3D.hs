@@ -159,7 +159,7 @@ update tess@(Delaunay {_sites=sites, _facets=facets}) i edges =
 -- OM.AC = 0: (mx-cx)*v!!0 + (my-cy)*v!!1 + (mz-cz)*v!!2 = 0
 -- I: milieu de AB
 -- IM.AB = 0: (mx-ix)*u0+(my-iy)*u1+(mz-iz)*u2=0
--- mieux: équation avec la distance (offset et normale - voir qh_distanceplane)
+-- mieux NON : équation avec la distance (offset et normale - voir qh_distanceplane)
 
 --circumcenter :: Point3 -> Point3 -> Point3 -> Point3
 circumcenter (u1,v1,w1) (u2,v2,w2) (u3,v3,w3) = -- A B C
