@@ -13,7 +13,8 @@ data Result = Result {
   _areas :: Ptr CDouble,
   _neighbors :: Ptr CUInt,
   _centers :: Ptr CDouble,
-  _toporient :: Ptr CUInt
+  _toporient :: Ptr CUInt,
+  __ridges :: Ptr CUInt
 } deriving (Show, Eq)
 
 instance Storable Result where
@@ -27,14 +28,16 @@ instance Storable Result where
       neighbors' <- #{peek ResultT, neighbors} ptr
       centers'   <- #{peek ResultT, centers} ptr
       toporient' <- #{peek ResultT, toporient} ptr
+      ridges'    <- #{peek ResultT, ridges} ptr
       return Result { _dim = dim'
                     , _length = length'
                     , _indices = indices'
                     , _areas = areas'
                     , _neighbors = neighbors'
                     , _centers = centers'
-                    , _toporient = toporient' }
-    poke ptr (Result r1 r2 r3 r4 r5 r6 r7) = do
+                    , _toporient = toporient'
+                    , __ridges    = ridges' }
+    poke ptr (Result r1 r2 r3 r4 r5 r6 r7 r8) = do
       #{poke ResultT, dim}         ptr r1
       #{poke ResultT, length}      ptr r2
       #{poke ResultT, indices}     ptr r3
@@ -42,3 +45,4 @@ instance Storable Result where
       #{poke ResultT, neighbors}   ptr r5
       #{poke ResultT, centers}     ptr r6
       #{poke ResultT, toporient}   ptr r7
+      #{poke ResultT, ridges}      ptr r8

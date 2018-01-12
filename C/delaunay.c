@@ -18,23 +18,26 @@ struct Result* delaunay(
   QHULL_LIB_CHECK
 	boolT ismalloc = False; /* True if qhull should free points in qh_freeqhull() or reallocation */
 	FILE *errfile = NULL;
-	int curlong, totlong;
+	int curlong, totlong; /* to free the memory later */
   unsigned* indices;
 	double* areas;
 //	int* sizneighbors;
 	unsigned* neighbors;
 	double* centers;
 	unsigned* toporient;
+	unsigned** ridges; // size n_neighbors X (1+dim) ; first column for id
+	unsigned n_neighbors;
 
 //  FILE* tmpstdout = fopen(tmpFile, "w");
 	FILE* tmpstdout = tmpfile();
-	exitcode[0] = qh_new_qhull(qh, dim, n, vertices, ismalloc, flags, tmpstdout, errfile);
+	exitcode[0] = qh_new_qhull(qh, dim, n, vertices, ismalloc, flags, tmpstdout,
+		                         errfile);
   fclose(tmpstdout);
 	FILE* summaryFile = fopen(tmpFile, "w");
 	qh_printsummary(qh, summaryFile);
 	fclose(summaryFile);
 	qh_getarea(qh, qh->facet_list);
-	if (!exitcode[0]) {                    /* 0 if no error from qhull */
+	if (!exitcode[0]) {               /* 0 if no error from qhull */
 		facetT *facet;                  /* set by FORALLfacets */
 		vertexT *vertex, **vertexp;
     facetT *neighbor, **neighborp;
@@ -132,11 +135,11 @@ struct Result* delaunay(
 		neighbors = (unsigned*) malloc(nf[0] * (dim+1) * sizeof(unsigned));
 		centers = (double*) malloc(nf[0] * dim * sizeof(double));
 		toporient = (unsigned*) malloc(nf[0] * sizeof(unsigned));
-		unsigned n_neighbors = 0;
 		unsigned* neighborok = malloc(nf[0] * sizeof(unsigned));
+		n_neighbors = 0;
 
-    /* Iterate through facets to extract information */
-		unsigned i = 0;
+    /* Iterate through facets to extract information - first pass */
+		unsigned i = 0; // facet counter
     FORALLfacets {
 			unsigned j;
 
@@ -167,7 +170,6 @@ struct Result* delaunay(
 					neighbors[i*(dim+1)+j] = (unsigned)(neighbor->id);
 					neighborok[neighbor->id] = 1;
 					n_neighbors++;
-
 				}
 				//neighbors[i*(dim+1)+j] = facetsok[neighbor->id] ? (unsigned)(facetsid[i]) : (unsigned)(0);
 				j++;
@@ -177,14 +179,14 @@ struct Result* delaunay(
 		}
 
 		double* distances = malloc(n_neighbors * sizeof(double));
-		unsigned** verticesMap = malloc(n_neighbors * sizeof(unsigned*));
-		unsigned* neighborsIndices = malloc(n_neighbors * sizeof(unsigned));
+		ridges = malloc(n_neighbors * sizeof(unsigned*)); // (intersections, adjacencies, ridges)
+		//unsigned* neighborsIndices = malloc(n_neighbors * sizeof(unsigned));
 		// unsigned combinations[4][3] = { {0, 1, 2}
 	  //                               , {0, 1, 3}
 		// 														  , {0, 2, 3}
 		// 														  , {1, 2, 3} };
 
-		unsigned index_neighbor = 0;
+		unsigned i_neighbor = 0;
 		i = 0; // facet counter
     FORALLfacets {
 
@@ -204,8 +206,11 @@ struct Result* delaunay(
 					       facet->id, i, neighbor->id, dist, dist<0, dist==0);
 
 					// vaudrait mieux un tableau 3d - non va y avoir des vides
-					neighborsIndices[index_neighbor] = neighbor->id;
-					verticesMap[index_neighbor] = (unsigned*) malloc(3*sizeof(unsigned));
+					//neighborsIndices[i_neighbor] = neighbor->id;
+					// on pourrait mettre le id dans la 1ère colonne
+					ridges[i_neighbor] = (unsigned*) malloc((1+3)*sizeof(unsigned));
+					ridges[i_neighbor][0] = neighbor->id;
+					unsigned* combination = malloc(3*sizeof(unsigned));
 					unsigned k = 0;
 					FOREACHvertex_(neighbor->vertices) {
 						unsigned vertexid = qh_pointid(qh, vertex->point);
@@ -221,14 +226,15 @@ struct Result* delaunay(
 								}
 								l++;
 							}
-							verticesMap[index_neighbor][k] = l;
+							combination[k] = l;
+							ridges[i_neighbor][k+1] = vertexid;
 							k++;
 						}
 					}
 					printf("facet id: %d\n", facet->id);
-					vertexT* vertex1 = (vertexT*)facet->vertices->e[verticesMap[index_neighbor][0]].p;
-					vertexT* vertex2 = (vertexT*)facet->vertices->e[verticesMap[index_neighbor][1]].p;
-					vertexT* vertex3 = (vertexT*)facet->vertices->e[verticesMap[index_neighbor][2]].p;
+					vertexT* vertex1 = (vertexT*)facet->vertices->e[combination[0]].p;
+					vertexT* vertex2 = (vertexT*)facet->vertices->e[combination[1]].p;
+					vertexT* vertex3 = (vertexT*)facet->vertices->e[combination[2]].p;
 					printf("vertex1: %d - ", qh_pointid(qh, vertex1->point));
 					printf("vertex2: %d - ", qh_pointid(qh, vertex2->point));
 					printf("vertex3: %d \n ", qh_pointid(qh, vertex3->point));
@@ -249,21 +255,22 @@ struct Result* delaunay(
 					qh_normalize2(qh, normal, 3, 1, NULL, NULL); // 3:dim 1:toporient
 					double offset = -(point1[0]*normal[0]+point1[1]*normal[1]+point1[2]*normal[2]);
 					double mydistance = qh_distnorm(3, center, normal, &offset);
-					distances[index_neighbor] = mydistance;
+					distances[i_neighbor] = mydistance;
 					printf("Vertex1: %f %f %f\n", point1[0], point1[1], point1[2]);
 					printf("Vertex2: %f %f %f\n", point2[0], point2[1], point2[2]);
 					printf("Vertex3: %f %f %f\n", point3[0], point3[1], point3[2]);
 					printf("NORMAL: %f %f %f\n", normal[0], normal[1], normal[2]);
 					printf("MYDISTANCE: %f\n", mydistance);
-					index_neighbor++;
+					i_neighbor++;
 				}
 			}
 			i++;
 		}
 
-
+		printf("BBBBBBBBBBBBBOOOUCLE FINIE");
 
 		free(facetsvisitid);
+		free(neighborok);
 		//free(facetsok);
 		//free(facetsid);
 		// qhT myqh_qh;
@@ -312,22 +319,33 @@ struct Result* delaunay(
 
 
 
-
-  /* Do cleanup regardless of whether there is an error */
-	qh_freeqhull(qh, !qh_ALL);                  /* free long memory */
-	qh_memfreeshort (qh, &curlong, &totlong);   /* free short memory and memory allocator */
-  // if (exitcode) {
-	// 	error("Received error code %d from qhull.", exitcode);
-	// }
 	struct Result* out = malloc(sizeof(ResultT));
 	if(!exitcode[0]){
-	  out->dim = dim;
-	  out->length = nf[0];
-	  out->indices = indices;
-		out->areas = areas;
+		unsigned* ridges_ = malloc(n_neighbors*(1+3)*sizeof(unsigned));
+		for(unsigned l=0; l<n_neighbors; l++){
+			printf("l=%d:\n", l);
+			for(unsigned ll=0; ll<4; ll++){
+				ridges_[l*(1+dim)+ll] = ridges[l][ll];
+				printf("ll=%d - id=%d ", ll, ridges_[l*dim+ll]);
+			}
+		}
+	  out->dim       = dim;
+	  out->length    = nf[0];
+	  out->indices   = indices;
+		out->areas     = areas;
 		out->neighbors = neighbors;
-		out->centers = centers;
+		out->centers   = centers;
 		out->toporient = toporient;
+		out->ridges    = ridges_;
 	}
+
+	free(ridges);
+	/* Do cleanup regardless of whether there is an error */
+	qh_freeqhull(qh, !qh_ALL);                  /* free long memory */
+	qh_memfreeshort (qh, &curlong, &totlong);   /* free short memory and memory allocator */
+	// if (exitcode) {
+	// 	error("Received error code %d from qhull.", exitcode);
+	// }
+
   return out;
 }

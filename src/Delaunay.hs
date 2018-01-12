@@ -2,7 +2,9 @@
 module Delaunay
   where
 import           Control.Monad         (when, (<$!>))
-import           Data.List             (zipWith5)
+import           Data.IntMap.Strict    (IntMap, fromListWith)
+import qualified Data.IntMap.Strict    as M
+import           Data.List             (union, zipWith5)
 import           Data.List.Split       (chunksOf)
 import           Foreign.C.String
 import           Foreign.C.Types
@@ -22,10 +24,15 @@ data Facet = Facet {
   , _top        :: Bool
 } deriving Show
 
+type Ridges = IntMap [[Int]]
+
 data Delaunay = Delaunay {
     _sites  ::  [[Double]]
   , _facets ::  [Facet]
+  , _ridges ::  Ridges
 } deriving Show
+
+
 
 foreign import ccall unsafe "delaunay" c_delaunay
   :: Ptr CDouble -> CUInt -> CUInt -> Ptr CUInt -> Ptr CUInt -> CString
@@ -67,13 +74,20 @@ delaunay vertices = do
                           (peekArray (nf * (dim+1)) (_neighbors result))
       let neighbors' = map ((map (subtract 1)).(filter (/=0))) $
                            chunksOf (dim+1) neighbors
+          n_neighbors = sum $ map length neighbors'
+      putStrLn $ "*********" ++ show n_neighbors ++ "************"
       toporient <- (<$!>) (map (==1)) (peekArray nf (_toporient result))
+      ridges' <- (<$!>) ((chunksOf (1+dim)) . (map fromIntegral))
+                        (peekArray (n_neighbors * (1+dim)) (__ridges result))
       free resultPtr
+      let ridges = fromListWith union
+                   (map ((\(a,b) -> (head a, [b])) . (splitAt 1)) ridges')
       (>>=) (readFile tmpFile) putStrLn -- print summary
       return $ Delaunay { _sites = vertices
                         , _facets = zipWith5 toFacet
                                     (chunksOf (dim+1) indices) neighbors'
-                                    (chunksOf dim centers) areas toporient }
+                                    (chunksOf dim centers) areas toporient
+                        , _ridges = ridges }
   where
     toFacet :: [Int] -> [Int] -> [Double] -> Double -> Bool -> Facet
     toFacet verts neighs center vol top = Facet { _vertices   = verts
@@ -83,16 +97,16 @@ delaunay vertices = do
                                                 , _top        = top }
 
 
-test :: IO Delaunay
-test =
-  delaunay [[-5,-5,16], [-5,8,3], [4,-1,3], [4,-5,7], [4,-1,-10], [4,-5,-10], [-5,8,-10], [-5,-5,-10]]
--- [[0,0,0], [1,0,0], [1,1,0], [1,1,1], [0,2,0]]
-
+-- test :: IO Delaunay
+-- test =
+--   delaunay [[-5,-5,16], [-5,8,3], [4,-1,3], [4,-5,7], [4,-1,-10], [4,-5,-10], [-5,8,-10], [-5,-5,-10]]
+-- -- [[0,0,0], [1,0,0], [1,1,0], [1,1,1], [0,2,0]]
+--
 test2 :: IO Delaunay
 test2 = delaunay [[-1,-1,-1],[-1,-1,1],[-1,1,-1],[-1,1,1],[1,-1,-1],[1,-1,1],[1,1,-1],[1,1,1],[0,0,0]]
-
-test3 :: IO Delaunay
-test3 = delaunay [[0,0],[0,1],[0,2],[1,0],[1,1],[1,2],[2,0],[2,1],[2,2]]
-
-test4 :: IO Delaunay
-test4 = delaunay [[0,0],[0,2],[2,0],[2,2],[1,1]]
+--
+-- test3 :: IO Delaunay
+-- test3 = delaunay [[0,0],[0,1],[0,2],[1,0],[1,1],[1,2],[2,0],[2,1],[2,2]]
+--
+-- test4 :: IO Delaunay
+-- test4 = delaunay [[0,0],[0,2],[2,0],[2,2],[1,1]]
