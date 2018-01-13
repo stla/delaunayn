@@ -6,20 +6,24 @@ module Voronoi3D
  , voronoi3
  , clipVoronoi3
  , testv3
- , voronoi3ForRgl)
+ , voronoi3ForRgl
+ , cell)
   where
 import           Data.IntSet      (IntSet)
 import qualified Data.IntSet      as S
 import           Data.List
+import           Data.IntMap.Strict (IntMap)
+import qualified Data.IntMap.Strict as IM
 import           Data.Map.Strict  (Map, difference, elems, empty, fromList,
                                    mapMaybeWithKey)
 import qualified Data.Map.Strict  as M
 import           Data.Maybe
-import           Data.Tuple.Extra ((&&&), fst3, snd3, thd3)
+import           Data.Tuple.Extra ((&&&), fst3, snd3, thd3, both)
 import           Delaunay
 import           Text.Show.Pretty (ppShow)
 import           VoronoiShared
 import Data.Function (on)
+import Data.List.Index (imap)
 
 type Point3 = (Double, Double, Double)
 type Vector3 = (Double, Double, Double)
@@ -133,11 +137,61 @@ getVertexNeighbors :: Delaunay -> Index -> [Facet]
 getVertexNeighbors tess i =
   filter (\facet -> S.member i ((fst . _vertices . _simplex) facet)) (_facets tess)
 
-getVertexRidges :: Delaunay -> Index -> [(CentredPolytope, Double)]
+getVertexRidges :: Delaunay -> Index -> [(CentredPolytope, [Int], Double)]
 getVertexRidges tess i =
   let facets = getVertexNeighbors tess i in
-  concat $ map (\facet -> filter (\(polytope, _) -> S.member i ((fst . _vertices) polytope)) (map (fst3 &&& thd3) $ _ridges facet)) facets
+--  foldr (unionBy ((==) `on` (fst . _vertices . fst3))) [] $ map (\facet -> filter (\(polytope, _, _) -> S.member i ((fst . _vertices) polytope)) (_ridges facet)) facets
+  foldr (unionBy equalRidges) [] $ map (\facet -> filter (\(polytope, _, _) -> S.member i ((fst . _vertices) polytope)) (_ridges facet)) facets
 
+equalRidges :: (CentredPolytope, [Int], Double) -> (CentredPolytope, [Int], Double) -> Bool
+equalRidges (p1, f1, _) (p2, f2, _) = -- same ridges or same centers and parallel normals
+  (fst . _vertices) p1 == (fst . _vertices) p2
+  ||
+  (length f1 == 1 && length f2 == 1 &&
+  _center p1 == _center p2 &&
+  crossProduct (asTriplet $ _normal p1) (asTriplet $ _normal p2) == (0,0,0))
+
+crossProduct :: Vector3 -> Vector3 -> Vector3
+crossProduct (x1,y1,z1) (x2,y2,z2) = (v3x, v3y, v3z)
+  where
+    v3x = y1 * z2   -   y2 * z1
+    v3y = z1 * x2   -   z2 * x1
+    v3z = x1 * y2   -   x2 * y1
+
+edgesFromRidge :: Delaunay -> (CentredPolytope, [Int], Double) -> Maybe Edge3
+edgesFromRidge tess (polytope, facetindices, rdistance) =
+  if length facetindices == 1
+    then Just $ IEdge3 $  (asTriplet $ center' (facets !! (head facetindices)), (xxx . _normal) polytope)
+    else if c1==c2 then Nothing else Just $ Edge3 $ both asTriplet (c1, c2)
+  where
+    facets = _facets tess
+    center' = _center . _simplex
+    c1 = center' (facets !! (head facetindices))
+    c2 = center' (facets !! (last facetindices))
+    xxx = if _top (facets !! (head facetindices)) then asTriplet else negateT . asTriplet
+    negateT (x,y,z) = (-x,-y,-z)
+
+cell :: Delaunay -> Index -> [Edge3] -- , [(IntSet, [[Double]])])
+cell tess i = let ridges = getVertexRidges tess i in
+  map fromJust $ filter isJust $ map (edgesFromRidge tess) ridges --, map (_vertices . fst3) ridges)
+
+_ridgesVertices :: [(CentredPolytope, [Int], Double)] -> [IntSet]
+_ridgesVertices = map (fst . _vertices . fst3)
+
+-- -- pas ça que je veux...
+-- --vertexNeighborsRidges :: Delaunay -> IntMap [(CentredPolytope, [Int], Double)]
+-- vertexNeighborsRidges (Delaunay {_sites=_, _facets=facets}) =
+--   ridges' -- IM.fromListWith (unionBy ((==) `on` _ridgesVertices)) ridges'
+--   where
+--     ridges' :: [[(Int, (CentredPolytope, [Int], Double))]
+--     ridges' =   groupBy ((==) `on` ) $ concat $ imap
+--                         (\i facet -> let ridges = _ridges facet in
+--                                      let l = length ridges - 1 in
+--                                      let vertices = _ridgesVertices ridges in
+--                                           zip vertices ridges)
+--                         facets
+--
+  -- map (_normal . fst3) ridges, map (_top) (_facets tess))
 -- edgesFromTwoFacets :: Facet -> Facet -> Maybe [Edge3]
 -- edgesFromTwoFacets facet1 facet2 =
 --   if isNeighbor

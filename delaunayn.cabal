@@ -23,7 +23,7 @@ library
                      , Result
                      , TemporaryFile
                     --  , Voronoi2D
-                      , Voronoi3D
+                      -- , Voronoi3D
                       , VoronoiShared
   build-depends:       base >= 4.7 && < 5
                      , directory
@@ -32,6 +32,7 @@ library
                      , containers
                      , pretty-show
                      , extra
+                     , ilist
   other-extensions:    ForeignFunctionInterface
   default-language:    Haskell2010
   include-dirs:        C

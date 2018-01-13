@@ -7,7 +7,7 @@ import           Data.Function         (on)
 import           Data.IntSet           (IntSet)
 import qualified Data.IntSet           as S
 import           Data.List             (groupBy, sortOn, zipWith7, zip4)
-import           Data.List.Split       (chunksOf)
+import           Data.List.Split       (chunksOf, splitPlaces)
 --import qualified Data.Map.Strict       as M
 import           Foreign.C.String
 import           Foreign.C.Types
@@ -48,7 +48,7 @@ foreign import ccall unsafe "delaunay" c_delaunay
   :: Ptr CDouble -> CUInt -> CUInt -> Ptr CUInt -> Ptr CUInt -> CString
   -> IO (Ptr Result)
 
-delaunay :: [[Double]] -> IO Delaunay
+delaunay :: [[Double]] -> IO (Delaunay, [[[Int]]])
 delaunay sites = do
   let n = length sites
       dim = length (head sites)
@@ -83,7 +83,7 @@ delaunay sites = do
                         (peekArray (nf * dim) (_fnormals result))
       areas <- (<$!>) (map realToFrac) (peekArray nf (_areas result))
       neighbors <- (<$!>) (map fromIntegral)
-                          (peekArray (nf * (dim+1)) (_neighbors result))
+                          (peekArray (nf * (dim+1)) (__neighbors result))
       let neighbors' = map ((map (subtract 1)).(filter (/=0))) $
                            chunksOf (dim+1) neighbors
           n_ridges = nf * (dim+1);
@@ -96,6 +96,12 @@ delaunay sites = do
                               (peekArray (n_ridges * dim) (_rnormals result))
       rdistances <- (<$!>) (map realToFrac)
                            (peekArray n_ridges (_rdistances result))
+      vrnsizes <- (<$!>) (map fromIntegral)
+                         (peekArray n (_vrnsizes result))
+      putStrLn $ show vrnsizes
+      vrneighbors <- (<$!>) ((splitPlaces vrnsizes) . (chunksOf dim) . (map fromIntegral))
+                            (peekArray (sum vrnsizes * dim)
+                                       (_vrneighbors result))
       free resultPtr
       -- let ridges' = map (\((a,b),c,d) -> (head a, [doCPolytope b c d]))
       --                   (zip3 (map (splitAt 1) ridges'') ridgesCenters ridgesNormals)
@@ -108,7 +114,7 @@ delaunay sites = do
       --     ids = map head ids'
       let ridges_rdistances = map (map (snd)) $
             groupBy ((==) `on` fst) $ sortOn fst $
-              map (\((a,b),c,d,e) -> (head a, (doCPolytope b c d, a, e)))
+              map (\((a,b),c,d,e) -> (head a, (doCPolytope b c d, filter (<nf) a, e)))
                   (zip4 (map (splitAt 2) ridges'')
                         ridgesCenters
                         ridgesNormals
@@ -118,12 +124,13 @@ delaunay sites = do
           --              (zip3 ridges' ridgesCenters ridgesNormals)
           --
       (>>=) (readFile tmpFile) putStrLn -- print summary
-      return $ Delaunay { _sites = sites
+      return $ (Delaunay { _sites = sites
                         , _facets = zipWith7 toFacet
                                     (chunksOf (dim+1) indices)
                                     (chunksOf dim normals)
                                     neighbors' ridges_rdistances
-                                    (chunksOf dim centers) areas toporient }
+                                    (chunksOf dim centers) areas toporient },
+                vrneighbors)
   where
     toFacet :: [Int] -> [Double] -> [Int] -> [(CentredPolytope,[Int],Double)] -> [Double] -> Double -> Bool -> Facet
     toFacet verts normal neighs r center vol top =
@@ -139,16 +146,16 @@ delaunay sites = do
                         _normal   = normal }
 
 
-test :: IO Delaunay
-test =
-  delaunay [[-5,-5,16], [-5,8,3], [4,-1,3], [4,-5,7], [4,-1,-10], [4,-5,-10], [-5,8,-10], [-5,-5,-10]]
--- [[0,0,0], [1,0,0], [1,1,0], [1,1,1], [0,2,0]]
-
-test2 :: IO Delaunay
+-- test :: IO Delaunay
+-- test =
+--   delaunay [[-5,-5,16], [-5,8,3], [4,-1,3], [4,-5,7], [4,-1,-10], [4,-5,-10], [-5,8,-10], [-5,-5,-10]]
+-- -- [[0,0,0], [1,0,0], [1,1,0], [1,1,1], [0,2,0]]
+--
+-- test2 :: IO Delaunay
 test2 = delaunay [[-1,-1,-1],[-1,-1,1],[-1,1,-1],[-1,1,1],[1,-1,-1],[1,-1,1],[1,1,-1],[1,1,1],[0,0,0]]
-
-test3 :: IO Delaunay
-test3 = delaunay [[0,0],[0,1],[0,2],[1,0],[1,1],[1,2],[2,0],[2,1],[2,2]]
-
-test4 :: IO Delaunay
-test4 = delaunay [[0,0],[0,2],[2,0],[2,2],[1,1]]
+--
+-- test3 :: IO Delaunay
+-- test3 = delaunay [[0,0],[0,1],[0,2],[1,0],[1,1],[1,2],[2,0],[2,1],[2,2]]
+--
+-- test4 :: IO Delaunay
+-- test4 = delaunay [[0,0],[0,2],[2,0],[2,2],[1,1]]
