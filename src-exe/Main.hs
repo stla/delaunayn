@@ -1,11 +1,11 @@
 module Main
   where
---import Voronoi3D
+import           Voronoi3D
 --import Voronoi2D
-import System.IO
-import Delaunay
-import Text.Show.Pretty
-import           Data.Tuple.Extra ((&&&), thd3)
+import           Data.Tuple.Extra (thd3, (&&&))
+import           Delaunay
+import           System.IO
+import           Text.Show.Pretty
 
 
 main :: IO ()
@@ -16,8 +16,7 @@ main = do
   -- writeFile "rgl.txt" (voronoi2ForR vv)
   -- prettyShowVoronoi2 vv (Just 3)
   tess <- test2
---  putStrLn $ ppShow ((map _simplex . _facets) (fst tess))
-  putStrLn $ ppShow (snd tess)
+  --putStrLn $ ppShow tess
   -- let c = cell tess 0
   -- putStrLn $ ppShow c
   -- let c1 = cell tess 1
@@ -26,7 +25,7 @@ main = do
   -- putStrLn $ ppShow c2
   -- let c3 = cell tess 3
   -- putStrLn $ ppShow c3
-  -- putStrLn $ ppShow $ map (cell tess) [0 .. (length $ _sites tess) - 1]
+  putStrLn $ ppShow $ map (cell' tess) [0 .. (length $ _sites tess) - 1]
 --  let distances = map (map thd3 . _ridges) (_facets tess)
   -- putStrLn $ ppShow $ map _ridges (_facets tess)
   -- putStrLn $ ppShow $ (_facets tess !! 6, _facets tess !! 7)

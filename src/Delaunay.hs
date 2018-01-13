@@ -6,7 +6,7 @@ import           Data.Function         (on)
 --import           Data.IntMap.Strict    (IntMap, fromListWith)
 import           Data.IntSet           (IntSet)
 import qualified Data.IntSet           as S
-import           Data.List             (groupBy, sortOn, zipWith7, zip4)
+import           Data.List             (groupBy, sortOn, zip4, zipWith7)
 import           Data.List.Split       (chunksOf, splitPlaces)
 --import qualified Data.Map.Strict       as M
 import           Foreign.C.String
@@ -38,8 +38,10 @@ data CentredPolytope = CentredPolytope {
 -- type Ridges' = [Map [Int] [CentredPolytope]]
 
 data Delaunay = Delaunay {
-    _sites  ::  [[Double]]
-  , _facets ::  [Facet]
+    _sites       :: [[Double]]
+  , _facets      :: [Facet]
+  , _vrneighbors :: [[IntSet]]
+  , _vfneighbors :: [IntSet]
 } deriving Show
 
 
@@ -48,7 +50,7 @@ foreign import ccall unsafe "delaunay" c_delaunay
   :: Ptr CDouble -> CUInt -> CUInt -> Ptr CUInt -> Ptr CUInt -> CString
   -> IO (Ptr Result)
 
-delaunay :: [[Double]] -> IO (Delaunay, [[[Int]]])
+delaunay :: [[Double]] -> IO Delaunay
 delaunay sites = do
   let n = length sites
       dim = length (head sites)
@@ -98,10 +100,15 @@ delaunay sites = do
                            (peekArray n_ridges (_rdistances result))
       vrnsizes <- (<$!>) (map fromIntegral)
                          (peekArray n (_vrnsizes result))
-      putStrLn $ show vrnsizes
-      vrneighbors <- (<$!>) ((splitPlaces vrnsizes) . (chunksOf dim) . (map fromIntegral))
+      vrneighbors <- (<$!>) (map (map S.fromList) . (splitPlaces vrnsizes) .
+                            (chunksOf dim) . (map fromIntegral))
                             (peekArray (sum vrnsizes * dim)
-                                       (_vrneighbors result))
+                                       (__vrneighbors result))
+      vfnsizes <- (<$!>) (map fromIntegral)
+                         (peekArray n (_vfnsizes result))
+      vfneighbors <- (<$!>) (map S.fromList . (splitPlaces vfnsizes) .
+                            (map fromIntegral))
+                            (peekArray (sum vfnsizes) (__vfneighbors result))
       free resultPtr
       -- let ridges' = map (\((a,b),c,d) -> (head a, [doCPolytope b c d]))
       --                   (zip3 (map (splitAt 1) ridges'') ridgesCenters ridgesNormals)
@@ -124,13 +131,14 @@ delaunay sites = do
           --              (zip3 ridges' ridgesCenters ridgesNormals)
           --
       (>>=) (readFile tmpFile) putStrLn -- print summary
-      return $ (Delaunay { _sites = sites
+      return $ Delaunay { _sites = sites
                         , _facets = zipWith7 toFacet
                                     (chunksOf (dim+1) indices)
                                     (chunksOf dim normals)
                                     neighbors' ridges_rdistances
-                                    (chunksOf dim centers) areas toporient },
-                vrneighbors)
+                                    (chunksOf dim centers) areas toporient
+                        , _vrneighbors = vrneighbors
+                        , _vfneighbors = vfneighbors }
   where
     toFacet :: [Int] -> [Double] -> [Int] -> [(CentredPolytope,[Int],Double)] -> [Double] -> Double -> Bool -> Facet
     toFacet verts normal neighs r center vol top =

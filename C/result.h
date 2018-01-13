@@ -13,4 +13,6 @@ typedef struct Result {
   double* rdistances;
   unsigned* vrneighbors;
   unsigned* vrnsizes;
+  unsigned* vfneighbors;
+  unsigned* vfnsizes;
 } ResultT;

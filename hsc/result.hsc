@@ -19,9 +19,11 @@ data Result = Result {
   _rnormals :: Ptr CDouble,
   _fnormals :: Ptr CDouble,
   _rdistances :: Ptr CDouble,
-  _vrneighbors :: Ptr CUInt,
-  _vrnsizes :: Ptr CUInt
-} deriving (Show, Eq)
+  __vrneighbors :: Ptr CUInt,
+  _vrnsizes :: Ptr CUInt,
+  _vfneighbors :: Ptr CUInt,
+  _vfnsizes :: Ptr CUInt
+} -- deriving (Show, Eq)
 
 instance Storable Result where
     sizeOf    _ = #{size ResultT}
@@ -41,6 +43,8 @@ instance Storable Result where
       rdistances'  <- #{peek ResultT, rdistances} ptr
       vrneighbors'  <- #{peek ResultT, vrneighbors} ptr
       vrnsizes' <- #{peek ResultT, vrnsizes} ptr
+      vfneighbors'  <- #{peek ResultT, vfneighbors} ptr
+      vfnsizes' <- #{peek ResultT, vfnsizes} ptr
       return Result { _dim = dim'
                     , _length = length'
                     , _indices = indices'
@@ -53,20 +57,26 @@ instance Storable Result where
                     , _rnormals = rnormals'
                     , _fnormals = fnormals'
                     , _rdistances = rdistances'
-                    , _vrneighbors = vrneighbors'
-                    , _vrnsizes = vrnsizes' }
-    poke ptr (Result r1 r2 r3 r4 r5 r6 r7 r8 r9 r10 r11 r12 r13 r14) = do
-      #{poke ResultT, dim}            ptr r1
-      #{poke ResultT, length}         ptr r2
-      #{poke ResultT, indices}        ptr r3
-      #{poke ResultT, areas}          ptr r4
-      #{poke ResultT, neighbors}      ptr r5
-      #{poke ResultT, centers}        ptr r6
-      #{poke ResultT, toporient}      ptr r7
-      #{poke ResultT, ridges}         ptr r8
-      #{poke ResultT, rcenters}       ptr r9
-      #{poke ResultT, rnormals}       ptr r10
-      #{poke ResultT, fnormals}       ptr r11
-      #{poke ResultT, rdistances}     ptr r12
-      #{poke ResultT, vrneighbors}    ptr r13
-      #{poke ResultT, vrnsizes}       ptr r14
+                    , __vrneighbors = vrneighbors'
+                    , _vrnsizes = vrnsizes'
+                    , __vfneighbors = vfneighbors'
+                    , _vfnsizes = vfnsizes'
+                  }
+    poke ptr (Result r1 r2 r3 r4 r5 r6 r7 r8 r9 r10 r11 r12 r13 r14 r15 r16)
+      = do
+        #{poke ResultT, dim}            ptr r1
+        #{poke ResultT, length}         ptr r2
+        #{poke ResultT, indices}        ptr r3
+        #{poke ResultT, areas}          ptr r4
+        #{poke ResultT, neighbors}      ptr r5
+        #{poke ResultT, centers}        ptr r6
+        #{poke ResultT, toporient}      ptr r7
+        #{poke ResultT, ridges}         ptr r8
+        #{poke ResultT, rcenters}       ptr r9
+        #{poke ResultT, rnormals}       ptr r10
+        #{poke ResultT, fnormals}       ptr r11
+        #{poke ResultT, rdistances}     ptr r12
+        #{poke ResultT, vrneighbors}    ptr r13
+        #{poke ResultT, vrnsizes}       ptr r14
+        #{poke ResultT, vfneighbors}    ptr r15
+        #{poke ResultT, vfnsizes}       ptr r16
