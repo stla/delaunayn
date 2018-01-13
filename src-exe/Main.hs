@@ -3,8 +3,10 @@ module Main
 import Voronoi3D
 --import Voronoi2D
 import System.IO
-import Delaunay (test2)
+import Delaunay
 import Text.Show.Pretty
+import           Data.Tuple.Extra ((&&&), thd3)
+
 
 main :: IO ()
 main = do
@@ -14,10 +16,13 @@ main = do
   -- writeFile "rgl.txt" (voronoi2ForR vv)
   -- prettyShowVoronoi2 vv (Just 3)
   tess <- test2
---  putStrLn $ ppShow tess
+  let distances = map (map thd3 . _ridges) (_facets tess)
+  putStrLn $ ppShow tess
+  mapM (putStrLn . show) distances
+  mapM (putStrLn . show . (map ((<0) &&& (==0)))) distances
   let r = voronoi3 tess
 --  r <- testv3
---  prettyShowVoronoi3 r (Just 3)
+  prettyShowVoronoi3 r (Just 3)
   let vv = clipVoronoi3 (-2,2,-2,2,-2,2) r
   writeFile "rgl.txt" (voronoi3ForRgl vv)
   prettyShowVoronoi3 vv (Just 3)

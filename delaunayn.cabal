@@ -64,6 +64,7 @@ executable test
   build-depends:       base >= 4.7 && < 5
                      , delaunayn
                      , pretty-show
+                     , extra
 
 source-repository head
   type:     git

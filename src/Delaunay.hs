@@ -22,7 +22,7 @@ import           TemporaryFile
 data Facet = Facet {
     _simplex    :: CentredPolytope
   , _neighbours :: [Int]
-  , _ridges     :: [(CentredPolytope, Double)]
+  , _ridges     :: [(CentredPolytope, [Int], Double)]
   , _volume     :: Double
   , _top        :: Bool
 } deriving Show
@@ -88,8 +88,8 @@ delaunay sites = do
                            chunksOf (dim+1) neighbors
           n_ridges = nf * (dim+1);
       toporient <- (<$!>) (map (==1)) (peekArray nf (_toporient result))
-      ridges'' <- (<$!>) ((chunksOf (1+dim)) . (map fromIntegral))
-                         (peekArray (n_ridges * (1+dim)) (__ridges result))
+      ridges'' <- (<$!>) ((chunksOf (2+dim)) . (map fromIntegral))
+                         (peekArray (n_ridges * (2+dim)) (__ridges result))
       ridgesCenters <- (<$!>) ((chunksOf dim) . (map realToFrac))
                               (peekArray (n_ridges * dim) (_rcenters result))
       ridgesNormals <- (<$!>) ((chunksOf dim) . (map realToFrac))
@@ -107,12 +107,13 @@ delaunay sites = do
       -- let (ids', ridges') = sortOn (head . fst) $ map (splitAt 1) ridges''
       --     ids = map head ids'
       let ridges_rdistances = map (map (snd)) $
-            groupBy ((==)`on` fst) $ sortOn fst $
-              map (\((a,b),c,d,e) -> (head a, (doCPolytope b c d, e)))
-                  (zip4 (map (splitAt 1) ridges'')
+            groupBy ((==) `on` fst) $ sortOn fst $
+              map (\((a,b),c,d,e) -> (head a, (doCPolytope b c d, a, e)))
+                  (zip4 (map (splitAt 2) ridges'')
                         ridgesCenters
                         ridgesNormals
                         rdistances)
+--      putStrLn $ show ridges_rdistances
           -- ridges = map (\(b,c,d) -> doCPolytope b c d)
           --              (zip3 ridges' ridgesCenters ridgesNormals)
           --
@@ -124,7 +125,7 @@ delaunay sites = do
                                     neighbors' ridges_rdistances
                                     (chunksOf dim centers) areas toporient }
   where
-    toFacet :: [Int] -> [Double] -> [Int] -> [(CentredPolytope,Double)] -> [Double] -> Double -> Bool -> Facet
+    toFacet :: [Int] -> [Double] -> [Int] -> [(CentredPolytope,[Int],Double)] -> [Double] -> Double -> Bool -> Facet
     toFacet verts normal neighs r center vol top =
       Facet { _simplex   = doCPolytope verts center normal
             , _neighbours = neighs

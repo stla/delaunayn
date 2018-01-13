@@ -15,10 +15,11 @@ import           Data.Map.Strict  (Map, difference, elems, empty, fromList,
                                    mapMaybeWithKey)
 import qualified Data.Map.Strict  as M
 import           Data.Maybe
-import           Data.Tuple.Extra ((&&&))
+import           Data.Tuple.Extra ((&&&), fst3, snd3, thd3)
 import           Delaunay
 import           Text.Show.Pretty (ppShow)
 import           VoronoiShared
+import Data.Function (on)
 
 type Point3 = (Double, Double, Double)
 type Vector3 = (Double, Double, Double)
@@ -28,7 +29,7 @@ data Edge3 = Edge3 (Point3, Point3) | IEdge3 (Point3, Vector3)
 -- type Edge3' = (Edge3, Index)
 type Cell3 = (Site, [Edge3])
 type Voronoi3 = [Cell3]
-type Ridge3 = (Index, Index, Index)
+type Ridge3 = IntSet -- (Index, Index, Index)
 type Box3 = (Double, Double, Double, Double, Double, Double)
 
 prettyShowVoronoi3 :: Voronoi3 -> Maybe Int -> IO ()
@@ -60,7 +61,7 @@ asTriplet _       = (undefined, undefined, undefined)
 
 getNeighborsCenters :: Delaunay -> Int -> Map Ridge3 (Maybe Point3)
 getNeighborsCenters Delaunay {_sites=_, _facets=facets} l =
-  fromList $ map (\(i,j,k) -> ((i,j,k),
+  fromList $ map (\(i,j,k) -> (S.fromList [i,j,k],
                                maybeListElementWith
                                neighbors
                                (findIndex (f [i,j,k]) neighborsAsIndices)
@@ -75,8 +76,10 @@ getNeighborsCenters Delaunay {_sites=_, _facets=facets} l =
     [i1, i2, i3, i4] = (S.toList . fst . _vertices . _simplex) facet
     neighbors = _neighbours facet
     neighborsAsIndices = map (fst . _vertices . _simplex . (!!) facets) neighbors
-    f x indices = all ((flip S.member) indices) x
+    f x indices = all ((flip S.member) indices) x -- mieux: S.subsetOf (S.fromList x) indices
     maybeListElementWith list n g = maybe Nothing (Just . g . (!!) list) n
+
+
 
 allEdges :: Delaunay -> Map Ridge3 Edge3
 allEdges tess =
@@ -86,11 +89,7 @@ getCells :: [Site] -> Map Ridge3 Edge3 -> [Cell3]
 getCells sites edgemap =
   map (\i ->
           (sites!!i,
-           elems (M.filterWithKey (\(i1,i2,i3) _ -> i `elem` [i1,i2,i3]) edgemap)))
-          --  ++
-          --  elems (M.filterWithKey (\(i1,i2,i3) _ -> i2==i) edgemap)
-          --  ++
-          --  elems (M.filterWithKey (\(i1,i2,i3) _ -> i3==i) edgemap)))
+           elems (M.filterWithKey (\i1i2i3 _ -> S.member i i1i2i3) edgemap)))
       [0 .. length sites - 1]
 
 voronoi3 :: Delaunay -> Voronoi3
@@ -102,22 +101,57 @@ update tess i edges =
   where
     facet = _facets tess !! i
     top = _top facet
-    center = asTriplet $ _center (_simplex facet)
+    center@(cx,cy,cz) = asTriplet $ _center (_simplex facet)
     -- ridgeVertices :: CentredPolytope -> (IntSet, [[Double]])
     -- ridgeVertices = _vertices
-    asSet :: Ridge3 -> IntSet
-    asSet (i1,i2,i3) = S.fromList [i1,i2,i3]
+    -- asSet :: Ridge3 -> IntSet
+    -- asSet (i1,i2,i3) = S.fromList [i1,i2,i3]
     ridgesnormals = map
                     ((fst . _vertices) &&& (asTriplet . _normal))
-                    (map fst (_ridges facet))
+                    (map fst3 (_ridges facet))
+    distances = map
+                    ((fst . _vertices . fst3) &&& (thd3))
+                    (_ridges facet)
+    ridgesnormals' = map ((fst . _vertices . fst3) &&& (minus . _center . fst3))
+                         (_ridges facet)
     f i1i2i3 center' =
       if isNothing center'
-        then Just (IEdge3 (center, fromJust $ lookup (asSet i1i2i3) ridgesnormals)) -- if top then asTriplet vec else asTriplet $ map negate vec))
+        then if fromJust (lookup i1i2i3 distances) < 0 -- == Just 0
+               -- bizarre ce mix de ridgenormals et ridgenormals'
+               then Just (IEdge3 (center, negateT $ fromJust $ lookup i1i2i3 ridgesnormals))
+               else Just (IEdge3 (center, fromJust $ lookup i1i2i3 ridgesnormals')) -- if top then asTriplet vec else asTriplet $ map negate vec))
         else let c = fromJust center' in
              if c == center
               then Nothing
               else Just (Edge3 (center, c))
     edgemap = mapMaybeWithKey f (difference (getNeighborsCenters tess i) edges)
+    minus [x,y,z] = (cx-x,cy-y,cz-z)
+    negateT (x,y,z) = (-x,-y,-z)
+
+-- --
+getVertexNeighbors :: Delaunay -> Index -> [Facet]
+getVertexNeighbors tess i =
+  filter (\facet -> S.member i ((fst . _vertices . _simplex) facet)) (_facets tess)
+
+getVertexRidges :: Delaunay -> Index -> [(CentredPolytope, Double)]
+getVertexRidges tess i =
+  let facets = getVertexNeighbors tess i in
+  concat $ map (\facet -> filter (\(polytope, _) -> S.member i ((fst . _vertices) polytope)) (map (fst3 &&& thd3) $ _ridges facet)) facets
+
+-- edgesFromTwoFacets :: Facet -> Facet -> Maybe [Edge3]
+-- edgesFromTwoFacets facet1 facet2 =
+--   if isNeighbor
+--     then xxx
+--     else Nothing
+--   where
+--     isNeighbor = (S.toList . fst . _vertices . _simplex) facet1 `elem` (_neighbours facet2)
+--
+-- update' :: Delaunay -> Index -> [Edge3] -> [Edge3]
+-- update' tess i edges =
+--   edges ++ newedges
+--   where
+
+
 
 truncEdge3 :: Box3 -> Edge3 -> Edge3
 truncEdge3 (xmin, xmax, ymin, ymax, zmin, zmax) edge =
