@@ -1,11 +1,14 @@
-{-# LANGUAGE ForeignFunctionInterface, DuplicateRecordFields #-}
+{-# LANGUAGE ForeignFunctionInterface #-}
 module Delaunay
   where
 import           Control.Monad         (when, (<$!>))
-import           Data.IntMap.Strict    (IntMap, fromListWith)
-import qualified Data.IntMap.Strict    as M
-import           Data.List             (union, zipWith5)
+import           Data.Function         (on)
+--import           Data.IntMap.Strict    (IntMap, fromListWith)
+import           Data.IntSet           (IntSet)
+import qualified Data.IntSet           as S
+import           Data.List             (groupBy, sortOn, zipWith7, zip4)
 import           Data.List.Split       (chunksOf)
+--import qualified Data.Map.Strict       as M
 import           Foreign.C.String
 import           Foreign.C.Types
 import           Foreign.Marshal.Alloc (free, mallocBytes)
@@ -17,24 +20,26 @@ import           System.IO             (readFile)
 import           TemporaryFile
 
 data Facet = Facet {
-    _vertices   :: [Int]
+    _simplex    :: CentredPolytope
   , _neighbours :: [Int]
-  , _center     :: [Double]
+  , _ridges     :: [(CentredPolytope, Double)]
   , _volume     :: Double
   , _top        :: Bool
 } deriving Show
 
 data CentredPolytope = CentredPolytope {
-    _vertices :: [[Double]]
+    _vertices :: (IntSet, [[Double]])
+--  , _indices  :: [[]]
   , _center   :: [Double]
+  , _normal   :: [Double]
 } deriving Show
 
-type Ridges = IntMap [CentredPolytope]
+-- type Ridges = IntMap [CentredPolytope]
+-- type Ridges' = [Map [Int] [CentredPolytope]]
 
 data Delaunay = Delaunay {
     _sites  ::  [[Double]]
   , _facets ::  [Facet]
-  , _ridges ::  Ridges
 } deriving Show
 
 
@@ -74,53 +79,75 @@ delaunay sites = do
                         (peekArray (nf * (dim+1)) (_indices result))
       centers <- (<$!>) (map realToFrac)
                         (peekArray (nf * dim) (_centers result))
+      normals <- (<$!>) (map realToFrac)
+                        (peekArray (nf * dim) (_fnormals result))
       areas <- (<$!>) (map realToFrac) (peekArray nf (_areas result))
       neighbors <- (<$!>) (map fromIntegral)
                           (peekArray (nf * (dim+1)) (_neighbors result))
       let neighbors' = map ((map (subtract 1)).(filter (/=0))) $
                            chunksOf (dim+1) neighbors
-          n_neighbors = sum $ map length neighbors'
-      putStrLn $ "*********" ++ show n_neighbors ++ "************"
+          n_ridges = nf * (dim+1);
       toporient <- (<$!>) (map (==1)) (peekArray nf (_toporient result))
       ridges'' <- (<$!>) ((chunksOf (1+dim)) . (map fromIntegral))
-                         (peekArray (n_neighbors * (1+dim)) (__ridges result))
+                         (peekArray (n_ridges * (1+dim)) (__ridges result))
       ridgesCenters <- (<$!>) ((chunksOf dim) . (map realToFrac))
-                              (peekArray (n_neighbors * dim) (_rcenters result))
+                              (peekArray (n_ridges * dim) (_rcenters result))
+      ridgesNormals <- (<$!>) ((chunksOf dim) . (map realToFrac))
+                              (peekArray (n_ridges * dim) (_rnormals result))
+      rdistances <- (<$!>) (map realToFrac)
+                           (peekArray n_ridges (_rdistances result))
       free resultPtr
-      let ridges' = map (\((a,b),c) -> (head a, [doCPolytope b c]))
-                        (zip (map (splitAt 1) ridges'') ridgesCenters)
-          ridges = fromListWith (++) ridges'
-      -- let ridges' = fromListWith union
-      --               (map ((\(a,b) -> (head a, [b])) . (splitAt 1)) ridges'')
+      -- let ridges' = map (\((a,b),c,d) -> (head a, [doCPolytope b c d]))
+      --                   (zip3 (map (splitAt 1) ridges'') ridgesCenters ridgesNormals)
+      --     ridges = fromListWith (++) ridges'
+      --     (_, _ridges'') = unzip $ sortOn (head . fst) $ map (splitAt 1) ridges''
+      --     _ridges' = map (\(b,c,d) -> (b, [doCPolytope b c d]))
+      --                       (zip3 _ridges'' ridgesCenters ridgesNormals)
+      --     _ridges = M.fromListWith (++) _ridges'
+      -- let (ids', ridges') = sortOn (head . fst) $ map (splitAt 1) ridges''
+      --     ids = map head ids'
+      let ridges_rdistances = map (map (snd)) $
+            groupBy ((==)`on` fst) $ sortOn fst $
+              map (\((a,b),c,d,e) -> (head a, (doCPolytope b c d, e)))
+                  (zip4 (map (splitAt 1) ridges'')
+                        ridgesCenters
+                        ridgesNormals
+                        rdistances)
+          -- ridges = map (\(b,c,d) -> doCPolytope b c d)
+          --              (zip3 ridges' ridgesCenters ridgesNormals)
+          --
       (>>=) (readFile tmpFile) putStrLn -- print summary
       return $ Delaunay { _sites = sites
-                        , _facets = zipWith5 toFacet
-                                    (chunksOf (dim+1) indices) neighbors'
-                                    (chunksOf dim centers) areas toporient
-                        , _ridges = ridges }
+                        , _facets = zipWith7 toFacet
+                                    (chunksOf (dim+1) indices)
+                                    (chunksOf dim normals)
+                                    neighbors' ridges_rdistances
+                                    (chunksOf dim centers) areas toporient }
   where
-    toFacet :: [Int] -> [Int] -> [Double] -> Double -> Bool -> Facet
-    toFacet verts neighs center vol top = Facet { _vertices   = verts
-                                                , _neighbours = neighs
-                                                , _center     = center
-                                                , _volume     = vol
-                                                , _top        = top }
-    doCPolytope :: [Int] -> [Double] -> CentredPolytope
-    doCPolytope indices center =
-      CentredPolytope { _vertices = map ((!!) sites) indices,
-                        _center   = center }
+    toFacet :: [Int] -> [Double] -> [Int] -> [(CentredPolytope,Double)] -> [Double] -> Double -> Bool -> Facet
+    toFacet verts normal neighs r center vol top =
+      Facet { _simplex   = doCPolytope verts center normal
+            , _neighbours = neighs
+            , _ridges     = r
+            , _volume     = vol
+            , _top        = top }
+    doCPolytope :: [Int] -> [Double] -> [Double] -> CentredPolytope
+    doCPolytope indices center normal =
+      CentredPolytope { _vertices = (S.fromList indices, map ((!!) sites) indices),
+                        _center   = center,
+                        _normal   = normal }
 
 
--- test :: IO Delaunay
--- test =
---   delaunay [[-5,-5,16], [-5,8,3], [4,-1,3], [4,-5,7], [4,-1,-10], [4,-5,-10], [-5,8,-10], [-5,-5,-10]]
--- -- [[0,0,0], [1,0,0], [1,1,0], [1,1,1], [0,2,0]]
---
+test :: IO Delaunay
+test =
+  delaunay [[-5,-5,16], [-5,8,3], [4,-1,3], [4,-5,7], [4,-1,-10], [4,-5,-10], [-5,8,-10], [-5,-5,-10]]
+-- [[0,0,0], [1,0,0], [1,1,0], [1,1,1], [0,2,0]]
+
 test2 :: IO Delaunay
 test2 = delaunay [[-1,-1,-1],[-1,-1,1],[-1,1,-1],[-1,1,1],[1,-1,-1],[1,-1,1],[1,1,-1],[1,1,1],[0,0,0]]
---
--- test3 :: IO Delaunay
--- test3 = delaunay [[0,0],[0,1],[0,2],[1,0],[1,1],[1,2],[2,0],[2,1],[2,2]]
---
--- test4 :: IO Delaunay
--- test4 = delaunay [[0,0],[0,2],[2,0],[2,2],[1,1]]
+
+test3 :: IO Delaunay
+test3 = delaunay [[0,0],[0,1],[0,2],[1,0],[1,1],[1,2],[2,0],[2,1],[2,2]]
+
+test4 :: IO Delaunay
+test4 = delaunay [[0,0],[0,2],[2,0],[2,2],[1,1]]

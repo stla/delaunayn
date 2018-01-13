@@ -16,33 +16,42 @@ data Result = Result {
   _centers :: Ptr CDouble,
   _toporient :: Ptr CUInt,
   __ridges :: Ptr CUInt,
-  _rcenters :: Ptr Double
+  _rcenters :: Ptr CDouble,
+  _rnormals :: Ptr CDouble,
+  _fnormals :: Ptr CDouble,
+  _rdistances :: Ptr CDouble
 } deriving (Show, Eq)
 
 instance Storable Result where
-    sizeOf    _ = (64)
-{-# LINE 23 "result.hsc" #-}
+    sizeOf    _ = (88)
+{-# LINE 26 "result.hsc" #-}
     alignment _ = 8
-{-# LINE 24 "result.hsc" #-}
+{-# LINE 27 "result.hsc" #-}
     peek ptr = do
       dim'       <- (\hsc_ptr -> peekByteOff hsc_ptr 0) ptr
-{-# LINE 26 "result.hsc" #-}
-      length'    <- (\hsc_ptr -> peekByteOff hsc_ptr 4) ptr
-{-# LINE 27 "result.hsc" #-}
-      indices'   <- (\hsc_ptr -> peekByteOff hsc_ptr 8) ptr -- peekArray (fromIntegral $ length' * (dim'+1)) $ #{ptr ResultT, indices} ptr
-{-# LINE 28 "result.hsc" #-}
-      areas'     <- (\hsc_ptr -> peekByteOff hsc_ptr 16) ptr
 {-# LINE 29 "result.hsc" #-}
-      neighbors' <- (\hsc_ptr -> peekByteOff hsc_ptr 24) ptr
+      length'    <- (\hsc_ptr -> peekByteOff hsc_ptr 4) ptr
 {-# LINE 30 "result.hsc" #-}
-      centers'   <- (\hsc_ptr -> peekByteOff hsc_ptr 32) ptr
+      indices'   <- (\hsc_ptr -> peekByteOff hsc_ptr 8) ptr -- peekArray (fromIntegral $ length' * (dim'+1)) $ #{ptr ResultT, indices} ptr
 {-# LINE 31 "result.hsc" #-}
-      toporient' <- (\hsc_ptr -> peekByteOff hsc_ptr 40) ptr
+      areas'     <- (\hsc_ptr -> peekByteOff hsc_ptr 16) ptr
 {-# LINE 32 "result.hsc" #-}
-      ridges'    <- (\hsc_ptr -> peekByteOff hsc_ptr 48) ptr
+      neighbors' <- (\hsc_ptr -> peekByteOff hsc_ptr 24) ptr
 {-# LINE 33 "result.hsc" #-}
-      rcenters'  <- (\hsc_ptr -> peekByteOff hsc_ptr 56) ptr
+      centers'   <- (\hsc_ptr -> peekByteOff hsc_ptr 32) ptr
 {-# LINE 34 "result.hsc" #-}
+      toporient' <- (\hsc_ptr -> peekByteOff hsc_ptr 40) ptr
+{-# LINE 35 "result.hsc" #-}
+      ridges'    <- (\hsc_ptr -> peekByteOff hsc_ptr 48) ptr
+{-# LINE 36 "result.hsc" #-}
+      rcenters'  <- (\hsc_ptr -> peekByteOff hsc_ptr 56) ptr
+{-# LINE 37 "result.hsc" #-}
+      rnormals'  <- (\hsc_ptr -> peekByteOff hsc_ptr 64) ptr
+{-# LINE 38 "result.hsc" #-}
+      fnormals'  <- (\hsc_ptr -> peekByteOff hsc_ptr 72) ptr
+{-# LINE 39 "result.hsc" #-}
+      rdistances'  <- (\hsc_ptr -> peekByteOff hsc_ptr 72) ptr
+{-# LINE 40 "result.hsc" #-}
       return Result { _dim = dim'
                     , _length = length'
                     , _indices = indices'
@@ -51,23 +60,32 @@ instance Storable Result where
                     , _centers = centers'
                     , _toporient = toporient'
                     , __ridges    = ridges'
-                    , _rcenters = rcenters' }
-    poke ptr (Result r1 r2 r3 r4 r5 r6 r7 r8 r9) = do
+                    , _rcenters = rcenters'
+                    , _rnormals = rnormals'
+                    , _fnormals = fnormals'
+                    , _rdistances = rdistances' }
+    poke ptr (Result r1 r2 r3 r4 r5 r6 r7 r8 r9 r10 r11 r12) = do
       (\hsc_ptr -> pokeByteOff hsc_ptr 0)         ptr r1
-{-# LINE 45 "result.hsc" #-}
+{-# LINE 54 "result.hsc" #-}
       (\hsc_ptr -> pokeByteOff hsc_ptr 4)      ptr r2
-{-# LINE 46 "result.hsc" #-}
+{-# LINE 55 "result.hsc" #-}
       (\hsc_ptr -> pokeByteOff hsc_ptr 8)     ptr r3
-{-# LINE 47 "result.hsc" #-}
+{-# LINE 56 "result.hsc" #-}
       (\hsc_ptr -> pokeByteOff hsc_ptr 16)       ptr r4
-{-# LINE 48 "result.hsc" #-}
+{-# LINE 57 "result.hsc" #-}
       (\hsc_ptr -> pokeByteOff hsc_ptr 24)   ptr r5
-{-# LINE 49 "result.hsc" #-}
+{-# LINE 58 "result.hsc" #-}
       (\hsc_ptr -> pokeByteOff hsc_ptr 32)     ptr r6
-{-# LINE 50 "result.hsc" #-}
+{-# LINE 59 "result.hsc" #-}
       (\hsc_ptr -> pokeByteOff hsc_ptr 40)   ptr r7
-{-# LINE 51 "result.hsc" #-}
+{-# LINE 60 "result.hsc" #-}
       (\hsc_ptr -> pokeByteOff hsc_ptr 48)      ptr r8
-{-# LINE 52 "result.hsc" #-}
+{-# LINE 61 "result.hsc" #-}
       (\hsc_ptr -> pokeByteOff hsc_ptr 56)    ptr r9
-{-# LINE 53 "result.hsc" #-}
+{-# LINE 62 "result.hsc" #-}
+      (\hsc_ptr -> pokeByteOff hsc_ptr 64)    ptr r10
+{-# LINE 63 "result.hsc" #-}
+      (\hsc_ptr -> pokeByteOff hsc_ptr 72)    ptr r11
+{-# LINE 64 "result.hsc" #-}
+      (\hsc_ptr -> pokeByteOff hsc_ptr 80)    ptr r12
+{-# LINE 65 "result.hsc" #-}

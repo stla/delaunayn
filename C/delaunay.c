@@ -61,9 +61,12 @@ struct Result* delaunay(
 //	int* sizneighbors;
 	unsigned* neighbors;
 	double* centers;
+	double* facetsNormals;
 	unsigned* toporient;
 	unsigned** ridges; // size n_adjacencies X (1+dim) ; first column for id
 	double** ridgesCenters;
+	double** ridgesNormals;
+	double* distances;
 	unsigned n_adjacencies;
 
 //  FILE* tmpstdout = fopen(tmpFile, "w");
@@ -173,8 +176,8 @@ struct Result* delaunay(
 		neighbors = (unsigned*) malloc(nf[0] * (dim+1) * sizeof(unsigned));
 		centers = (double*) malloc(nf[0] * dim * sizeof(double));
 		toporient = (unsigned*) malloc(nf[0] * sizeof(unsigned));
+		facetsNormals = (double*) malloc(nf[0] * dim * sizeof(double));
 		unsigned* neighborok = malloc(nf[0] * sizeof(unsigned));
-		n_adjacencies = 0;
 
     /* Iterate through facets to extract information - first pass */
 		unsigned i = 0; // facet counter
@@ -187,6 +190,10 @@ struct Result* delaunay(
       FOREACHvertex_(facet->vertices) {
         indices[i*(dim+1)+j] = qh_pointid(qh, vertex->point);
         j++;
+			}
+
+			for(j=0; j<dim; j++){
+				facetsNormals[i*dim+j] = facet->normal[j];
 			}
 
 			j = 0;
@@ -207,7 +214,6 @@ struct Result* delaunay(
 				}else{
 					neighbors[i*(dim+1)+j] = (unsigned)(neighbor->id);
 					neighborok[neighbor->id] = 1;
-					n_adjacencies++;
 				}
 				//neighbors[i*(dim+1)+j] = facetsok[neighbor->id] ? (unsigned)(facetsid[i]) : (unsigned)(0);
 				j++;
@@ -216,9 +222,11 @@ struct Result* delaunay(
 			i++;
 		}
 
-		double* distances = malloc(n_adjacencies * sizeof(double));
+		n_adjacencies = nf[0] * 4;
+		distances = malloc(n_adjacencies * sizeof(double));
 		ridges = malloc(n_adjacencies * sizeof(unsigned*)); // (intersections, adjacencies, ridges)
 		ridgesCenters = malloc(n_adjacencies * sizeof(double*));
+		ridgesNormals = malloc(n_adjacencies * sizeof(double*));
 		//unsigned* neighborsIndices = malloc(n_adjacencies * sizeof(unsigned));
 		// unsigned combinations[4][3] = { {0, 1, 2}
 	  //                               , {0, 1, 3}
@@ -236,89 +244,154 @@ struct Result* delaunay(
 				centers[i*dim+j] = center[j];
 			}
 
-			FOREACHneighbor_(facet){
-				if(neighborok[neighbor->id]){
-
-					double dist;
-					qh_distplane(qh, center, neighbor, &dist);
-					printf("dist to center %d (=%d) to neighbor %d: %f (negative ? %d ; zero ? %d)\n",
-					       facet->id, i, neighbor->id, dist, dist<0, dist==0);
-
-					// vaudrait mieux un tableau 3d - non va y avoir des vides
-					//neighborsIndices[i_adjacencies] = neighbor->id;
-					// on pourrait mettre le id dans la 1ère colonne
-					ridges[i_adjacencies] = (unsigned*) malloc((1+3)*sizeof(unsigned));
-					ridges[i_adjacencies][0] = neighbor->id; // plutôt facet id
-					unsigned* combination = malloc(3*sizeof(unsigned));
-					unsigned k = 0;
-					FOREACHvertex_(neighbor->vertices) {
-						unsigned vertexid = qh_pointid(qh, vertex->point);
-						if (vertexid == indices[i*(dim+1)+0] ||
-							  vertexid == indices[i*(dim+1)+1] ||
-								vertexid == indices[i*(dim+1)+2] ||
-								vertexid == indices[i*(dim+1)+3])
-						{ // je crois que ce test peut planter : s'il n'y a pas dim adjacences... non dans ce cas c'est pas un neighbor
-							unsigned l = 0;
-							while(1){
-								if(vertexid == indices[i*(dim+1)+l]){
-									break;
-								}
-								l++;
-							}
-							combination[k] = l;
-							ridges[i_adjacencies][k+1] = vertexid;
-							k++;
-						}
+//			if(i_adjacencies<1){
+			// tu vas calculer 2 fois ...
+			for(unsigned m=0; m<4; m++){
+				ridges[i_adjacencies] = (unsigned*) malloc((1+3)*sizeof(unsigned));
+				ridges[i_adjacencies][0] = (unsigned)facet->id;
+				unsigned* combination = malloc(3*sizeof(unsigned));
+				unsigned kk=0;
+				for(unsigned k=0; k<4; k++){
+					if(k!=m){
+						combination[kk] = k;
+						kk++;
 					}
-					printf("facet id: %d\n", facet->id);
-					vertexT* vertex1 = (vertexT*)facet->vertices->e[combination[0]].p;
-					vertexT* vertex2 = (vertexT*)facet->vertices->e[combination[1]].p;
-					vertexT* vertex3 = (vertexT*)facet->vertices->e[combination[2]].p;
-					printf("vertex1: %d - ", qh_pointid(qh, vertex1->point));
-					printf("vertex2: %d - ", qh_pointid(qh, vertex2->point));
-					printf("vertex3: %d \n ", qh_pointid(qh, vertex3->point));
-					pointT* point1 = vertex1->point;
-					pointT* point2 = vertex2->point;
-					pointT* point3 = vertex3->point;
-					double u1 = point2[0]-point1[0];
-					double v1 = point2[1]-point1[1];
-					double w1 = point2[2]-point1[2];
-					double u2 = point3[0]-point1[0];
-					double v2 = point3[1]-point1[1];
-					double w2 = point3[2]-point1[2];
-					// faudrait aussi retourner la normale ou alors résoudre le système ici et retourner le vecteur
-					double* normal = malloc(3*sizeof(double));
-					normal[0] = det2_(v1, v2, w1, w2);
-					normal[1] = det2_(u2, u1, w2, w1);
-					normal[2] = det2_(u1, u2, v1, v2);
-					qh_normalize2(qh, normal, 3, 1, NULL, NULL); // 3:dim 1:toporient
-					double offset = -(point1[0]*normal[0]+point1[1]*normal[1]+point1[2]*normal[2]);
-					distances[i_adjacencies] = qh_distnorm(3, center, normal, &offset);
-					struct mat3X3 mat ={ { {u1, v1, w1}
-														   , {u2, v2, w2}
-													   	 , {normal[0], normal[1], normal[2]} } };
-					double rhs[3] = { center[0]*u1 + center[1]*v1 + center[2]*w1
-													, center[0]*u2 + center[1]*v2 + center[2]*w2
-												  , -offset };
-													// -- O = center
-													// -- OM.AB = 0: (mx-cx)*u!!0 + (my-cy)*u!!1 + (mz-cz)*u!!2 = 0
-													// -- OM.AC = 0: (mx-cx)*v!!0 + (my-cy)*v!!1 + (mz-cz)*v!!2 = 0
-													// -- AM.normal = 0
-					double* ridgeCenter = solve3X3(mat, rhs);
-					ridgesCenters[i_adjacencies] = (double*) malloc(3*sizeof(double));
-					ridgesCenters[i_adjacencies][0] = ridgeCenter[0];
-					ridgesCenters[i_adjacencies][1] = ridgeCenter[1];
-					ridgesCenters[i_adjacencies][2] = ridgeCenter[2];
-					printf("Vertex1: %f %f %f\n", point1[0], point1[1], point1[2]);
-					printf("Vertex2: %f %f %f\n", point2[0], point2[1], point2[2]);
-					printf("Vertex3: %f %f %f\n", point3[0], point3[1], point3[2]);
-					printf("NORMAL: %f %f %f\n", normal[0], normal[1], normal[2]);
-					printf("MYDISTANCE: %f\n", distances[i_adjacencies]);
-					printf("RIDGE CENTER: %f %f %f\n", ridgeCenter[0], ridgeCenter[1], ridgeCenter[2]);
-					free(ridgeCenter);
-					i_adjacencies++;
-					// ? free(combination);
 				}
+				pointT* point1 = ((vertexT*)facet->vertices->e[combination[0]].p)->point;
+				pointT* point2 = ((vertexT*)facet->vertices->e[combination[1]].p)->point;
+				pointT* point3 = ((vertexT*)facet->vertices->e[combination[2]].p)->point;
+				// vertexT* vertex1 = (vertexT*)facet->vertices->e[combination[0]].p;
+				// vertexT* vertex2 = (vertexT*)facet->vertices->e[combination[1]].p;
+				// vertexT* vertex3 = (vertexT*)facet->vertices->e[combination[2]].p;
+				// pointT* point1 = vertex1->point;
+				// pointT* point2 = vertex2->point;
+				// pointT* point3 = vertex3->point;
+				ridges[i_adjacencies][1] = (unsigned)qh_pointid(qh, point1);
+				ridges[i_adjacencies][2] = (unsigned)qh_pointid(qh, point2);
+				ridges[i_adjacencies][3] = (unsigned)qh_pointid(qh, point3);
+				double u1 = point2[0]-point1[0];
+				double v1 = point2[1]-point1[1];
+				double w1 = point2[2]-point1[2];
+				double u2 = point3[0]-point1[0];
+				double v2 = point3[1]-point1[1];
+				double w2 = point3[2]-point1[2];
+				double* normal = malloc(3*sizeof(double));
+				normal[0] = det2_(v1, v2, w1, w2);
+				normal[1] = det2_(u2, u1, w2, w1);
+				normal[2] = det2_(u1, u2, v1, v2);
+				double offset = -(point1[0]*normal[0]+point1[1]*normal[1]+point1[2]*normal[2]);
+				struct mat3X3 mat ={ { {u1, v1, w1}
+														 , {u2, v2, w2}
+														 , {normal[0], normal[1], normal[2]} } };
+				double rhs[3] = { center[0]*u1 + center[1]*v1 + center[2]*w1
+												, center[0]*u2 + center[1]*v2 + center[2]*w2
+												, -offset };
+				double* ridgeCenter = solve3X3(mat, rhs);
+				ridgesCenters[i_adjacencies] = (double*) malloc(3*sizeof(double));
+				ridgesCenters[i_adjacencies][0] = ridgeCenter[0];
+				ridgesCenters[i_adjacencies][1] = ridgeCenter[1];
+				ridgesCenters[i_adjacencies][2] = ridgeCenter[2];
+				qh_normalize2(qh, normal, 3, 1, NULL, NULL); // 3:dim 1:toporient
+				ridgesNormals[i_adjacencies] = (double*) malloc(3*sizeof(double));
+				ridgesNormals[i_adjacencies][0] = normal[0];
+				ridgesNormals[i_adjacencies][1] = normal[1];
+				ridgesNormals[i_adjacencies][2] = normal[2];
+				distances[i_adjacencies] = qh_distnorm(3, center, normal, &offset);
+				printf("Vertex1: %f %f %f\n", point1[0], point1[1], point1[2]);
+				printf("Vertex2: %f %f %f\n", point2[0], point2[1], point2[2]);
+				printf("Vertex3: %f %f %f\n", point3[0], point3[1], point3[2]);
+				printf("NORMAL: %f %f %f\n", normal[0], normal[1], normal[2]);
+				printf("MYDISTANCE: %f\n", distances[i_adjacencies]);
+				double dd = sqrt ((center[0]-ridgeCenter[0])*(center[0]-ridgeCenter[0]) +
+				                  (center[1]-ridgeCenter[1])*(center[1]-ridgeCenter[1]) +
+													(center[2]-ridgeCenter[2])*(center[2]-ridgeCenter[2]));
+				printf("MYDISTANCE2: %f\n", dd);
+				printf("RIDGE CENTER: %f %f %f\n", ridgeCenter[0], ridgeCenter[1], ridgeCenter[2]);
+				printf("FACET CENTER: %f %f %f\n", center[0], center[1], center[2]);
+				free(ridgeCenter);
+				free(combination);
+				i_adjacencies++;
+
+			// FOREACHneighbor_(facet){
+			// 	if(neighborok[neighbor->id]){
+			//
+			// 		double dist;
+			// 		qh_distplane(qh, center, neighbor, &dist);
+			// 		printf("dist to center %d (=%d) to neighbor %d: %f (negative ? %d ; zero ? %d)\n",
+			// 		       facet->id, i, neighbor->id, dist, dist<0, dist==0);
+			//
+			// 		ridges[i_adjacencies] = (unsigned*) malloc((1+3)*sizeof(unsigned));
+			// 		ridges[i_adjacencies][0] = neighbor->id; // plutôt facet id
+			// 		unsigned* combination = malloc(3*sizeof(unsigned));
+			// 		unsigned k = 0;
+			// 		FOREACHvertex_(neighbor->vertices) {
+			// 			unsigned vertexid = qh_pointid(qh, vertex->point);
+			// 			if (vertexid == indices[i*(dim+1)+0] ||
+			// 				  vertexid == indices[i*(dim+1)+1] ||
+			// 					vertexid == indices[i*(dim+1)+2] ||
+			// 					vertexid == indices[i*(dim+1)+3])
+			// 			{ // je crois que ce test peut planter : s'il n'y a pas dim adjacences... non dans ce cas c'est pas un neighbor
+			// 				unsigned l = 0;
+			// 				while(1){
+			// 					if(vertexid == indices[i*(dim+1)+l]){
+			// 						break;
+			// 					}
+			// 					l++;
+			// 				}
+			// 				combination[k] = l;
+			// 				ridges[i_adjacencies][k+1] = vertexid;
+			// 				k++;
+			// 			}
+			// 		}
+			// 		printf("facet id: %d\n", facet->id);
+			// 		vertexT* vertex1 = (vertexT*)facet->vertices->e[combination[0]].p;
+			// 		vertexT* vertex2 = (vertexT*)facet->vertices->e[combination[1]].p;
+			// 		vertexT* vertex3 = (vertexT*)facet->vertices->e[combination[2]].p;
+			// 		printf("vertex1: %d - ", qh_pointid(qh, vertex1->point));
+			// 		printf("vertex2: %d - ", qh_pointid(qh, vertex2->point));
+			// 		printf("vertex3: %d \n ", qh_pointid(qh, vertex3->point));
+			// 		pointT* point1 = vertex1->point;
+			// 		pointT* point2 = vertex2->point;
+			// 		pointT* point3 = vertex3->point;
+			// 		double u1 = point2[0]-point1[0];
+			// 		double v1 = point2[1]-point1[1];
+			// 		double w1 = point2[2]-point1[2];
+			// 		double u2 = point3[0]-point1[0];
+			// 		double v2 = point3[1]-point1[1];
+			// 		double w2 = point3[2]-point1[2];
+			// 		// faudrait aussi retourner la normale ou alors résoudre le système ici et retourner le vecteur
+			// 		double* normal = malloc(3*sizeof(double));
+			// 		normal[0] = det2_(v1, v2, w1, w2);
+			// 		normal[1] = det2_(u2, u1, w2, w1);
+			// 		normal[2] = det2_(u1, u2, v1, v2);
+			// 		qh_normalize2(qh, normal, 3, 1, NULL, NULL); // 3:dim 1:toporient
+			// 		ridgesNormals[i_adjacencies] = (double*) malloc(3*sizeof(double));
+			// 		ridgesNormals[i_adjacencies][0] = normal[0];
+			// 		ridgesNormals[i_adjacencies][1] = normal[1];
+			// 		ridgesNormals[i_adjacencies][2] = normal[2];
+			// 		double offset = -(point1[0]*normal[0]+point1[1]*normal[1]+point1[2]*normal[2]);
+			// 		distances[i_adjacencies] = qh_distnorm(3, center, normal, &offset);
+			// 		struct mat3X3 mat ={ { {u1, v1, w1}
+			// 											   , {u2, v2, w2}
+			// 										   	 , {normal[0], normal[1], normal[2]} } };
+			// 		double rhs[3] = { center[0]*u1 + center[1]*v1 + center[2]*w1
+			// 										, center[0]*u2 + center[1]*v2 + center[2]*w2
+			// 									  , -offset };
+			// 		double* ridgeCenter = solve3X3(mat, rhs);
+			// 		ridgesCenters[i_adjacencies] = (double*) malloc(3*sizeof(double));
+			// 		ridgesCenters[i_adjacencies][0] = ridgeCenter[0];
+			// 		ridgesCenters[i_adjacencies][1] = ridgeCenter[1];
+			// 		ridgesCenters[i_adjacencies][2] = ridgeCenter[2];
+			// 		printf("Vertex1: %f %f %f\n", point1[0], point1[1], point1[2]);
+			// 		printf("Vertex2: %f %f %f\n", point2[0], point2[1], point2[2]);
+			// 		printf("Vertex3: %f %f %f\n", point3[0], point3[1], point3[2]);
+			// 		printf("NORMAL: %f %f %f\n", normal[0], normal[1], normal[2]);
+			// 		printf("MYDISTANCE: %f\n", distances[i_adjacencies]);
+			// 		printf("RIDGE CENTER: %f %f %f\n", ridgeCenter[0], ridgeCenter[1], ridgeCenter[2]);
+			// 		free(ridgeCenter);
+			// 		i_adjacencies++;
+			// 		// ? free(combination);
+			// 	}
 			}
 			i++;
 		}
@@ -371,12 +444,6 @@ struct Result* delaunay(
 		// qh_memfreeshort (myqh, &mycurlong, &mytotlong);   /* free short memory and memory allocator */
 	}
 
-	/* Do cleanup regardless of whether there is an error */
-	qh_freeqhull(qh, !qh_ALL);                  /* free long memory */
-	qh_memfreeshort (qh, &curlong, &totlong);   /* free short memory and memory allocator */
-	// if (exitcode) {
-	// 	error("Received error code %d from qhull.", exitcode);
-	// }
 
 
 	struct Result* out = malloc(sizeof(ResultT));
@@ -390,14 +457,13 @@ struct Result* delaunay(
 			}
 		}
 		double* ridgesCenters_ = malloc(n_adjacencies*3*sizeof(double));
+		double* ridgesNormals_ = malloc(n_adjacencies*3*sizeof(double));
 		for(unsigned l=0; l<n_adjacencies; l++){
 			for(unsigned ll=0; ll<3; ll++){
 				ridgesCenters_[l*dim+ll] = ridgesCenters[l][ll];
+				ridgesNormals_[l*dim+ll] = ridgesNormals[l][ll];
 			}
 		}
-
-		free(ridges);
-		free(ridgesCenters);
 
 	  out->dim       = dim;
 	  out->length    = nf[0];
@@ -408,7 +474,22 @@ struct Result* delaunay(
 		out->toporient = toporient;
 		out->ridges    = ridges_;
 		out->rcenters  = ridgesCenters_;
+		out->rnormals  = ridgesNormals_;
+		out->fnormals  = facetsNormals;
+		out->rdistances = distances;
+
 	}
+
+	free(ridges);
+	free(ridgesCenters);
+	free(ridgesNormals);
+
+	/* Do cleanup regardless of whether there is an error */
+	qh_freeqhull(qh, !qh_ALL);                  /* free long memory */
+	qh_memfreeshort (qh, &curlong, &totlong);   /* free short memory and memory allocator */
+	// if (exitcode) {
+	// 	error("Received error code %d from qhull.", exitcode);
+	// }
 
 
   return out;
