@@ -3,38 +3,26 @@ module Voronoi3D
  , Cell3
  , Voronoi3
  , prettyShowVoronoi3
- , voronoi3
  , clipVoronoi3
  , testv3
  , voronoi3ForRgl
- , cell')
+ , voronoiCell3
+ , voronoi3)
   where
-import           Data.IntSet      (IntSet)
-import qualified Data.IntSet      as IS
-import qualified Data.Set         as S
 import           Data.List
-import           Data.IntMap.Strict (IntMap)
-import qualified Data.IntMap.Strict as IM
-import           Data.Map.Strict  (Map, difference, elems, empty, fromList,
-                                   mapMaybeWithKey)
-import qualified Data.Map.Strict  as M
 import           Data.Maybe
-import           Data.Tuple.Extra ((&&&), fst3, snd3, thd3, both)
+import           Data.Tuple.Extra   (both)
 import           Delaunay
-import           Text.Show.Pretty (ppShow)
+import           Text.Show.Pretty   (ppShow)
 import           VoronoiShared
-import Data.Function (on)
-import Data.List.Index (imap)
 
 type Point3 = (Double, Double, Double)
 type Vector3 = (Double, Double, Double)
 data Edge3 = Edge3 (Point3, Point3) | IEdge3 (Point3, Vector3)
              | TIEdge3 (Point3, Point3)
               deriving Show
--- type Edge3' = (Edge3, Index)
 type Cell3 = (Site, [Edge3])
 type Voronoi3 = [Cell3]
-type Ridge3 = IntSet -- (Index, Index, Index)
 type Box3 = (Double, Double, Double, Double, Double, Double)
 
 prettyShowVoronoi3 :: Voronoi3 -> Maybe Int -> IO ()
@@ -64,94 +52,20 @@ asTriplet :: [a] -> (a, a, a)
 asTriplet [x,y,z] = (x,y,z)
 asTriplet _       = (undefined, undefined, undefined)
 
-getNeighborsCenters :: Delaunay -> Int -> Map Ridge3 (Maybe Point3)
-getNeighborsCenters tess l =
-  fromList $ map (\(i,j,k) -> (IS.fromList [i,j,k],
-                               maybeListElementWith
-                               neighbors
-                               (findIndex (f [i,j,k]) neighborsAsIndices)
-                               (asTriplet . _center . _simplex . (!!) facets)))
-                 [(i1,i2,i3), (i4,i1,i2), (i3,i4,i1), (i2,i3,i4)]
-  where
-    facets = _facets tess
-    facet = facets!!l
-    -- getFacetVertices :: Facet -> ([Int], [[Double]])
-    -- getFacetVertices = _vertices
-    -- getFacetCenter :: Facet -> [Double]
-    -- getFacetCenter = _center
-    [i1, i2, i3, i4] = (IS.toList . fst . _vertices . _simplex) facet
-    neighbors = _neighbours facet
-    neighborsAsIndices = map (fst . _vertices . _simplex . (!!) facets) neighbors
-    f x indices = all ((flip IS.member) indices) x -- mieux: S.subsetOf (S.fromList x) indices
-    maybeListElementWith list n g = maybe Nothing (Just . g . (!!) list) n
+edgeToEdge3 :: Edge -> Edge3
+edgeToEdge3 (Edge (x, y))  = Edge3 (both asTriplet (x, y))
+edgeToEdge3 (IEdge (x, v)) = IEdge3 (both asTriplet (x, v))
 
-
-
-allEdges :: Delaunay -> Map Ridge3 Edge3
-allEdges tess =
-  foldr (update tess) empty [0 .. length (_facets tess) - 1]
-
-getCells :: [Site] -> Map Ridge3 Edge3 -> [Cell3]
-getCells sites edgemap =
-  map (\i ->
-          (sites!!i,
-           elems (M.filterWithKey (\i1i2i3 _ -> IS.member i i1i2i3) edgemap)))
-      [0 .. length sites - 1]
-
-voronoi3 :: Delaunay -> Voronoi3
-voronoi3 tess = getCells (_sites tess) (allEdges tess)
-
-update :: Delaunay -> Int -> Map Ridge3 Edge3 -> Map Ridge3 Edge3
-update tess i edges =
-  M.union edges edgemap
-  where
-    facet = _facets tess !! i
-    top = _top facet
-    center@(cx,cy,cz) = asTriplet $ _center (_simplex facet)
-    -- ridgeVertices :: CentredPolytope -> (IntSet, [[Double]])
-    -- ridgeVertices = _vertices
-    -- asSet :: Ridge3 -> IntSet
-    -- asSet (i1,i2,i3) = S.fromList [i1,i2,i3]
-    ridgesnormals = map
-                    ((fst . _vertices) &&& (asTriplet . _normal))
-                    (map fst3 (_ridges facet))
-    distances = map
-                    ((fst . _vertices . fst3) &&& (thd3))
-                    (_ridges facet)
-    ridgesnormals' = map ((fst . _vertices . fst3) &&& (minus . _center . fst3))
-                         (_ridges facet)
-    f i1i2i3 center' =
-      if isNothing center'
-        then if fromJust (lookup i1i2i3 distances) < 0 -- == Just 0
-               -- bizarre ce mix de ridgenormals et ridgenormals'
-               then Just (IEdge3 (center, negateT $ fromJust $ lookup i1i2i3 ridgesnormals))
-               else Just (IEdge3 (center, fromJust $ lookup i1i2i3 ridgesnormals')) -- if top then asTriplet vec else asTriplet $ map negate vec))
-        else let c = fromJust center' in
-             if c == center
-              then Nothing
-              else Just (Edge3 (center, c))
-    edgemap = mapMaybeWithKey f (difference (getNeighborsCenters tess i) edges)
-    minus [x,y,z] = (cx-x,cy-y,cz-z)
-    negateT (x,y,z) = (-x,-y,-z)
-
--- --
-getVertexNeighbors :: Delaunay -> Index -> [Facet]
-getVertexNeighbors tess i =
-  filter (\facet -> IS.member i ((fst . _vertices . _simplex) facet)) (_facets tess)
-
-getVertexRidges :: Delaunay -> Index -> [(CentredPolytope, [Int], Double)]
-getVertexRidges tess i =
-  let facets = getVertexNeighbors tess i in
---  foldr (unionBy ((==) `on` (fst . _vertices . fst3))) [] $ map (\facet -> filter (\(polytope, _, _) -> S.member i ((fst . _vertices) polytope)) (_ridges facet)) facets
-  foldr (unionBy equalRidges) [] $ map (\facet -> filter (\(polytope, _, _) -> IS.member i ((fst . _vertices) polytope)) (_ridges facet)) facets
-
-equalRidges :: (CentredPolytope, [Int], Double) -> (CentredPolytope, [Int], Double) -> Bool
-equalRidges (p1, f1, _) (p2, f2, _) = -- same ridges or same centers and parallel normals
-  (fst . _vertices) p1 == (fst . _vertices) p2
+equalRidges :: Ridge -> Ridge -> Bool
+equalRidges ridge1 ridge2 = -- same ridges or same centers and parallel normals
+  _vertices p1 == _vertices p2 -- inutile je pense, c'est déjà unique
   ||
   (length f1 == 1 && length f2 == 1 &&
-  _center p1 == _center p2 &&
-  crossProduct (asTriplet $ _normal p1) (asTriplet $ _normal p2) == (0,0,0))
+   _center p1 == _center p2 &&
+   crossProduct (asTriplet $ _normal p1) (asTriplet $ _normal p2) == (0,0,0))
+  where
+    (p1, f1, _) = ridgeAsTriplet ridge1
+    (p2, f2, _) = ridgeAsTriplet ridge2
 
 crossProduct :: Vector3 -> Vector3 -> Vector3
 crossProduct (x1,y1,z1) (x2,y2,z2) = (v3x, v3y, v3z)
@@ -160,63 +74,15 @@ crossProduct (x1,y1,z1) (x2,y2,z2) = (v3x, v3y, v3z)
     v3y = z1 * x2   -   z2 * x1
     v3z = x1 * y2   -   x2 * y1
 
-edgesFromRidge :: Delaunay -> (CentredPolytope, [Int], Double) -> Maybe Edge3
-edgesFromRidge tess (polytope, facetindices, rdistance) =
-  if length facetindices == 1
-    then Just $ IEdge3 $  (asTriplet $ center' (facets !! (head facetindices)), (xxx . _normal) polytope)
-    else if c1==c2 then Nothing else Just $ Edge3 $ both asTriplet (c1, c2)
-  where
-    facets = _facets tess
-    center' = _center . _simplex
-    c1 = center' (facets !! (head facetindices))
-    c2 = center' (facets !! (last facetindices))
---    xxx = if _top (facets !! (head facetindices)) then asTriplet else negateT . asTriplet
-    xxx = if rdistance < 0 then asTriplet else negateT . asTriplet
-    negateT (x,y,z) = (-x,-y,-z)
+voronoiCell3 :: Delaunay -> Index -> [Edge3]
+voronoiCell3 tess i =
+  let ridges = uniqueWith equalRidges $ getVertexRidges tess i in
+  map (edgeToEdge3 . fromJust) $
+      filter isJust $ map (edgesFromRidge tess) ridges --, map (_vertices . fst3) ridges)
 
-cell :: Delaunay -> Index -> [Edge3] -- , [(IntSet, [[Double]])])
-cell tess i = let ridges = getVertexRidges tess i in
-  map fromJust $ filter isJust $ map (edgesFromRidge tess) ridges --, map (_vertices . fst3) ridges)
-
-_ridgesVertices :: (CentredPolytope, [Int], Double) -> IntSet
-_ridgesVertices = fst . _vertices . fst3
-
-vertexNeighborsRidges :: Delaunay -> Map IntSet [(CentredPolytope, [Int], Double)]
-vertexNeighborsRidges tess =
-  M.fromListWith (unionBy ((==) `on` _ridgesVertices)) ridges'
-  where
-    ridges' :: [(IntSet, [(CentredPolytope, [Int], Double)])]
-    ridges' =  map (\(x,y) -> (x,[y])) $ concat $ map
-                        (\facet -> let ridges = _ridges facet in
-                                     let vertices = map _ridgesVertices ridges in
-                                          zip vertices ridges)
-                        (_facets tess)
---
-getVertexRidges' :: Delaunay -> Index -> [(CentredPolytope, [Int], Double)]
-getVertexRidges' tess i =
-  foldr (unionBy equalRidges) [] $
-    M.elems $ M.restrictKeys (vertexNeighborsRidges tess)
-      (S.fromList $ _vrneighbors tess !! i)
-
-cell' :: Delaunay -> Index -> [Edge3]
-cell' tess i = let ridges = getVertexRidges' tess i in
-  map fromJust $ filter isJust $ map (edgesFromRidge tess) ridges --, map (_vertices . fst3) ridges)
-
-
-  -- map (_normal . fst3) ridges, map (_top) (_facets tess))
--- edgesFromTwoFacets :: Facet -> Facet -> Maybe [Edge3]
--- edgesFromTwoFacets facet1 facet2 =
---   if isNeighbor
---     then xxx
---     else Nothing
---   where
---     isNeighbor = (S.toList . fst . _vertices . _simplex) facet1 `elem` (_neighbours facet2)
---
--- update' :: Delaunay -> Index -> [Edge3] -> [Edge3]
--- update' tess i edges =
---   edges ++ newedges
---   where
-
+voronoi3 :: Delaunay -> Voronoi3
+voronoi3 tess = let sites = _sites tess in
+                    zip sites (map (voronoiCell3 tess) [0 .. length sites -1])
 
 
 truncEdge3 :: Box3 -> Edge3 -> Edge3
@@ -262,3 +128,6 @@ voronoi3ForRgl v = intercalate "\nopend3d()\n" $ map cellForRgl v
             "segments3d(rbind(c" ++ show x ++ ", c" ++ show y ++ "))"
           TIEdge3 (x,y) ->
             "segments3d(rbind(c" ++ show x ++ ", c" ++ show y ++ "), col=c(\"red\",\"red\"))"
+          IEdge3 (x,y) ->
+            "segments3d(rbind(c" ++ show x ++ ", c" ++ (show $ sumTriplet x y) ++ "), col=c(\"red\",\"red\"))"
+        sumTriplet (a,b,c) (a',b',c') = (a+a',b+b',c+c')

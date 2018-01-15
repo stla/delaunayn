@@ -188,6 +188,7 @@ void qh_memcheck(qhT *qh) {
   if (qh->qhmem.ferr == 0 || qh->qhmem.IStracing < 0 || qh->qhmem.IStracing > 10 || (((qh->qhmem.ALIGNmask+1) & qh->qhmem.ALIGNmask) != 0)) {
     qh_fprintf_stderr(6244, "qh_memcheck error: either qh->qhmem is overwritten or qh->qhmem is not initialized.  Call qh_mem_new() or qh_new_qhull() before calling qh_mem routines.  ferr 0x%x IsTracing %d ALIGNmask 0x%x", qh->qhmem.ferr, qh->qhmem.IStracing, qh->qhmem.ALIGNmask);
     qh_exit(qhmem_ERRqhull);  /* can not use qh_errexit() */
+    return;
   }
   if (qh->qhmem.IStracing != 0)
     qh_fprintf(qh, qh->qhmem.ferr, 8143, "qh_memcheck: check size of freelists on qh->qhmem\nqh_memcheck: A segmentation fault indicates an overwrite of qh->qhmem\n");
@@ -261,12 +262,12 @@ void qh_memfree(qhT *qh, void *object, int insize) {
 
   returns:
     number and size of current long allocations
-  
+
   notes:
-    if qh_NOmem (qh_malloc() for all allocations), 
+    if qh_NOmem (qh_malloc() for all allocations),
        short objects (e.g., facetT) are not recovered.
        use qh_freeqhull(qh, qh_ALL) instead.
- 
+
   see:
     qh_freeqhull(qh, allMem)
     qh_memtotal(qh, curlong, totlong, curshort, totshort, maxlong, totbuffer);
@@ -559,4 +560,3 @@ void qh_memtotal(qhT *qh, int *totlong, int *curlong, int *totshort, int *cursho
     *maxlong= qh->qhmem.maxlong;
     *totbuffer= qh->qhmem.totbuffer;
 } /* memtotlong */
-

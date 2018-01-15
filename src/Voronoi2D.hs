@@ -3,29 +3,26 @@ module Voronoi2D
  , Cell2
  , Voronoi2
  , prettyShowVoronoi2
+ , voronoiCell2
  , voronoi2
  , clipVoronoi2
  , voronoi2ForR
  , testv2)
   where
-import           Delaunay
 import           Data.List
-import           Data.Map.Strict (Map, mapMaybeWithKey, difference, fromList,
-                                  elems, empty)
-import qualified Data.Map.Strict as M
 import           Data.Maybe
-import           Text.Show.Pretty (ppShow)
+import           Data.Tuple.Extra   (both)
+import           Delaunay
+import           Text.Show.Pretty   (ppShow)
 import           VoronoiShared
 
 type Point2 = (Double, Double)
 type Vector2 = (Double, Double)
 data Edge2 = Edge2 (Point2, Point2) | IEdge2 (Point2, Vector2)
              | TIEdge2 (Point2, Point2)
-              deriving Show -- pourrait faire une instance show pour virer le 2
---type Edge2' = (Edge2, Index)
+              deriving Show
 type Cell2 = (Site, [Edge2])
 type Voronoi2 = [Cell2]
-type Ridge2 = (Index, Index)
 type Box2 = (Double, Double, Double, Double)
 
 prettyShowVoronoi2 :: Voronoi2 -> Maybe Int -> IO ()
@@ -53,88 +50,19 @@ asPair :: [Double] -> (Double, Double)
 asPair [a,b] = (a,b)
 asPair _ = (undefined, undefined)
 
-getNeighborsCenters :: Delaunay -> Int -> Map Ridge2 (Maybe Point2)
-getNeighborsCenters Delaunay {_sites=_, _facets=facets} k =
-  fromList $ map (\(i,j) -> ((i,j),
-                             maybeListElementWith
-                             neighbors
-                             (findIndex (f [i,j]) neighborsAsIndices)
-                             (asPair . _center . (!!) facets)))
-                   [(i1,i2), (i3,i1), (i2,i3)]
-  where
-    facet = facets!!k
-    [i1, i2, i3] = _vertices facet
-    neighbors = _neighbours facet
-    neighborsAsIndices = map (_vertices . (!!) facets) neighbors
-    f x indices = all (`elem` indices) x
-    --tripletAsList (a,b,c) = [a,b,c]
-    maybeListElementWith list l g = maybe Nothing (Just . g . (!!) list) l
+edgeToEdge2 :: Edge -> Edge2
+edgeToEdge2 (Edge (x, y))  = Edge2 (both asPair (x, y))
+edgeToEdge2 (IEdge (x, v)) = IEdge2 (both asPair (x, v))
 
-allEdges :: Delaunay -> Map Ridge2 Edge2
-allEdges tess@(Delaunay {_sites=_, _facets=facets}) =
-  foldr (update tess) empty [0 .. length facets - 1]
-
--- getCells :: [Site] -> Map Ridge2 (Edge2', Edge2') -> [Cell2]
--- getCells sites edgemap =
---   map (\i ->
---           (sites!!i,
---            elems (M.map fst (M.filter ((==i).snd) (M.map fst edgemap)))
---            ++
---            elems (M.map fst (M.filter ((==i).snd) (M.map snd edgemap)))))
---       [0 .. length sites - 1]
-getCells :: [Site] -> Map Ridge2 Edge2 -> [Cell2]
-getCells sites edgemap =
-  map (\i ->
-          (sites!!i,
-           elems (M.filterWithKey (\(i1,i2) _ -> i `elem` [i1,i2]) edgemap)))
-      [0 .. length sites - 1]
+voronoiCell2 :: Delaunay -> Index -> [Edge2]
+voronoiCell2 tess i =
+  let ridges = getVertexRidges tess i in
+  map (edgeToEdge2 . fromJust) $
+      filter isJust $ map (edgesFromRidge tess) ridges
 
 voronoi2 :: Delaunay -> Voronoi2
-voronoi2 tess = getCells (_sites tess) (allEdges tess)
-
--- update :: Delaunay -> Int -> Map Ridge2 (Edge2',Edge2') -> Map Ridge2 (Edge2',Edge2')
--- update tess@(Delaunay {_sites=sites, _facets=facets}) i edges =
---   M.union edges edgemap
---   where
---     center@(cx,cy) = asPair $ _center (facets!!i)--circumcenter (getTriangle sites (_triangle (facets!!i)))
---     f (i1,i2) center' =
---       if isNothing center'
---         then Just ((IEdge2 (center, vec), i1), (IEdge2 (center, vec), i2))
---         else let c = fromJust center'
---              in
---              if c == center
---               then Nothing
---               else Just ((Edge2 (center, c), i1), (Edge2 (center, c), i2))
---         where
---           vec = (mx-cx, my-cy)
---           [x1,y1] = sites!!i1
---           [x2,y2] = sites!!i2
---           mx = (x1+x2)/2
---           my = (y1+y2)/2
---     edgemap = mapMaybeWithKey f (difference (getNeighborsCenters tess i) edges)
-update :: Delaunay -> Int -> Map Ridge2 Edge2 -> Map Ridge2 Edge2
-update tess@(Delaunay {_sites=sites, _facets=facets}) i edges =
-  M.union edges edgemap
-  where
-    facet = facets!!i
-    top = _top facet
-    center@(cx,cy) = asPair $ _center facet--circumcenter (getTriangle sites (_triangle (facets!!i)))
-    f (i1,i2) center' =
-      if isNothing center'
-        then if vec==(0,0) -- orientation: y'a l'ordre dans getNeighborsCenters
-               then Just (IEdge2 (center, if top then (y2-y1,x1-x2) else (y1-y2,x2-x1))) -- pb orientation
-               else Just (IEdge2 (center, vec))
-        else let c = fromJust center' in
-             if c == center
-              then Nothing
-              else Just (Edge2 (center, c))
-        where
-          vec = (mx-cx, my-cy)
-          [x1,y1] = sites!!i1
-          [x2,y2] = sites!!i2
-          mx = (x1+x2)/2
-          my = (y1+y2)/2
-    edgemap = mapMaybeWithKey f (difference (getNeighborsCenters tess i) edges)
+voronoi2 tess = let sites = _sites tess in
+                    zip sites (map (voronoiCell2 tess) [0 .. length sites -1])
 
 truncEdge2 :: Box2 -> Edge2 -> Edge2
 truncEdge2 box edge =
@@ -153,6 +81,7 @@ clipVoronoi2 box v = map (\(site,edges) -> (site, map (truncEdge2 box) edges)) v
 testv2 :: IO Voronoi2
 testv2 = do
   tess <- test4
+  putStrLn $ ppShow tess
   return $ voronoi2 tess
 
 voronoi2ForR :: Voronoi2 -> String
@@ -165,5 +94,7 @@ voronoi2ForR v = unlines $ map cellForRgl v
         f edge = case edge of
           Edge2 ((x0,y0),(x1,y1)) ->
             "segments(" ++ intercalate "," (map show [x0,y0,x1,y1]) ++ ")"
+          IEdge2 ((x0,y0),(x1,y1)) ->
+            "segments(" ++ intercalate "," (map show [x0,y0,x0+x1,y0+y1]) ++ ", col=\"red\")"
           TIEdge2 ((x0,y0),(x1,y1)) ->
             "segments(" ++ intercalate "," (map show [x0,y0,x1,y1]) ++ ", col=\"red\")"

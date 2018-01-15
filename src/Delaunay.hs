@@ -1,3 +1,4 @@
+{-# LANGUAGE DuplicateRecordFields    #-}
 {-# LANGUAGE ForeignFunctionInterface #-}
 module Delaunay
   where
@@ -22,20 +23,23 @@ import           TemporaryFile
 data Facet = Facet {
     _simplex    :: CentredPolytope
   , _neighbours :: [Int]
-  , _ridges     :: [(CentredPolytope, [Int], Double)]
+  , _ridges     :: [Ridge]
   , _volume     :: Double
   , _top        :: Bool
 } deriving Show
 
+data Ridge = Ridge {
+    _simplex  :: CentredPolytope
+  , _ridgeOf  :: [Int]
+  , _distance :: Double
+} deriving Show
+
 data CentredPolytope = CentredPolytope {
-    _vertices :: (IntSet, [[Double]])
---  , _indices  :: [[]]
+    _vertices :: IntSet
+  , _points   :: [[Double]]
   , _center   :: [Double]
   , _normal   :: [Double]
 } deriving Show
-
--- type Ridges = IntMap [CentredPolytope]
--- type Ridges' = [Map [Int] [CentredPolytope]]
 
 data Delaunay = Delaunay {
     _sites       :: [[Double]]
@@ -44,7 +48,17 @@ data Delaunay = Delaunay {
   , _vfneighbors :: [IntSet]
 } deriving Show
 
+_fsimplex :: Facet -> CentredPolytope
+_fsimplex = _simplex
 
+_rsimplex :: Ridge -> CentredPolytope
+_rsimplex = _simplex
+
+facetVertices :: Facet -> IntSet
+facetVertices = _vertices . _fsimplex
+
+facetCenter :: Facet -> [Double]
+facetCenter = _center . _fsimplex
 
 foreign import ccall unsafe "delaunay" c_delaunay
   :: Ptr CDouble -> CUInt -> CUInt -> Ptr CUInt -> Ptr CUInt -> CString
@@ -121,7 +135,7 @@ delaunay sites = do
       --     ids = map head ids'
       let ridges_rdistances = map (map (snd)) $
             groupBy ((==) `on` fst) $ sortOn fst $
-              map (\((a,b),c,d,e) -> (head a, (doCPolytope b c d, filter (<nf) a, e)))
+              map (\((a,b),c,d,e) -> (head a, doRidge (filter (<nf) a) b c d e))
                   (zip4 (map (splitAt 2) ridges'')
                         ridgesCenters
                         ridgesNormals
@@ -140,7 +154,7 @@ delaunay sites = do
                         , _vrneighbors = vrneighbors
                         , _vfneighbors = vfneighbors }
   where
-    toFacet :: [Int] -> [Double] -> [Int] -> [(CentredPolytope,[Int],Double)] -> [Double] -> Double -> Bool -> Facet
+    toFacet :: [Int] -> [Double] -> [Int] -> [Ridge] -> [Double] -> Double -> Bool -> Facet
     toFacet verts normal neighs r center vol top =
       Facet { _simplex   = doCPolytope verts center normal
             , _neighbours = neighs
@@ -149,21 +163,27 @@ delaunay sites = do
             , _top        = top }
     doCPolytope :: [Int] -> [Double] -> [Double] -> CentredPolytope
     doCPolytope indices center normal =
-      CentredPolytope { _vertices = (S.fromList indices, map ((!!) sites) indices),
-                        _center   = center,
-                        _normal   = normal }
+      CentredPolytope { _vertices = S.fromList indices
+                      , _points   = map ((!!) sites) indices
+                      , _center   = center
+                      , _normal   = normal }
+    doRidge :: [Int] -> [Int] -> [Double] -> [Double] -> Double -> Ridge
+    doRidge a b c d e =
+      Ridge { _simplex = doCPolytope b c d
+            , _ridgeOf = a
+            , _distance = e }
 
 
--- test :: IO Delaunay
--- test =
---   delaunay [[-5,-5,16], [-5,8,3], [4,-1,3], [4,-5,7], [4,-1,-10], [4,-5,-10], [-5,8,-10], [-5,-5,-10]]
--- -- [[0,0,0], [1,0,0], [1,1,0], [1,1,1], [0,2,0]]
---
--- test2 :: IO Delaunay
+test :: IO Delaunay
+test =
+  delaunay $ [[-5,-5,16], [-5,8,3], [4,-1,3], [4,-5,7], [4,-1,-10], [4,-5,-10], [-5,8,-10], [-5,-5,-10]]
+-- [[0,0,0], [1,0,0], [1,1,0], [1,1,1], [0,2,0]]
+
+test2 :: IO Delaunay
 test2 = delaunay [[-1,-1,-1],[-1,-1,1],[-1,1,-1],[-1,1,1],[1,-1,-1],[1,-1,1],[1,1,-1],[1,1,1],[0,0,0]]
---
--- test3 :: IO Delaunay
--- test3 = delaunay [[0,0],[0,1],[0,2],[1,0],[1,1],[1,2],[2,0],[2,1],[2,2]]
---
--- test4 :: IO Delaunay
--- test4 = delaunay [[0,0],[0,2],[2,0],[2,2],[1,1]]
+
+test3 :: IO Delaunay
+test3 = delaunay [[0,0],[0,1],[0,2],[1,0],[1,1],[1,2],[2,0],[2,1],[2,2]]
+
+test4 :: IO Delaunay
+test4 = delaunay [[0,0],[0,2],[2,0],[2,2],[1,1]]
