@@ -16,7 +16,7 @@ main = do
   -- writeFile "rgl.txt" (voronoi2ForR vv)
   -- prettyShowVoronoi2 vv (Just 3)
   tess <- test2
-  putStrLn $ ppShow tess
+--  putStrLn $ ppShow tess
   -- let c = cell tess 0
   -- putStrLn $ ppShow c
   -- let c1 = cell tess 1
@@ -37,6 +37,6 @@ main = do
   prettyShowVoronoi3 r (Just 3)
 --  putStrLn $ ppShow r
 --   let vv = clipVoronoi3 (-2,2,-2,2,-2,2) r
-  writeFile "rgl.txt" (voronoi3ForRgl r)
+--  writeFile "rgl.txt" (voronoi3ForRgl r)
 --  writeFile "rgl.txt" (voronoi2ForR r)
 --   prettyShowVoronoi3 vv (Just 3)
