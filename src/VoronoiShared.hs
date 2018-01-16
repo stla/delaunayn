@@ -3,9 +3,12 @@ module VoronoiShared
 import           Data.IntSet        (IntSet)
 import           Data.List
 import           Data.Map.Strict    (Map)
+import qualified Data.IntMap.Strict as IM
 import qualified Data.Map.Strict    as M
 import qualified Data.Set           as S
 import           Delaunay
+import           Data.Tuple.Extra      ((&&&))
+
 
 type Index = Int
 type Site = [Double]
@@ -28,8 +31,8 @@ approx :: RealFrac a => Int -> a -> a
 approx n x = (fromInteger $ round $ x * (10^n)) / (10.0^^n)
 
 -----
-ridgeAsTriplet :: Ridge -> (CentredPolytope, [Int], Double)
-ridgeAsTriplet ridge = (_rsimplex ridge, _ridgeOf ridge, _distance ridge)
+ridgeAsPair :: Ridge -> (Polytope, [Int])
+ridgeAsPair ridge = (_polytope &&& _ridgeOf) ridge
 
 edgesFromRidge :: Delaunay -> Ridge -> Maybe Edge
 edgesFromRidge tess ridge =
@@ -37,10 +40,24 @@ edgesFromRidge tess ridge =
     then Just $ IEdge (c1, _normal polytope)
     else if c1==c2 then Nothing else Just $ Edge (c1, c2)
   where
-    (polytope, facetindices, _) = ridgeAsTriplet ridge
+    (polytope, facetindices) = ridgeAsPair ridge
     facets = _facets tess
-    c1 = facetCenter (facets !! (head facetindices))
-    c2 = facetCenter (facets !! (last facetindices))
+    c1 = _center $ _simplex $ (facets IM.! (head facetindices))
+    c2 = _center $ _simplex $ (facets IM.! (last facetindices))
+
+    -- edgesFromRidge :: Delaunay -> Ridge -> Maybe Edge
+    -- edgesFromRidge tess ridge =
+    --   if length facetindices' == 0
+    --     then Nothing
+    --     else if length facetindices' == 1
+    --       then Just $ IEdge (c1, _normal polytope)
+    --       else if c1==c2 then Nothing else Just $ Edge (c1, c2)
+    --   where
+    --     (polytope, facetindices, _) = ridgeAsTriplet ridge
+    --     facets = _facets tess
+    --     facetindices' = intersect facetindices (IM.keys facets)
+    --     c1 = facetCenter (facets IM.! (head facetindices'))
+    --     c2 = facetCenter (facets IM.! (last facetindices'))
 
 
 -- -- rien à voir avec neighbors
@@ -61,21 +78,19 @@ edgesFromRidge tess ridge =
 --     M.elems $ M.restrictKeys (vertexNeighborsRidges tess)
 --                              (S.fromList $ _vrneighbors tess !! i)
 --
-allRidges :: Delaunay -> Map IntSet Ridge
-allRidges tess = M.fromList ridges'
-  where
-    ridges' :: [(IntSet, Ridge)]
-    ridges' =  concat $ map
-                        (\facet -> let ridges = _ridges facet in
-                                   let vertices = map _ridgesVertices ridges in
-                                    zip vertices ridges)
-                        (_facets tess)
-    _ridgesVertices = _vertices . _rsimplex
 
 getVertexRidges :: Delaunay -> Index -> [Ridge]
 getVertexRidges tess i =
-    M.elems $ M.restrictKeys (allRidges tess)
-                             (S.fromList $ _vrneighbors tess !! i)
+    M.elems $ M.restrictKeys (ridgesMap tess)
+                             (_neighRidges $ (_vertices tess) IM.! i)
 
 uniqueWith :: (a -> a -> Bool) -> [a] -> [a]
 uniqueWith f list = foldr (unionBy f) [] (map (\x -> [x]) list)
+
+getVertexRidges' :: Delaunay -> Index -> Map IntSet Ridge
+getVertexRidges' tess i =
+    M.restrictKeys (ridgesMap tess)
+                   (_neighRidges $ (_vertices tess) IM.! i)
+
+uniqueWith' :: (a -> a -> Bool) -> Map IntSet a -> [a]
+uniqueWith' f list = M.foldr (unionBy f) [] (M.map (\x -> [x]) list)

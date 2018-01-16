@@ -1,5 +1,6 @@
 module Voronoi3D
-  (Edge3
+  (--Edge3
+   Edge3(..)
  , Cell3
  , Voronoi3
  , prettyShowVoronoi3
@@ -15,6 +16,7 @@ import           Data.Tuple.Extra   (both)
 import           Delaunay
 import           Text.Show.Pretty   (ppShow)
 import           VoronoiShared
+import qualified Data.IntMap.Strict as IM
 
 type Point3 = (Double, Double, Double)
 type Vector3 = (Double, Double, Double)
@@ -58,14 +60,18 @@ edgeToEdge3 (IEdge (x, v)) = IEdge3 (both asTriplet (x, v))
 
 equalRidges :: Ridge -> Ridge -> Bool
 equalRidges ridge1 ridge2 = -- same ridges or same centers and parallel normals
-  _vertices p1 == _vertices p2 -- inutile je pense, c'est déjà unique
-  ||
-  (length f1 == 1 && length f2 == 1 &&
-   _center p1 == _center p2 &&
-   crossProduct (asTriplet $ _normal p1) (asTriplet $ _normal p2) == (0,0,0))
+  -- length f1 == 1 && length f2 == 1 &&
+  -- _owner (facets IM.! (head f1)) == _owner (facets IM.! (head f2))
+  -- || _vertices p1 == _vertices p2 -- inutile je pense, c'est déjà unique
+  -- ||
+  length f1 == 1 && length f2 == 1 &&
+  _center p1 == _center p2 &&
+  _normal p1 == _normal p2
+--   crossProduct (asTriplet $ _normal p1) (asTriplet $ _normal p2) == (0,0,0))
   where
-    (p1, f1, _) = ridgeAsTriplet ridge1
-    (p2, f2, _) = ridgeAsTriplet ridge2
+    (p1, f1) = ridgeAsPair ridge1
+    (p2, f2) = ridgeAsPair ridge2
+--    facets = _facets tess
 
 crossProduct :: Vector3 -> Vector3 -> Vector3
 crossProduct (x1,y1,z1) (x2,y2,z2) = (v3x, v3y, v3z)
@@ -79,9 +85,15 @@ voronoiCell3 tess i =
   let ridges = uniqueWith equalRidges $ getVertexRidges tess i in
   map (edgeToEdge3 . fromJust) $
       filter isJust $ map (edgesFromRidge tess) ridges --, map (_vertices . fst3) ridges)
+--
+voronoiCell3' :: Delaunay -> Index -> [Edge3]
+voronoiCell3' tess i =
+  let ridges = uniqueWith' equalRidges $ getVertexRidges' tess i in
+  map (edgeToEdge3 . fromJust) $
+      filter isJust $ map (edgesFromRidge tess) ridges --, map (_vertices . fst3) ridges)
 
 voronoi3 :: Delaunay -> Voronoi3
-voronoi3 tess = let sites = _sites tess in
+voronoi3 tess = let sites = IM.elems $ IM.map _coordinates (_vertices tess) in
                     zip sites (map (voronoiCell3 tess) [0 .. length sites -1])
 
 

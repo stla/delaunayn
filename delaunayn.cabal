@@ -67,6 +67,11 @@ executable test
                      , delaunayn
                      , pretty-show
                      , extra
+                     , containers
+                     , ilist
+                     , Unique
+                     , not-gloss
+                     , linear
 
 source-repository head
   type:     git

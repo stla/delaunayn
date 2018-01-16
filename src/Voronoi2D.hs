@@ -15,6 +15,7 @@ import           Data.Tuple.Extra   (both)
 import           Delaunay
 import           Text.Show.Pretty   (ppShow)
 import           VoronoiShared
+import qualified Data.IntMap.Strict as IM
 
 type Point2 = (Double, Double)
 type Vector2 = (Double, Double)
@@ -61,7 +62,7 @@ voronoiCell2 tess i =
       filter isJust $ map (edgesFromRidge tess) ridges
 
 voronoi2 :: Delaunay -> Voronoi2
-voronoi2 tess = let sites = _sites tess in
+voronoi2 tess = let sites = IM.elems $ IM.map _coordinates (_vertices tess) in
                     zip sites (map (voronoiCell2 tess) [0 .. length sites -1])
 
 truncEdge2 :: Box2 -> Edge2 -> Edge2
