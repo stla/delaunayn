@@ -21,4 +21,6 @@ cabal.project.local
 *.json
 Trash/
 TODO.txt
+rgl.txt
 OpenGL*
+*.gif

@@ -12,6 +12,7 @@ import           Data.List
 import           Data.List.Split       (chunksOf, splitPlaces)
 import           Data.Map.Strict       (Map)
 import qualified Data.Map.Strict       as M
+import Data.Maybe
 import           Data.Set              (Set)
 import qualified Data.Set              as S
 import           Data.Tuple.Extra      ((&&&))
@@ -57,6 +58,9 @@ import           TemporaryFile
 --   , _vfneighbors :: [IntSet] -- sites, vrneighbors et vfneighbors ont la même taile...
 -- } deriving Show
 
+type IndexSet = IntSet
+type IndexMap = IntMap
+
 data Facet = Facet {
     _simplex    :: Polytope
   , _neighbours :: IntSet
@@ -64,12 +68,12 @@ data Facet = Facet {
 
 data Vertex = Vertex {
     _coordinates :: [Double]
-  , _neighRidges :: Set IntSet -- ou Set IntSet
-  , _neighFacets :: IntSet -- ou _parentFacets
+  , _neighRidges :: Set IndexSet
+  , _neighFacets :: IntSet
 } deriving Show
 
 data Polytope = Polytope {
-    _points :: IntMap [Double]
+    _points :: IndexMap [Double]
   , _center :: [Double]
   , _normal :: [Double]
   , _volume :: Double
@@ -77,11 +81,11 @@ data Polytope = Polytope {
 
 data Ridge = Ridge {
     _polytope :: Polytope
-  , _ridgeOf  :: [Int]
+  , _ridgeOf  :: IntSet
 } deriving Show
 
 data Delaunay = Delaunay {
-    _vertices :: IntMap Vertex
+    _vertices :: IndexMap Vertex
   , _ridges   :: [Ridge]
   , _facets   :: IntMap Facet
 } deriving Show
@@ -215,7 +219,7 @@ delaunay sites = do
                                     neighbors' (chunksOf dim centers) volumes)
                         , _ridges = ridges}
   where
-    toVertex :: [Double] -> [IntSet] -> IntSet -> Vertex
+    toVertex :: [Double] -> [IndexSet] -> IntSet -> Vertex
     toVertex coords nridges nfacets =
       Vertex {  _coordinates = coords
               , _neighRidges = S.fromList nridges
@@ -233,7 +237,7 @@ delaunay sites = do
     doRidge :: [Int] -> [Int] -> [Double] -> [Double] -> Double -> Ridge
     doRidge facets is center norm vol =
       Ridge { _polytope = doPolytope is center norm vol
-            , _ridgeOf = facets }
+            , _ridgeOf = IS.fromList facets }
     -- toFacet :: [Int] -> [Double] -> [Int] -> [Ridge] -> [Double] -> Double -> Bool -> Facet
     -- toFacet verts normal neighs r center vol top =
     --   Facet { _simplex   = doCPolytope verts center normal
@@ -255,24 +259,35 @@ delaunay sites = do
     --         , _area = f }
 
 
-ridgesMap :: Delaunay -> Map IntSet Ridge
+ridgesMap :: Delaunay -> Map IndexSet Ridge
 ridgesMap tess = M.fromList ridges'
   where
-    ridges' :: [(IntSet, Ridge)]
+    ridges' :: [(IndexSet, Ridge)]
     ridges' =  map (\ridge -> let vertices = _ridgesVertices ridge in
                                     (vertices, ridge))
                    (_ridges tess)
     _ridgesVertices = IS.fromList . IM.keys . _points . _polytope
 
-delaunay3rgl :: Delaunay -> String
-delaunay3rgl tess = concat $ map rglRidge (_ridges tess)
+delaunay3rgl :: Delaunay -> Bool -> Maybe Double -> String
+delaunay3rgl tess colors alpha = concat $ map rglRidge (_ridges tess)
   where
     rglRidge :: Ridge -> String
     rglRidge ridge =
-      "triangles3d(rbind(c" ++ show (pts!!0) ++
-      ", c" ++ show (pts!!1) ++
-      ", c" ++ show (pts!!2) ++
-      "), color=\"blue\", alpha=0.5)\n" ++
+      (if IS.size (_ridgeOf ridge) == 1
+        then
+          let i = 1 + head (IS.elems $ _ridgeOf ridge) in
+          "triangles3d(rbind(c" ++ show (pts!!0) ++
+          ", c" ++ show (pts!!1) ++
+          ", c" ++ show (pts!!2) ++
+          (if colors
+            then
+              "), color=topo.colors(" ++ show i ++ ", alpha=0.5)"
+            else
+              "), color=\"blue\"") ++
+          (if isJust alpha
+            then ", alpha=" ++ show (fromJust alpha) ++ ")\n"
+            else ")\n")
+        else "") ++
       "segments3d(rbind(c" ++ show (pts!!0) ++
       ", c" ++ show (pts!!1) ++
       "), color=\"black\")\n" ++

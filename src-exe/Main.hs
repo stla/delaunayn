@@ -24,13 +24,13 @@ edgeVertices :: Edge3 -> [[Double]]
 edgeVertices (Edge3 ((x1,x2,x3),(y1,y2,y3))) = [[x1,x2,x3],[y1,y2,y3]]
 
 delaunay3vis :: Delaunay -> VisObject Double
-delaunay3vis tess = VisObjects $ concat $ map visRidge (M.elems $ allRidges tess)
+delaunay3vis tess = VisObjects $ concat $ map visRidge (_ridges tess)
   where
     visRidge ridge =
       [ Triangle (pts!!0) (pts!!1) (pts!!2) (makeColor 0 0 1 0.5)
       , Line Nothing ((pts!!0) : pts) black ]
       where
-        pts = map (\p -> V3 (p!!0) (p!!1) (p!!2)) (_points $ _rsimplex ridge)
+        pts = map (\p -> V3 (p!!0) (p!!1) (p!!2)) (IM.elems $ _points $ _polytope ridge)
 
 
 main :: IO ()
@@ -51,9 +51,11 @@ main = do
 --   let verts = foldr union [] $ map edgeVertices c
 --   putStrLn $ show verts
 
-  tess <- test3
-  putStrLn $ ppShow tess
---  writeFile "rgl.txt" (delaunay3rgl tess)
+  tess <- test
+  putStrLn $ ppShow $ _facets tess
+  putStrLn $ ppShow $ _ridges tess
+  putStrLn $ ppShow $ _vertices tess
+  writeFile "rgl/rgg.R" (delaunay3rgl tess True (Just 0.9))
 --  display (defaultOpts {optWindowName = "display test"}) (delaunay3vis tess)
   --putStrLn $ ppShow $ IM.map _owner (_facets tess)
   -- let dd = Delaunay {

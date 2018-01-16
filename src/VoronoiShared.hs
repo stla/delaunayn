@@ -4,6 +4,7 @@ import           Data.IntSet        (IntSet)
 import           Data.List
 import           Data.Map.Strict    (Map)
 import qualified Data.IntMap.Strict as IM
+import qualified Data.IntSet        as IS
 import qualified Data.Map.Strict    as M
 import qualified Data.Set           as S
 import           Delaunay
@@ -32,7 +33,7 @@ approx n x = (fromInteger $ round $ x * (10^n)) / (10.0^^n)
 
 -----
 ridgeAsPair :: Ridge -> (Polytope, [Int])
-ridgeAsPair ridge = (_polytope &&& _ridgeOf) ridge
+ridgeAsPair ridge = (_polytope &&& (IS.toList . _ridgeOf)) ridge
 
 edgesFromRidge :: Delaunay -> Ridge -> Maybe Edge
 edgesFromRidge tess ridge =
