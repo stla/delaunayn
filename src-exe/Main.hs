@@ -40,17 +40,19 @@ main = do
   -- writeFile "rgl.txt" (voronoi3ForRgl v Nothing)
   -- putStrLn $ ppShow tess
   -- putStrLn $ ppShow v
-  tess <- delaunay cuboctahedron False
-  let v = voronoi3 tess
-      code1 = voronoi3ForRgl v Nothing
-      bigcell = snd (last v)
-      verts = cell3Vertices bigcell
-  tess2 <- delaunay verts True
-  putStrLn $ ppShow $ _facets tess2
-  putStrLn $ ppShow $ IM.map (_volume . _simplex) (_facets tess2)
-  putStrLn $ ppShow $ _vertices tess2
-  let code2 = delaunay3rgl tess2 False False False (Just 0.5)
-  writeFile "rgl/voronoi_cuboctahedron02.R" (code1 ++ code2)
+
+  -- tess <- delaunay cuboctahedron False
+  -- let v = voronoi3 tess
+  --     code1 = voronoi3ForRgl v Nothing
+  --     bigcell = snd (last v)
+  --     verts = cell3Vertices bigcell
+  -- tess2 <- delaunay verts True
+  -- putStrLn $ ppShow $ _facets tess2
+  -- putStrLn $ ppShow $ IM.map (_volume . _simplex) (_facets tess2)
+  -- putStrLn $ ppShow $ _vertices tess2
+  -- putStrLn $ ppShow $ _ridges tess2
+  -- let code2 = delaunay3rgl tess2 False False False (Just 0.5)
+  -- writeFile "rgl/voronoi_cuboctahedron02.R" (code1 ++ code2)
 
   --tess <- delaunay rhombicDodecahedron False
   --writeFile "rgl/delaunay_rhombicDodecahedron.R" (delaunay3rgl tess False True False (Just 0.9))
@@ -63,14 +65,14 @@ main = do
   -- writeFile "rgl/voronoi_faceCenteredCubic.R" (voronoi3ForRgl v Nothing)
   -- putStrLn $ ppShow tess
 
-  -- let pairsOfRidges = [(r1, r2) | r1 <- _ridges tess, r2 <- _ridges tess]
-  -- let ok = filter (\(r1,r2) -> length ((_ridgeVertices r1) `intersect` (_ridgeVertices r2)) == 2) pairsOfRidges
-
-  -- r <- testv2
-  -- prettyShowVoronoi2 r (Just 3)
-  -- let vv = clipVoronoi2 (-1,3,-1,3) r
-  -- writeFile "rgl.txt" (voronoi2ForR vv)
-  -- prettyShowVoronoi2 vv (Just 3)
+  tess <- test3
+  putStrLn $ ppShow tess
+  let v = voronoi2 tess
+  putStrLn $ ppShow v
+  prettyShowVoronoi2 v (Just 3)
+  --let vv = clipVoronoi2 (-1,3,-1,3) r
+  writeFile "Rplots/squareLattice.R" (voronoi2ForR v (Just tess))
+  --prettyShowVoronoi2 vv (Just 3)
 
 --   tess <- delaunay cuboctahedron
 --   let c = voronoiCell3 tess 12

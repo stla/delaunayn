@@ -1,0 +1,51 @@
+colors <- heat.colors(9, alpha=0.5)
+polygon(c(0.0, 1.0, 1.0), c(1.0, 0.0, 1.0), border="black", col=colors[1])
+polygon(c(0.0, 0.0, 1.0), c(0.0, 1.0, 0.0), border="black", col=colors[2])
+polygon(c(1.0, 1.0, 2.0), c(0.0, 1.0, 1.0), border="black", col=colors[3])
+polygon(c(1.0, 2.0, 2.0), c(0.0, 0.0, 1.0), border="black", col=colors[4])
+polygon(c(0.0, 1.0, 1.0), c(1.0, 1.0, 2.0), border="black", col=colors[5])
+polygon(c(0.0, 0.0, 1.0), c(1.0, 2.0, 2.0), border="black", col=colors[6])
+polygon(c(1.0, 1.0, 2.0), c(1.0, 2.0, 1.0), border="black", col=colors[7])
+polygon(c(1.0, 2.0, 2.0), c(2.0, 1.0, 2.0), border="black", col=colors[8])
+points(0.0, 0.0, pch=19, col="blue")
+segments(0.5,0.5,-0.5,0.5, col="red", lty=2, lwd=2)
+segments(0.5,0.5,0.5,-0.5, col="red", lty=2, lwd=2)
+
+points(0.0, 1.0, pch=19, col="blue")
+segments(0.5,0.5,-0.5,0.5, col="red", lty=2, lwd=2)
+segments(0.5,1.5,-0.5,1.5, col="red", lty=2, lwd=2)
+segments(0.5,0.5,0.5,1.5)
+
+points(0.0, 2.0, pch=19, col="blue")
+segments(0.5,1.5,-0.5,1.5, col="red", lty=2, lwd=2)
+segments(0.5,1.5,0.5,2.5, col="red", lty=2, lwd=2)
+
+points(1.0, 0.0, pch=19, col="blue")
+segments(0.5,0.5,0.5,-0.5, col="red", lty=2, lwd=2)
+segments(0.5,0.5,1.5,0.5)
+segments(1.5,0.5,1.5,-0.5, col="red", lty=2, lwd=2)
+
+points(1.0, 1.0, pch=19, col="blue")
+segments(0.5,0.5,0.5,1.5)
+segments(0.5,0.5,1.5,0.5)
+segments(0.5,1.5,1.5,1.5)
+segments(1.5,0.5,1.5,1.5)
+
+points(1.0, 2.0, pch=19, col="blue")
+segments(0.5,1.5,0.5,2.5, col="red", lty=2, lwd=2)
+segments(0.5,1.5,1.5,1.5)
+segments(1.5,1.5,1.5,2.5, col="red", lty=2, lwd=2)
+
+points(2.0, 0.0, pch=19, col="blue")
+segments(1.5,0.5,1.5,-0.5, col="red", lty=2, lwd=2)
+segments(1.5,0.5,2.5,0.5, col="red", lty=2, lwd=2)
+
+points(2.0, 1.0, pch=19, col="blue")
+segments(1.5,0.5,1.5,1.5)
+segments(1.5,0.5,2.5,0.5, col="red", lty=2, lwd=2)
+segments(1.5,1.5,2.5,1.5, col="red", lty=2, lwd=2)
+
+points(2.0, 2.0, pch=19, col="blue")
+segments(1.5,1.5,1.5,2.5, col="red", lty=2, lwd=2)
+segments(1.5,1.5,2.5,1.5, col="red", lty=2, lwd=2)
+

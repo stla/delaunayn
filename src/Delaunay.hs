@@ -216,13 +216,13 @@ delaunay sites deg = do
       (>>=) (readFile tmpFile) putStrLn -- print summary
       return Delaunay { _vertices = IM.fromList $ zip [0 .. n]
                                     (zipWith3 toVertex
-                                    sites vrneighbors vfneighbors)
+                                     sites vrneighbors vfneighbors)
                       , _facets = IM.fromList $ zip [0 .. nf]
                                   (zipWith5 toFacet
                                   (chunksOf (dim+1) indices)
                                   (chunksOf (dim+1) normals)
                                   neighbors' (chunksOf dim centers) volumes)
-                      , _ridges = ridges}
+                      , _ridges = nubBy ((==) `on` _ridgeVertices) ridges}
   where
     toVertex :: [Double] -> [IndexSet] -> IntSet -> Vertex
     toVertex coords nridges nfacets =
@@ -324,7 +324,27 @@ sandwichedRidge' d ridge = length (filter (\iiii -> IS.size (IS.intersection iii
 -- exteriorEdges tess = map (\ridge -> map (\ii -> (ii, ridge)) (ridgeEdges ridge))
 --                          (exteriorRidges tess)
 
-
+delaunay2ForR :: Delaunay -> Bool -> String
+delaunay2ForR tess colors =
+  let facets = IM.elems (_facets tess) in
+  (if colors
+    then "colors <- heat.colors(" ++ show (length facets +1) ++ ", alpha=0.5)\n"
+    else "\n") ++
+  concatMap triangle (zip [1 .. length facets] facets)
+  where
+    triangle :: (Int, Facet) -> String
+    triangle (i, facet) =
+      let pts = map (\p -> [p!!0,p!!1,p!!2])
+                (IM.elems $ _points $ _simplex facet)
+      in
+      "polygon(c(" ++ show (pts!!0!!0) ++ ", " ++ show (pts!!1!!0) ++
+                      ", " ++ show (pts!!2!!0) ++ "), "
+                   ++ "c(" ++ show (pts!!0!!1) ++ ", " ++ show (pts!!1!!1) ++
+                      ", " ++ show (pts!!2!!1) ++
+                   "), border=\"black\", " ++
+                   (if colors
+                     then "col=colors[" ++ show i ++ "])\n"
+                     else "col=\"lightblue\")\n")
 
 delaunay3rgl :: Delaunay -> Bool -> Bool -> Bool -> Maybe Double -> String
 delaunay3rgl tess onlyinterior segments colors alpha =

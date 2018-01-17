@@ -10,14 +10,14 @@ module Voronoi3D
  -- , voronoiCell3
  -- , voronoi3)
   where
-import Control.Arrow (second)
+import           Control.Arrow      (second)
+import qualified Data.IntMap.Strict as IM
 import           Data.List
 import           Data.Maybe
 import           Data.Tuple.Extra   (both)
 import           Delaunay
 import           Text.Show.Pretty   (ppShow)
 import           VoronoiShared
-import qualified Data.IntMap.Strict as IM
 
 type Point3 = (Double, Double, Double)
 type Vector3 = (Double, Double, Double)
@@ -102,7 +102,7 @@ cell3Vertices cell = nub $ concatMap extractVertices cell
   where
     extractVertices :: Edge3 -> [[Double]]
     extractVertices (Edge3 ((x1,x2,x3),(y1,y2,y3))) = [[x1,x2,x3],[y1,y2,y3]]
-    extractVertices _ = []
+    extractVertices _                               = []
 
 voronoi3vertices :: Voronoi3 -> [[Double]]
 voronoi3vertices = concatMap (\(_,cell) -> cell3Vertices cell)

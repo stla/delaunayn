@@ -148,21 +148,35 @@ triangles3d(rbind(c(-0.5,-0.5,-0.5), c(-1.0,0.0,0.0), c(-0.5,-0.5,0.5)), color="
 
 triangles3d(rbind(c(-0.5,-0.5,-0.5), c(-1.0,0.0,0.0), c(-0.5,0.5,-0.5)), color="blue", alpha=0.5)
 
+triangles3d(rbind(c(-0.5,-0.5,-0.5), c(-0.5,-0.5,0.5), c(-0.5,0.5,-0.5)), color="blue", alpha=0.5)
+
+triangles3d(rbind(c(-1.0,0.0,0.0), c(-0.5,-0.5,0.5), c(-0.5,0.5,0.5)), color="blue", alpha=0.5)
+
 triangles3d(rbind(c(-1.0,0.0,0.0), c(-0.5,0.5,-0.5), c(-0.5,0.5,0.5)), color="blue", alpha=0.5)
+
+triangles3d(rbind(c(-0.5,-0.5,0.5), c(-0.5,0.5,-0.5), c(-0.5,0.5,0.5)), color="blue", alpha=0.5)
 
 triangles3d(rbind(c(-0.5,0.5,-0.5), c(0.5,0.5,-0.5), c(0.0,0.0,-1.0)), color="blue", alpha=0.5)
 
 triangles3d(rbind(c(0.5,-0.5,-0.5), c(0.5,0.5,-0.5), c(0.0,0.0,-1.0)), color="blue", alpha=0.5)
 
+triangles3d(rbind(c(-0.5,0.5,-0.5), c(0.5,-0.5,-0.5), c(0.5,0.5,-0.5)), color="blue", alpha=0.5)
+
 triangles3d(rbind(c(-0.5,-0.5,-0.5), c(-0.5,0.5,-0.5), c(0.0,0.0,-1.0)), color="blue", alpha=0.5)
 
 triangles3d(rbind(c(-0.5,-0.5,-0.5), c(0.5,-0.5,-0.5), c(0.0,0.0,-1.0)), color="blue", alpha=0.5)
 
+triangles3d(rbind(c(-0.5,-0.5,-0.5), c(-0.5,0.5,-0.5), c(0.5,-0.5,-0.5)), color="blue", alpha=0.5)
+
 triangles3d(rbind(c(-0.5,-0.5,-0.5), c(-0.5,-0.5,0.5), c(0.0,-1.0,0.0)), color="blue", alpha=0.5)
+
+triangles3d(rbind(c(-0.5,-0.5,-0.5), c(-0.5,-0.5,0.5), c(0.5,-0.5,0.5)), color="blue", alpha=0.5)
 
 triangles3d(rbind(c(-0.5,-0.5,0.5), c(0.0,-1.0,0.0), c(0.5,-0.5,0.5)), color="blue", alpha=0.5)
 
 triangles3d(rbind(c(-0.5,-0.5,-0.5), c(0.0,-1.0,0.0), c(0.5,-0.5,-0.5)), color="blue", alpha=0.5)
+
+triangles3d(rbind(c(-0.5,-0.5,-0.5), c(0.5,-0.5,-0.5), c(0.5,-0.5,0.5)), color="blue", alpha=0.5)
 
 triangles3d(rbind(c(0.0,-1.0,0.0), c(0.5,-0.5,-0.5), c(0.5,-0.5,0.5)), color="blue", alpha=0.5)
 
@@ -173,6 +187,18 @@ triangles3d(rbind(c(0.0,1.0,0.0), c(0.5,0.5,-0.5), c(0.5,0.5,0.5)), color="blue"
 triangles3d(rbind(c(-0.5,0.5,-0.5), c(-0.5,0.5,0.5), c(0.0,1.0,0.0)), color="blue", alpha=0.5)
 
 triangles3d(rbind(c(-0.5,0.5,0.5), c(0.0,1.0,0.0), c(0.5,0.5,0.5)), color="blue", alpha=0.5)
+
+triangles3d(rbind(c(-0.5,-0.5,-0.5), c(-0.5,-0.5,0.5), c(-0.5,0.5,0.5)), color="blue", alpha=0.5)
+
+triangles3d(rbind(c(-0.5,-0.5,-0.5), c(-0.5,0.5,-0.5), c(-0.5,0.5,0.5)), color="blue", alpha=0.5)
+
+triangles3d(rbind(c(-0.5,-0.5,-0.5), c(-0.5,0.5,-0.5), c(0.5,0.5,-0.5)), color="blue", alpha=0.5)
+
+triangles3d(rbind(c(-0.5,-0.5,-0.5), c(0.5,-0.5,-0.5), c(0.5,0.5,-0.5)), color="blue", alpha=0.5)
+
+triangles3d(rbind(c(-0.5,-0.5,-0.5), c(-0.5,-0.5,0.5), c(0.5,-0.5,-0.5)), color="blue", alpha=0.5)
+
+triangles3d(rbind(c(-0.5,-0.5,0.5), c(0.5,-0.5,-0.5), c(0.5,-0.5,0.5)), color="blue", alpha=0.5)
 
 triangles3d(rbind(c(0.5,-0.5,-0.5), c(1.0,0.0,0.0), c(0.5,0.5,-0.5)), color="blue", alpha=0.5)
 
