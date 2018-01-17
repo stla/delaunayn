@@ -1,6 +1,17 @@
 #define qh_QHimport
 #include "qhull_ra.h"
 #include "result.h"
+#include <math.h>
+// const unsigned long long raw = 0x7ff8000000000000;
+// const double NAN = *( double* )&raw;
+
+double* nanvector(int dim){
+  double* out = malloc(dim*sizeof(double));
+  for(unsigned i=0; i<dim; i++){
+    out[i] = NAN;
+  }
+  return out;
+}
 
 struct mat3X3 {
     double mat[3][3];
@@ -54,10 +65,15 @@ double square(double x){
   return x*x;
 }
 
+int cmpfunc (const void * a, const void * b) {
+   return ( *(int*)a - *(int*)b );
+}
+
 struct Result* delaunay(
 	double* vertices,
 	unsigned dim,
 	unsigned n,
+  unsigned degenerate,
 	unsigned* nf,
 	unsigned* exitcode,
 	char* tmpFile
@@ -115,7 +131,7 @@ struct Result* delaunay(
     //   ii_facet++;
     // }
 		FORALLfacets {
-			if (!facet->upperdelaunay && facet->simplicial && !facet->degenerate) {
+			if (!facet->upperdelaunay && facet->simplicial && (degenerate || !facet->degenerate)){   // && !facet->redundant
 //        oldids[nf[0]] = facet->id;
         facetsvisitid[nf[0]] = facet->visitid;
 	      nf[0]++;
@@ -179,17 +195,18 @@ struct Result* delaunay(
 			}
 
       if(facet->tricoplanar){
-        if(facet->keepcentrum){
-          owners[i_facet] = facet->id;
-        }else{
-          owners[i_facet] = 99;// facet->f.triowner->id;
-          // FOREACHneighbor_(facet){
-          //   if(neighborok[neighbor->id-1]){//} && neighbor->keepcentrum){
-          //     owners[i_facet] = neighbor->f.triowner->id;
-          //     //break;
-          //   }
-          // }
+        vertexT* apex = facet->vertices->e[0].p;
+        FOREACHneighbor_(apex){
+          if(neighbor->keepcentrum){
+            owners[i_facet] = neighbor->id;
+            break;
+          }
         }
+        // if(facet->keepcentrum){
+        //   owners[i_facet] = facet->id;
+        // }else{
+        //   owners[i_facet] = 99;
+        // }
       }else{
         owners[i_facet] = 0;
       }
@@ -252,16 +269,21 @@ struct Result* delaunay(
 		i_facet = 0; // facet counter
     FORALLfacets {
 
-			coordT* center = qh_facetcenter(qh, facet->vertices);
-			for(unsigned j=0; j<dim; j++){
-				centers[i_facet*dim+j] = center[j];
-			}
+
+      coordT* center = facet->degenerate ? nanvector(dim) : qh_facetcenter(qh, facet->vertices);
+      if(facet->degenerate){
+        for(unsigned j=0; j<dim; j++){
+  				centers[i_facet*dim+j] = NAN;
+  			}
+      }else{
+  			for(unsigned j=0; j<dim; j++){
+  				centers[i_facet*dim+j] = center[j];
+  			}
+      }
 
 			for(unsigned m=0; m<dim+1; m++){
 //				ridgesIds[i_adjacencies] = n_ridges;
 				ridges[i_adjacencies] = (unsigned*) malloc((2+dim)*sizeof(unsigned));
-				ridges[i_adjacencies][0] = (unsigned)facet->id - 1;
-				ridges[i_adjacencies][1] = nf[0];
 				unsigned* combination = malloc(dim*sizeof(unsigned));
 				unsigned kk=0;
 				for(unsigned k=0; k<dim+1; k++){
@@ -276,14 +298,19 @@ struct Result* delaunay(
         for(unsigned i=0; i<dim; i++){
           points[i] = ((vertexT*)facet->vertices->e[combination[i]].p)->point;
           ids[i] = (unsigned) qh_pointid(qh, points[i]);
-          ridges[i_adjacencies][2+i] = ids[i];
+        }
+        qsort(ids, dim, sizeof(unsigned), cmpfunc);
+        for(unsigned i=0; i<dim; i++){
           index += ids[i] * upow(n,i);
+          ridges[i_adjacencies][2+i] = ids[i];
         }
 				ridgesCenters[i_adjacencies] = (double*) malloc(dim*sizeof(double));
 				ridgesNormals[i_adjacencies] = (double*) malloc(dim*sizeof(double));
 
         if(isdone[index] == -1){
           isdone[index] = (int) i_adjacencies;
+          ridges[i_adjacencies][0] = (unsigned)facet->id - 1;
+  				ridges[i_adjacencies][1] = nf[0];
           for(unsigned i=0; i<dim; i++){
             flag_vertex_for_ridge[i_adjacencies][ids[i]] = 1;
   					n_ridges_per_vertex[ids[i]]++;
@@ -319,16 +346,25 @@ struct Result* delaunay(
             double scal = (point1[0]-center[0])*normal[0]+(point1[1]-center[1])*normal[1]+(point1[2]-center[2])*normal[2];
             // center-M = scal * normal !  pas besoin de solve !!!
             printf("scal: %f\n", scal);
-            struct mat3X3 mat ={ { {u1, v1, w1}
-  															 , {u2, v2, w2}
-  															 , {normal[0], normal[1], normal[2]} } };
-  					double rhs[3] = { center[0]*u1 + center[1]*v1 + center[2]*w1
-  													, center[0]*u2 + center[1]*v2 + center[2]*w2
-  													, -offset };
-  					double* ridgeCenter = solve3X3(mat, rhs);
-  					ridgesCenters[i_adjacencies][0] = ridgeCenter[0];
-  					ridgesCenters[i_adjacencies][1] = ridgeCenter[1];
-  					ridgesCenters[i_adjacencies][2] = ridgeCenter[2];
+            if(facet->degenerate){
+              ridgesCenters[i_adjacencies][0] = NAN;
+    					ridgesCenters[i_adjacencies][1] = NAN;
+    					ridgesCenters[i_adjacencies][2] = NAN;
+            }else{
+              struct mat3X3 mat ={ { {u1, v1, w1}
+    															 , {u2, v2, w2}
+    															 , {normal[0], normal[1], normal[2]} } };
+    					double rhs[3] = { center[0]*u1 + center[1]*v1 + center[2]*w1
+    													, center[0]*u2 + center[1]*v2 + center[2]*w2
+    													, -offset };
+    					double* ridgeCenter = solve3X3(mat, rhs);
+    					ridgesCenters[i_adjacencies][0] = ridgeCenter[0];
+    					ridgesCenters[i_adjacencies][1] = ridgeCenter[1];
+    					ridgesCenters[i_adjacencies][2] = ridgeCenter[2];
+              printf("RIDGE CENTER: %f %f %f\n", ridgeCenter[0], ridgeCenter[1], ridgeCenter[2]);
+    					printf("FACET CENTER: %f %f %f\n", center[0], center[1], center[2]);
+              free(ridgeCenter);
+            }
   					printf("Vertex1: %f %f %f\n", point1[0], point1[1], point1[2]);
   					printf("Vertex2: %f %f %f\n", point2[0], point2[1], point2[2]);
   					printf("Vertex3: %f %f %f\n", point3[0], point3[1], point3[2]);
@@ -337,9 +373,6 @@ struct Result* delaunay(
   					qh_normalize2(qh, normal, 3, 0, NULL, NULL); // 3:dim 1:toporient
             offset = -(point1[0]*normal[0]+point1[1]*normal[1]+point1[2]*normal[2]);
   					printf("OTHERDISTANCE: %f\n", qh_distnorm(3, center, normal, &offset));
-  					printf("RIDGE CENTER: %f %f %f\n", ridgeCenter[0], ridgeCenter[1], ridgeCenter[2]);
-  					printf("FACET CENTER: %f %f %f\n", center[0], center[1], center[2]);
-  					free(ridgeCenter);
           }else if(dim==2){
             pointT* point1 = points[0];
             pointT* point2 = points[1];
@@ -412,9 +445,10 @@ struct Result* delaunay(
             }
           }
           free(normal);
-				}else{
+				}else{ // je ne me sers plus de ça ...
 					int idone = isdone[index];
 					printf("isdone: %d\n", idone);
+          ridges[i_adjacencies][0] = (unsigned)facet->id - 1;
 					ridges[i_adjacencies][1] = ridges[idone][0];
 					ridges[idone][1] = (unsigned)facet->id - 1; // (= ridges[i_adjacencies][0])
           ridgesAreas[i_adjacencies] = ridgesAreas[idone];

@@ -1,15 +1,16 @@
 module Voronoi3D
-  (--Edge3
-   Edge3(..)
- , Cell3
- , Voronoi3
- , prettyShowVoronoi3
- , clipVoronoi3
- , testv3
- , voronoi3ForRgl
- , voronoiCell3
- , voronoi3)
+ --  (--Edge3
+ --   Edge3(..)
+ -- , Cell3
+ -- , Voronoi3
+ -- , prettyShowVoronoi3
+ -- , clipVoronoi3
+ -- , testv3
+ -- , voronoi3ForRgl
+ -- , voronoiCell3
+ -- , voronoi3)
   where
+import Control.Arrow (second)
 import           Data.List
 import           Data.Maybe
 import           Data.Tuple.Extra   (both)
@@ -23,8 +24,8 @@ type Vector3 = (Double, Double, Double)
 data Edge3 = Edge3 (Point3, Point3) | IEdge3 (Point3, Vector3)
              | TIEdge3 (Point3, Point3)
               deriving Show
-type Cell3 = (Site, [Edge3])
-type Voronoi3 = [Cell3]
+type Cell3 = [Edge3]
+type Voronoi3 = [(Site, Cell3)]
 type Box3 = (Double, Double, Double, Double, Double, Double)
 
 prettyShowVoronoi3 :: Voronoi3 -> Maybe Int -> IO ()
@@ -45,9 +46,9 @@ prettyShowVoronoi3 v m = do
         string x = ppShow $ maybe x (roundPairPoint3 x) n
     prettyShowEdges3 :: Maybe Int -> [Edge3] -> String
     prettyShowEdges3 n edges = intercalate "\n" (map (prettyShowEdge3 n) edges)
-    prettyShowCell3 :: Maybe Int -> Cell3 -> String
+    prettyShowCell3 :: Maybe Int -> (Site, Cell3) -> String
     prettyShowCell3 n (site, edges) =
-      "Site " ++ ppShow site ++ " :\n" ++ (prettyShowEdges3 n edges)
+      "Site " ++ ppShow site ++ " :\n" ++ prettyShowEdges3 n edges
 
 
 asTriplet :: [a] -> (a, a, a)
@@ -80,13 +81,13 @@ crossProduct (x1,y1,z1) (x2,y2,z2) = (v3x, v3y, v3z)
     v3y = z1 * x2   -   z2 * x1
     v3z = x1 * y2   -   x2 * y1
 
-voronoiCell3 :: Delaunay -> Index -> [Edge3]
+voronoiCell3 :: Delaunay -> Index -> Cell3
 voronoiCell3 tess i =
   let ridges = uniqueWith equalRidges $ getVertexRidges tess i in
   map (edgeToEdge3 . fromJust) $
       filter isJust $ map (edgesFromRidge tess) ridges --, map (_vertices . fst3) ridges)
 --
-voronoiCell3' :: Delaunay -> Index -> [Edge3]
+voronoiCell3' :: Delaunay -> Index -> Cell3
 voronoiCell3' tess i =
   let ridges = uniqueWith' equalRidges $ getVertexRidges' tess i in
   map (edgeToEdge3 . fromJust) $
@@ -96,12 +97,21 @@ voronoi3 :: Delaunay -> Voronoi3
 voronoi3 tess = let sites = IM.elems $ IM.map _coordinates (_vertices tess) in
                     zip sites (map (voronoiCell3 tess) [0 .. length sites -1])
 
+cell3Vertices :: Cell3 -> [[Double]]
+cell3Vertices cell = nub $ concatMap extractVertices cell
+  where
+    extractVertices :: Edge3 -> [[Double]]
+    extractVertices (Edge3 ((x1,x2,x3),(y1,y2,y3))) = [[x1,x2,x3],[y1,y2,y3]]
+    extractVertices _ = []
+
+voronoi3vertices :: Voronoi3 -> [[Double]]
+voronoi3vertices = concatMap (\(_,cell) -> cell3Vertices cell)
 
 truncEdge3 :: Box3 -> Edge3 -> Edge3
 truncEdge3 (xmin, xmax, ymin, ymax, zmin, zmax) edge =
   if isIEdge edge
-    then TIEdge3 ((p1,p2,p3), (p1+(factor v1 v2 v3)*v1,
-                  p2+(factor v1 v2 v3)*v2, p3+(factor v1 v2 v3)*v3))
+    then TIEdge3 ((p1,p2,p3), (p1 + factor v1 v2 v3 * v1,
+                  p2 + factor v1 v2 v3 * v2, p3 + factor v1 v2 v3 * v3))
     else edge
   where
     isIEdge (IEdge3 _) = True
@@ -120,7 +130,7 @@ truncEdge3 (xmin, xmax, ymin, ymax, zmin, zmax) edge =
                                       (factor u1 0 u3)
 
 clipVoronoi3 :: Box3 -> Voronoi3 -> Voronoi3
-clipVoronoi3 box v = map (\(site,edges) -> (site, map (truncEdge3 box) edges)) v
+clipVoronoi3 box = map (second (map (truncEdge3 box)))
 
 testv3 :: IO Voronoi3
 testv3 = do
@@ -128,12 +138,18 @@ testv3 = do
   return $ voronoi3 tess
 
 
-voronoi3ForRgl :: Voronoi3 -> String
-voronoi3ForRgl v = intercalate "\nopend3d()\n" $ map cellForRgl v
+voronoi3ForRgl :: Voronoi3 -> Maybe Delaunay -> String
+voronoi3ForRgl v d =
+  let code = unlines $ map cellForRgl v in
+  if isJust d
+    then code ++ "\n" ++ "# Delaunay:\n" ++
+         delaunay3rgl (fromJust d) True True True (Just 0.9)
+    else code
   where
-    cellForRgl :: Cell3 -> String
-    cellForRgl (_, edges) = unlines $ map f edges
+    cellForRgl :: (Site, Cell3) -> String
+    cellForRgl (site, cell) = plotpoint ++ unlines (map f cell)
       where
+        plotpoint = "spheres3d(" ++ intercalate "," (map show site) ++ ", radius=0.1, color=\"red\")\n"
         f :: Edge3 -> String
         f edge = case edge of
           Edge3 (x,y) ->
@@ -141,5 +157,5 @@ voronoi3ForRgl v = intercalate "\nopend3d()\n" $ map cellForRgl v
           TIEdge3 (x,y) ->
             "segments3d(rbind(c" ++ show x ++ ", c" ++ show y ++ "), col=c(\"red\",\"red\"))"
           IEdge3 (x,y) ->
-            "segments3d(rbind(c" ++ show x ++ ", c" ++ (show $ sumTriplet x y) ++ "), col=c(\"red\",\"red\"))"
+            "segments3d(rbind(c" ++ show x ++ ", c" ++ show (sumTriplet x y) ++ "), col=c(\"red\",\"red\"))"
         sumTriplet (a,b,c) (a',b',c') = (a+a',b+b',c+c')

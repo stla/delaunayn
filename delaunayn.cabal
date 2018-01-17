@@ -34,7 +34,7 @@ library
                      , extra
 --                     , ilist
   other-extensions:    ForeignFunctionInterface
-                     , DuplicateRecordFields
+                    --  , DuplicateRecordFields
   default-language:    Haskell2010
   include-dirs:        C
   C-sources:           C/libqhull_r.c

@@ -1,4 +1,4 @@
-{-# LANGUAGE DuplicateRecordFields    #-}
+--{-# LANGUAGE DuplicateRecordFields    #-}
 {-# LANGUAGE ForeignFunctionInterface #-}
 module Delaunay
   where
@@ -15,10 +15,10 @@ import qualified Data.Map.Strict       as M
 import Data.Maybe
 import           Data.Set              (Set)
 import qualified Data.Set              as S
-import           Data.Tuple.Extra      ((&&&))
+--import           Data.Tuple.Extra      ((&&&))
 import           Foreign.C.String
 import           Foreign.C.Types
-import           Foreign.ForeignPtr
+--import           Foreign.ForeignPtr
 import           Foreign.Marshal.Alloc (free, mallocBytes)
 import           Foreign.Marshal.Array (peekArray, pokeArray)
 import           Foreign.Ptr           (Ptr)
@@ -104,7 +104,7 @@ data Delaunay = Delaunay {
 -- facetCenter = _center . _fsimplex
 
 foreign import ccall unsafe "delaunay" c_delaunay
-  :: Ptr CDouble -> CUInt -> CUInt -> Ptr CUInt -> Ptr CUInt -> CString
+  :: Ptr CDouble -> CUInt -> CUInt -> CUInt -> Ptr CUInt -> Ptr CUInt -> CString
   -> IO (Ptr Result)
 
 -- zipWith8 ::
@@ -114,21 +114,21 @@ foreign import ccall unsafe "delaunay" c_delaunay
 --          =  z a b c d e f g h : zipWith8 z as bs cs ds es fs gs hs
 -- zipWith8 _ _ _ _ _ _ _ _ _ = []
 
-delaunay :: [[Double]] -> IO Delaunay
-delaunay sites = do
+delaunay :: [[Double]] -> Bool -> IO Delaunay
+delaunay sites deg = do
   let n = length sites
       dim = length (head sites)
   when (n <= dim+1) $
     error "insufficient number of points"
-  sitesPtr <- mallocBytes (n * dim * (sizeOf (undefined :: CDouble)))
-  pokeArray sitesPtr (concat (map (map realToFrac) sites))
+  sitesPtr <- mallocBytes (n * dim * sizeOf (undefined :: CDouble))
+  pokeArray sitesPtr (concatMap (map realToFrac) sites)
   nfPtr <- mallocBytes (sizeOf (undefined :: CUInt))
   exitcodePtr <- mallocBytes (sizeOf (undefined :: CUInt))
   tmpFile <- getTemporaryFile "tmp.txt"
   tmpFile' <- newCString tmpFile
-  resultPtr <- c_delaunay
-               sitesPtr (fromIntegral dim) (fromIntegral n) nfPtr
-               exitcodePtr tmpFile'
+  resultPtr <- c_delaunay sitesPtr
+               (fromIntegral dim) (fromIntegral n) (fromIntegral $ fromEnum deg)
+               nfPtr exitcodePtr tmpFile'
   -- sitesFptr <- newForeignPtr_ sitesPtr
   -- nfFPtr <- newForeignPtr_ nfPtr
   -- exitcodeFPtr <- newForeignPtr_ exitcodePtr
@@ -159,17 +159,18 @@ delaunay sites = do
       volumes <- (<$!>) (map realToFrac) (peekArray nf (_volumes result))
       neighbors <- (<$!>) (map fromIntegral)
                           (peekArray (nf * (dim+1)) (__neighbors result))
-      let neighbors' = map ((map (subtract 1)).(filter (/=0))) $
+      let neighbors' = map (map (subtract 1) . filter (/=0)) $
                            chunksOf (dim+1) neighbors
           n_ridges = nf * (dim+1);
 --      toporient <- (<$!>) (map (==1)) (peekArray nf (_toporient result))
       -- owners <- (<$!>) (map (\i -> if i==0 then Nothing else Just $ fromIntegral i-1))
       --                  (peekArray nf (_owners result))
-      ridges'' <- (<$!>) ((chunksOf (2+dim)) . (map fromIntegral))
+      ridges'' <- (<$!>) (chunksOf (2+dim) . map fromIntegral)
                          (peekArray (n_ridges * (2+dim)) (__ridges result))
-      ridgesCenters <- (<$!>) ((chunksOf dim) . (map realToFrac))
+      print ridges''
+      ridgesCenters <- (<$!>) (chunksOf dim . map realToFrac)
                               (peekArray (n_ridges * dim) (_rcenters result))
-      ridgesNormals <- (<$!>) ((chunksOf dim) . (map realToFrac))
+      ridgesNormals <- (<$!>) (chunksOf dim . map realToFrac)
                               (peekArray (n_ridges * dim) (_rnormals result))
       -- rdistances <- (<$!>) (map realToFrac)
       --                      (peekArray n_ridges (_rdistances result))
@@ -177,14 +178,14 @@ delaunay sites = do
                       (peekArray n_ridges (_areas result))
       vrnsizes <- (<$!>) (map fromIntegral)
                          (peekArray n (_vrnsizes result))
-      vrneighbors <- (<$!>) (map (map IS.fromList) . (splitPlaces vrnsizes) .
-                            (chunksOf dim) . (map fromIntegral))
+      vrneighbors <- (<$!>) (map (map IS.fromList) . splitPlaces vrnsizes .
+                            chunksOf dim . map fromIntegral)
                             (peekArray (sum vrnsizes * dim)
                                        (__vrneighbors result))
       vfnsizes <- (<$!>) (map fromIntegral)
                          (peekArray n (_vfnsizes result))
-      vfneighbors <- (<$!>) (map IS.fromList . (splitPlaces vfnsizes) .
-                            (map fromIntegral))
+      vfneighbors <- (<$!>) (map IS.fromList . splitPlaces vfnsizes .
+                             map fromIntegral)
                             (peekArray (sum vfnsizes) (__vfneighbors result))
       free resultPtr
       -- let ridges' = map (\((a,b),c,d) -> (head a, [doCPolytope b c d]))
@@ -209,15 +210,15 @@ delaunay sites = do
                   (zip4 (map (splitAt 2) ridges'')
                         ridgesCenters ridgesNormals areas)
       (>>=) (readFile tmpFile) putStrLn -- print summary
-      return $ Delaunay { _vertices = IM.fromList $ zip [0 .. n]
-                                      (zipWith3 toVertex
-                                      sites vrneighbors vfneighbors)
-                        , _facets = IM.fromList $ zip [0 .. nf]
-                                    (zipWith5 toFacet
-                                    (chunksOf (dim+1) indices)
-                                    (chunksOf (dim+1) normals)
-                                    neighbors' (chunksOf dim centers) volumes)
-                        , _ridges = ridges}
+      return Delaunay { _vertices = IM.fromList $ zip [0 .. n]
+                                    (zipWith3 toVertex
+                                    sites vrneighbors vfneighbors)
+                      , _facets = IM.fromList $ zip [0 .. nf]
+                                  (zipWith5 toFacet
+                                  (chunksOf (dim+1) indices)
+                                  (chunksOf (dim+1) normals)
+                                  neighbors' (chunksOf dim centers) volumes)
+                      , _ridges = ridges}
   where
     toVertex :: [Double] -> [IndexSet] -> IntSet -> Vertex
     toVertex coords nridges nfacets =
@@ -230,7 +231,7 @@ delaunay sites = do
             , _neighbours = IS.fromList neighs }
     doPolytope :: [Int] -> [Double] -> [Double] -> Double -> Polytope
     doPolytope indices center normal volume =
-      Polytope { _points  = IM.fromList $ zip indices (map ((!!) sites) indices)
+      Polytope { _points  = IM.fromList $ zip indices (map (sites !!) indices)
                , _center  = center
                , _normal  = normal
                , _volume  = volume }
@@ -258,62 +259,123 @@ delaunay sites = do
     --         , _distance = e
     --         , _area = f }
 
+sandwichedRidge :: Ridge -> Bool
+sandwichedRidge ridge = IS.size (_ridgeOf ridge) == 2
+
+_ridgeVertices :: Ridge -> IndexSet
+_ridgeVertices = IS.fromList . IM.keys . _points . _polytope
 
 ridgesMap :: Delaunay -> Map IndexSet Ridge
 ridgesMap tess = M.fromList ridges'
   where
     ridges' :: [(IndexSet, Ridge)]
-    ridges' =  map (\ridge -> let vertices = _ridgesVertices ridge in
+    ridges' =  map (\ridge -> let vertices = _ridgeVertices ridge in
                                     (vertices, ridge))
                    (_ridges tess)
-    _ridgesVertices = IS.fromList . IM.keys . _points . _polytope
 
-delaunay3rgl :: Delaunay -> Bool -> Maybe Double -> String
-delaunay3rgl tess colors alpha = concat $ map rglRidge (_ridges tess)
+_facetVertices :: Facet -> IndexSet
+_facetVertices = IS.fromList . IM.keys . _points . _simplex
+
+allFacets :: Delaunay -> [IndexSet]
+allFacets d = map _facetVertices (IM.elems $ _facets d)
+
+sandwichedRidge' :: Delaunay -> Ridge -> Bool
+sandwichedRidge' d ridge = length (filter (\iiii -> IS.size (IS.intersection iiii (_ridgeVertices ridge)) == 3) (allFacets d)) == 2
+
+
+-- dim 3 uniquement
+-- data Edgee = Egdee {
+--     _verts :: (Int, Int)
+--   , _isEdgeOf :: [Ridge] }
+--
+-- exteriorRidges :: Delaunay -> [Ridge] -- un exterior edge n'est pas forcément sur un exterior ridge! si ?
+-- exteriorRidges d = nubBy ((==) `on` _ridgeVertices) (filter (\r -> IS.size (_ridgeOf r) == 1) (_ridges d))
+--
+-- exteriorEdges :: Delaunay -> [IndexSet]
+-- exteriorEdges tess = nub $ filter (\inter -> IS.size inter == 2)
+--                             ([IS.intersection (_ridgeVertices r1) (_ridgeVertices r2) |
+--                               r1 <- exteriorRidges tess,
+--                               r2 <- exteriorRidges tess])
+--
+-- ridgeEdges :: Ridge -> [IndexSet]
+-- ridgeEdges ridge = [IS.fromList [i1,i2], IS.fromList [i2,i3], IS.fromList [i3,i1]]
+--   where [i1,i2,i3] = IS.toList $ _ridgeVertices ridge
+--
+-- exteriorRidges' :: Delaunay -> [Ridge]
+-- exteriorRidges' d = filter (\r -> all (`elem` (exteriorEdges d)) (ridgeEdges r)) (_ridges d)
+--
+-- isExteriorRidge :: Delaunay -> Ridge -> Bool
+-- isExteriorRidge d r = all (`elem` (exteriorEdges d)) (ridgeEdges r)
+--
+-- connectedVertices :: Delaunay -> [IndexSet]
+-- connectedVertices d = nub $ concatMap ridgeEdges (exteriorRidges d)
+--
+-- isEdgeOf :: Delaunay -> IndexSet -> [Ridge]
+-- isEdgeOf d i1i2 = filter (\r -> IS.size (IS.intersection i1i2 (_ridgeVertices r)) == 2) (exteriorRidges d)
+--
+-- numberOfNeighbourRidges :: Delaunay -> [Int]
+-- numberOfNeighbourRidges d = map (length . isEdgeOf d) (exteriorEdges d)
+--
+-- exteriorEdges :: Delaunay -> [((Int, Int), [Ridge])]
+-- exteriorEdges tess = map (\ridge -> map (\ii -> (ii, ridge)) (ridgeEdges ridge))
+--                          (exteriorRidges tess)
+
+
+
+delaunay3rgl :: Delaunay -> Bool -> Bool -> Bool -> Maybe Double -> String
+delaunay3rgl tess onlyinterior segments colors alpha =
+  let ridges = _ridges tess in
+  concatMap rglRidge (if onlyinterior
+                        then ridges
+                        else filter (not . sandwichedRidge' tess) ridges)
   where
     rglRidge :: Ridge -> String
     rglRidge ridge =
-      (if IS.size (_ridgeOf ridge) == 1
-        then
-          let i = 1 + head (IS.elems $ _ridgeOf ridge) in
-          "triangles3d(rbind(c" ++ show (pts!!0) ++
-          ", c" ++ show (pts!!1) ++
-          ", c" ++ show (pts!!2) ++
-          (if colors
-            then
-              "), color=topo.colors(" ++ show i ++ ", alpha=0.5)"
-            else
-              "), color=\"blue\"") ++
-          (if isJust alpha
-            then ", alpha=" ++ show (fromJust alpha) ++ ")\n"
-            else ")\n")
-        else "") ++
-      "segments3d(rbind(c" ++ show (pts!!0) ++
+      -- (if IS.size (_ridgeOf ridge) == 1
+      --   then
+      let i = 1 + head (IS.elems $ _ridgeOf ridge) in
+      "triangles3d(rbind(c" ++ show (pts!!0) ++
       ", c" ++ show (pts!!1) ++
-      "), color=\"black\")\n" ++
-      "segments3d(rbind(c" ++ show (pts!!1) ++
       ", c" ++ show (pts!!2) ++
-      "), color=\"black\")\n" ++
-      "segments3d(rbind(c" ++ show (pts!!2) ++
-      ", c" ++ show (pts!!0) ++
-      "), color=\"black\")\n"
+      (if colors
+        then
+          "), color=topo.colors(" ++ show i ++ ", alpha=0.5)"
+        else
+          "), color=\"blue\"") ++
+      (if isJust alpha
+        then ", alpha=" ++ show (fromJust alpha) ++ ")\n"
+        else ")\n")
+      ++
+        -- else "") ++
+      if segments
+        then
+          "segments3d(rbind(c" ++ show (pts!!0) ++
+          ", c" ++ show (pts!!1) ++
+          "), color=\"black\")\n" ++
+          "segments3d(rbind(c" ++ show (pts!!1) ++
+          ", c" ++ show (pts!!2) ++
+          "), color=\"black\")\n" ++
+          "segments3d(rbind(c" ++ show (pts!!2) ++
+          ", c" ++ show (pts!!0) ++
+          "), color=\"black\")\n"
+        else "\n"
       where
         pts = map (\p -> (p!!0,p!!1,p!!2)) (IM.elems $ _points $ _polytope ridge)
 
 
 test :: IO Delaunay
 test =
-  delaunay $ [[-5,-5,16], [-5,8,3], [4,-1,3], [4,-5,7], [4,-1,-10], [4,-5,-10], [-5,8,-10], [-5,-5,-10]]
+  delaunay [[-5,-5,16], [-5,8,3], [4,-1,3], [4,-5,7], [4,-1,-10], [4,-5,-10], [-5,8,-10], [-5,-5,-10]] False
 -- [[0,0,0], [1,0,0], [1,1,0], [1,1,1], [0,2,0]]
 
 test2 :: IO Delaunay
-test2 = delaunay [[-1,-1,-1],[-1,-1,1],[-1,1,-1],[-1,1,1],[1,-1,-1],[1,-1,1],[1,1,-1],[1,1,1],[0,0,0]]
+test2 = delaunay [[-1,-1,-1],[-1,-1,1],[-1,1,-1],[-1,1,1],[1,-1,-1],[1,-1,1],[1,1,-1],[1,1,1],[0,0,0]] False
 
 test3 :: IO Delaunay
-test3 = delaunay [[0,0],[0,1],[0,2],[1,0],[1,1],[1,2],[2,0],[2,1],[2,2]]
+test3 = delaunay [[0,0],[0,1],[0,2],[1,0],[1,1],[1,2],[2,0],[2,1],[2,2]] False
 
 test4 :: IO Delaunay
-test4 = delaunay [[0,0],[0,2],[2,0],[2,2],[1,1]]
+test4 = delaunay [[0,0],[0,2],[2,0],[2,2],[1,1]] False
 
 cuboctahedron :: [[Double]]
 cuboctahedron = [[i,j,0] | i <- [-1,1], j <- [-1,1]] ++

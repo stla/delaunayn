@@ -133,4 +133,4 @@ identifiers;
 -   `_neighFacets`, the set of the identifiers of the facets the vertex belongs
 to.
 
-[![movie.gif](https://s13.postimg.org/agcabu3p3/movie.gif)](https://postimg.org/image/oms172ek3/)
+[![rgg.gif](https://s13.postimg.org/6h1r72k3r/rgg.gif)](https://postimg.org/image/ojutyafyb/)
