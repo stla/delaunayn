@@ -114,6 +114,11 @@ foreign import ccall unsafe "delaunay" c_delaunay
 --          =  z a b c d e f g h : zipWith8 z as bs cs ds es fs gs hs
 -- zipWith8 _ _ _ _ _ _ _ _ _ = []
 
+cdbl2dbl :: CDouble -> Double
+cdbl2dbl x = if isNaN x
+                then 0/0
+                else realToFrac x
+
 delaunay :: [[Double]] -> Bool -> IO Delaunay
 delaunay sites deg = do
   let n = length sites
@@ -152,7 +157,7 @@ delaunay sites deg = do
       result <- peek resultPtr
       indices <- (<$!>) (map fromIntegral)
                         (peekArray (nf * (dim+1)) (_indices result))
-      centers <- (<$!>) (map realToFrac)
+      centers <- (<$!>) (map cdbl2dbl)
                         (peekArray (nf * dim) (_centers result))
       normals <- (<$!>) (map realToFrac)
                         (peekArray (nf * (dim+1)) (_fnormals result))
@@ -167,8 +172,7 @@ delaunay sites deg = do
       --                  (peekArray nf (_owners result))
       ridges'' <- (<$!>) (chunksOf (2+dim) . map fromIntegral)
                          (peekArray (n_ridges * (2+dim)) (__ridges result))
-      print ridges''
-      ridgesCenters <- (<$!>) (chunksOf dim . map realToFrac)
+      ridgesCenters <- (<$!>) (chunksOf dim . map cdbl2dbl)
                               (peekArray (n_ridges * dim) (_rcenters result))
       ridgesNormals <- (<$!>) (chunksOf dim . map realToFrac)
                               (peekArray (n_ridges * dim) (_rnormals result))
@@ -327,7 +331,7 @@ delaunay3rgl tess onlyinterior segments colors alpha =
   let ridges = _ridges tess in
   concatMap rglRidge (if onlyinterior
                         then ridges
-                        else filter (not . sandwichedRidge' tess) ridges)
+                        else filter (not . sandwichedRidge) ridges)
   where
     rglRidge :: Ridge -> String
     rglRidge ridge =
@@ -389,3 +393,10 @@ rhombicDodecahedron = [[-1.0,0.0,0.0], [-0.5,-0.5,-0.5], [-0.5,-0.5,0.5],
                        [0.0,1.0,0.0] , [1.0,0.0,0.0]   , [0.5,-0.5,-0.5],
                        [0.5,-0.5,0.5], [0.5,0.5,-0.5]  , [0.5,0.5,0.5]  ,
                        [0.0,0.0,-1.0], [0.0,0.0,1.0]]
+
+faceCenteredCubic :: [[Double]]
+faceCenteredCubic = [[-1,-1,-1],[-1,-1,1],[-1,1,-1],[-1,1,1]
+                    ,[1,-1,-1],[1,-1,1],[1,1,-1],[1,1,1]
+                    ,[1,0,0],[-1,0,0]
+                    ,[0,1,0],[0,-1,0]
+                    ,[0,0,1],[0,0,-1]]

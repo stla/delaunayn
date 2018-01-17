@@ -35,7 +35,11 @@ delaunay3vis tess = VisObjects $ concatMap visRidge (_ridges tess)
 
 main :: IO ()
 main = do
-
+  -- tess <- test2
+  -- let v = voronoi3 tess
+  -- writeFile "rgl.txt" (voronoi3ForRgl v Nothing)
+  -- putStrLn $ ppShow tess
+  -- putStrLn $ ppShow v
   tess <- delaunay cuboctahedron False
   let v = voronoi3 tess
       code1 = voronoi3ForRgl v Nothing
@@ -44,14 +48,20 @@ main = do
   tess2 <- delaunay verts True
   putStrLn $ ppShow $ _facets tess2
   putStrLn $ ppShow $ IM.map (_volume . _simplex) (_facets tess2)
+  putStrLn $ ppShow $ _vertices tess2
   let code2 = delaunay3rgl tess2 False False False (Just 0.5)
-  writeFile "rgl/voronoi_cuboctahedron01.R" (code1 ++ code2)
+  writeFile "rgl/voronoi_cuboctahedron02.R" (code1 ++ code2)
 
-  -- tess <- delaunay rhombicDodecahedron
-  -- writeFile "rgl/delaunay_rhombicDodecahedron.R" (delaunay3rgl tess False True False (Just 0.9))
-  -- --putStrLn $ ppShow tess
-  -- putStrLn $ ppShow $ _facets tess
-  -- putStrLn $ ppShow $ IM.map (_volume . _simplex) (_facets tess)
+  --tess <- delaunay rhombicDodecahedron False
+  --writeFile "rgl/delaunay_rhombicDodecahedron.R" (delaunay3rgl tess False True False (Just 0.9))
+  --putStrLn $ ppShow tess
+  --putStrLn $ ppShow tess
+  --putStrLn $ ppShow $ IM.map (_volume . _simplex) (_facets tess)
+
+  -- tess <- delaunay faceCenteredCubic False
+  -- let v = voronoi3 tess
+  -- writeFile "rgl/voronoi_faceCenteredCubic.R" (voronoi3ForRgl v Nothing)
+  -- putStrLn $ ppShow tess
 
   -- let pairsOfRidges = [(r1, r2) | r1 <- _ridges tess, r2 <- _ridges tess]
   -- let ok = filter (\(r1,r2) -> length ((_ridgeVertices r1) `intersect` (_ridgeVertices r2)) == 2) pairsOfRidges
