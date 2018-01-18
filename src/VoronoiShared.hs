@@ -1,14 +1,15 @@
 module VoronoiShared
   where
+import qualified Data.IntMap.Strict as IM
 import           Data.IntSet        (IntSet)
+import qualified Data.IntSet        as IS
 import           Data.List
 import           Data.Map.Strict    (Map)
-import qualified Data.IntMap.Strict as IM
-import qualified Data.IntSet        as IS
 import qualified Data.Map.Strict    as M
+import           Data.Maybe
 --import qualified Data.Set           as S
+import           Data.Tuple.Extra   ((&&&))
 import           Delaunay
-import           Data.Tuple.Extra      ((&&&))
 
 
 type Index = Int
@@ -47,33 +48,19 @@ edgesFromRidge tess ridge
     c1 = _center $ _simplex (facets IM.! head facetindices)
     c2 = _center $ _simplex (facets IM.! last facetindices)
 
-    -- edgesFromRidge :: Delaunay -> Ridge -> Maybe Edge
-    -- edgesFromRidge tess ridge =
-    --   if length facetindices' == 0
-    --     then Nothing
-    --     else if length facetindices' == 1
-    --       then Just $ IEdge (c1, _normal polytope)
-    --       else if c1==c2 then Nothing else Just $ Edge (c1, c2)
-    --   where
-    --     (polytope, facetindices, _) = ridgeAsTriplet ridge
-    --     facets = _facets tess
-    --     facetindices' = intersect facetindices (IM.keys facets)
-    --     c1 = facetCenter (facets IM.! (head facetindices'))
-    --     c2 = facetCenter (facets IM.! (last facetindices'))
+
+voronoiCell :: ([Ridge] -> [Ridge]) -> (Edge -> a) -> Delaunay -> Index -> [a]
+voronoiCell ridgesQuotienter edgeTransformer tess i =
+  let ridges = ridgesQuotienter $ vertexNeighborRidges tess i in
+  map (edgeTransformer . fromJust) $
+      filter isJust $ map (edgesFromRidge tess) ridges
+
+voronoi :: (Delaunay -> Index -> a) -> Delaunay -> [(Site, a)]
+voronoi cellGetter tess =
+  let sites = IM.elems $ IM.map _coordinates (_vertices tess) in
+    zip sites (map (cellGetter tess) [0 .. length sites -1])
 
 
--- -- rien à voir avec neighbors
--- vertexNeighborsRidges :: Delaunay -> Map IntSet [(CentredPolytope, [Int], Double)]
--- vertexNeighborsRidges tess =
---   M.fromListWith (unionBy ((==) `on` _ridgesVertices)) ridges' -- ce unionby me semble inutile (fromList ferait pareil)
---   where
---     ridges' :: [(IntSet, [(CentredPolytope, [Int], Double)])]
---     ridges' =  map (\(x,y) -> (x,[y])) $ concat $ map
---                         (\facet -> let ridges = _ridges facet in
---                                      let vertices = map _ridgesVertices ridges in
---                                           zip vertices ridges)
---                         (_facets tess)
--- --
 -- getVertexRidges' :: Delaunay -> Index -> [(CentredPolytope, [Int], Double)]
 -- getVertexRidges' tess i =
 --   foldr (unionBy equalRidges) [] $
@@ -81,18 +68,18 @@ edgesFromRidge tess ridge
 --                              (S.fromList $ _vrneighbors tess !! i)
 --
 
-getVertexRidges :: Delaunay -> Index -> [Ridge]
-getVertexRidges tess i =
-    M.elems $ M.restrictKeys (ridgesMap tess)
-                             (_neighRidges $ _vertices tess IM.! i)
+-- getVertexRidges :: Delaunay -> Index -> [Ridge]
+-- getVertexRidges tess i =
+--     M.elems $ M.restrictKeys (ridgesMap tess)
+--                              (_neighRidges $ _vertices tess IM.! i)
 
-uniqueWith :: (a -> a -> Bool) -> [a] -> [a] -- nubBy dans Data.List !
-uniqueWith f = foldr (unionBy f . (: [])) []
-
-getVertexRidges' :: Delaunay -> Index -> Map IntSet Ridge
-getVertexRidges' tess i =
-    M.restrictKeys (ridgesMap tess)
-                   (_neighRidges $ _vertices tess IM.! i)
-
-uniqueWith' :: (a -> a -> Bool) -> Map IntSet a -> [a]
-uniqueWith' f list = M.foldr (unionBy f) [] (M.map (: []) list)
+-- uniqueWith :: (a -> a -> Bool) -> [a] -> [a] -- nubBy dans Data.List !
+-- uniqueWith f = foldr (unionBy f . (: [])) []
+--
+-- getVertexRidges' :: Delaunay -> Index -> Map IntSet Ridge
+-- getVertexRidges' tess i =
+--     M.restrictKeys (ridgesMap tess)
+--                    (_neighRidges $ _vertices tess IM.! i)
+--
+-- uniqueWith' :: (a -> a -> Bool) -> Map IntSet a -> [a]
+-- uniqueWith' f list = M.foldr (unionBy f) [] (M.map (: []) list)

@@ -154,13 +154,13 @@ struct Result* delaunay(
     /* Iterate through facets to extract information - first pass */
 		unsigned i_facet = 0; // facet counter
     FORALLfacets {
-			vertexT *vertex, **vertexp;
-	    facetT *neighbor, **neighborp;
+
 			unsigned j;
 
 			facetsVolumes[i_facet] = facet->f.area;
       toporient[i_facet] = facet->toporient;
 
+      vertexT *vertex, **vertexp;
 			j = 0;
       FOREACHvertex_(facet->vertices) {
         indices[i_facet*(dim+1)+j] = (unsigned) qh_pointid(qh, vertex->point);
@@ -171,6 +171,7 @@ struct Result* delaunay(
 				facetsNormals[i_facet*(dim+1)+j] = facet->normal[j];
 			}
 
+      facetT *neighbor, **neighborp;
 			j = 0;
 			FOREACHneighbor_(facet) {
 				if(neighbor->id > nf[0] ||
@@ -228,14 +229,13 @@ struct Result* delaunay(
 		}
 
     /************************************************************/
-    /* second pass: ridges centers and normals */
+    /* second pass: ridges, centers and normals                 */
     unsigned combinations[dim+1][dim];
     for(unsigned m=0; m<dim+1; m++){
       unsigned kk=0;
       for(unsigned k=0; k<dim+1; k++){
         if(k!=m){
-          combinations[m][kk] = k;
-          kk++;
+          combinations[m][kk] = k; kk++;
         }
       }
     }
@@ -257,8 +257,10 @@ struct Result* delaunay(
     }
     i_facet = 0;
     FORALLfacets {
-      coordT* center = facet->degenerate ? nanvector(dim)
-                                          : qh_facetcenter(qh, facet->vertices);
+
+      coordT* center = facet->degenerate ?
+                        nanvector(dim)
+                        : qh_facetcenter(qh, facet->vertices);
       if(facet->degenerate){
         for(unsigned j=0; j<dim; j++){
   				centers[i_facet*dim+j] = NAN;
@@ -274,14 +276,14 @@ struct Result* delaunay(
         pointT* points[dim];
         unsigned ids[dim];
         for(unsigned i=0; i<dim; i++){
-          points[i] = ((vertexT*)facet->vertices->e[combinations[m][i]].p)->point;
+          points[i] =
+            ((vertexT*)facet->vertices->e[combinations[m][i]].p)->point;
           ids[i] = (unsigned) qh_pointid(qh, points[i]);
         }
         qsort(ids, dim, sizeof(unsigned), cmpfunc);
         for(unsigned i=0; i<dim; i++){
           ridges_dup[i_ridge_dup][2+i] = ids[i];
           flag_vertex_for_ridge[i_ridge_dup][ids[i]] = 1;
-//          n_ridges_per_vertex[ids[i]]++;
         }
   	    facetT *neighbor, **neighborp;
         FOREACHneighbor_(facet){
@@ -310,9 +312,6 @@ struct Result* delaunay(
             }
             if(ok==dim){
               ridges_dup[i_ridge_dup][1] = (unsigned) neighbor->id-1;
-              // for(unsigned i=0; i<dim; i++){
-              //   n_ridges_per_vertex[ids[i]]--;
-              // }
               printf("facet: %d\n", facet->id-1);
               printf("neighbor: %d\n", neighbor->id-1);
               break;
@@ -369,7 +368,7 @@ struct Result* delaunay(
           }else{
             double scal = 0;
             for(unsigned i=0; i<dim; i++){
-              scal += (points[0][i]-center[i])*normal[i];
+              scal += (points[0][i]-center[i]) * normal[i];
             }
             for(unsigned i=0; i<dim; i++){
               ridgesCenters[i_ridge_dup][i] = center[i] + scal*normal[i];
@@ -398,8 +397,9 @@ struct Result* delaunay(
 
     for(unsigned l=0; l<n_ridges_dup; l++){
 			for(unsigned v=0; v<n; v++){
-        if(flag_vertex_for_ridge[l][v] == 1)
+        if(flag_vertex_for_ridge[l][v] == 1){
           n_ridges_per_vertex[v]++;
+        }
 			}
 		}
 
@@ -461,8 +461,7 @@ struct Result* delaunay(
 			while(inc_vfn < n_facets_per_vertex[v]){
 				if(verticesFacetsNeighbours[v][inc_facet] == 1){
 					verticesFacetsNeighbours_[inc_vfn_tot] = inc_facet;
-					inc_vfn++;
-					inc_vfn_tot++;
+					inc_vfn++; inc_vfn_tot++;
 				}
 				inc_facet++;
 			}
@@ -473,24 +472,24 @@ struct Result* delaunay(
     //   distances[i] = 1;
     // }
 
-	  out->dim       = dim;
-	  out->length    = nf[0];
-	  out->indices   = indices;
-		out->fvolumes  = facetsVolumes;
-    out->owners     = owners;
-		out->neighbors = neighbors;
-		out->centers   = centers;
-		out->toporient = toporient;
-		out->ridges    = ridges_;
-    out->rvolumes  = ridgesAreas;
-		out->rcenters  = ridgesCenters_;
-		out->rnormals  = ridgesNormals_;
-		out->fnormals  = facetsNormals;
+	  out->dim         = dim;
+	  out->length      = nf[0];
+	  out->indices     = indices;
+		out->fvolumes    = facetsVolumes;
+    out->owners      = owners;
+		out->neighbors   = neighbors;
+		out->centers     = centers;
+		out->toporient   = toporient;
+		out->ridges      = ridges_;
+    out->rvolumes    = ridgesAreas;
+		out->rcenters    = ridgesCenters_;
+		out->rnormals    = ridgesNormals_;
+		out->fnormals    = facetsNormals;
 //		out->rdistances = distances;
 		out->vrneighbors = verticesRidgesNeighbours_;
-		out->vrnsizes = n_ridges_per_vertex;
+		out->vrnsizes    = n_ridges_per_vertex;
 		out->vfneighbors = verticesFacetsNeighbours_;
-		out->vfnsizes = n_facets_per_vertex;
+		out->vfnsizes    = n_facets_per_vertex;
 
     for(unsigned v=0; v<n; v++){
 			for(unsigned r=0; r<n_ridges_per_vertex[v]; r++){

@@ -1,13 +1,12 @@
 module Voronoi2D
-  (Edge2
+  (Edge2(..)
  , Cell2
  , Voronoi2
  , prettyShowVoronoi2
  , voronoiCell2
  , voronoi2
  , clipVoronoi2
- , voronoi2ForR
- , testv2)
+ , voronoi2ForR)
   where
 import           Control.Arrow      (second)
 import qualified Data.IntMap.Strict as IM
@@ -59,19 +58,11 @@ edgeToEdge2 :: Edge -> Edge2
 edgeToEdge2 (Edge (x, y))  = Edge2 (both asPair (x, y))
 edgeToEdge2 (IEdge (x, v)) = IEdge2 (both asPair (x, v))
 
--- getVertexRidges'' :: Delaunay -> Index -> [Ridge]
--- getVertexRidges'' tess i =
---   M.elems $ M.filterWithKey (\i1i2i3 _ -> IS.member i i1i2i3) (ridgesMap tess)
-
 voronoiCell2 :: Delaunay -> Index -> Cell2
-voronoiCell2 tess i =
-  let ridges = getVertexRidges tess i in
-  map (edgeToEdge2 . fromJust) $
-      filter isJust $ map (edgesFromRidge tess) ridges
+voronoiCell2 = voronoiCell id edgeToEdge2
 
 voronoi2 :: Delaunay -> Voronoi2
-voronoi2 tess = let sites = IM.elems $ IM.map _coordinates (_vertices tess) in
-                    zip sites (map (voronoiCell2 tess) [0 .. length sites -1])
+voronoi2 = voronoi voronoiCell2
 
 truncEdge2 :: Box2 -> Edge2 -> Edge2
 truncEdge2 box edge =
@@ -86,12 +77,6 @@ truncEdge2 box edge =
 
 clipVoronoi2 :: Box2 -> Voronoi2 -> Voronoi2
 clipVoronoi2 box = map (second (map (truncEdge2 box)))
-
-testv2 :: IO Voronoi2
-testv2 = do
-  tess <- test4
-  putStrLn $ ppShow tess
-  return $ voronoi2 tess
 
 voronoi2ForR :: Voronoi2 -> Maybe Delaunay -> String
 voronoi2ForR v d =
@@ -116,3 +101,21 @@ voronoi2ForR v d =
           TIEdge2 ((x0,y0),(x1,y1)) ->
             "segments(" ++ intercalate "," (map show [x0,y0,x1,y1]) ++
                         ", col=\"red\", lty=2, lwd=2)"
+
+--
+-- getVertexRidges'' :: Delaunay -> Index -> [Ridge]
+-- getVertexRidges'' tess i =
+--   M.elems $ M.filterWithKey (\i1i2i3 _ -> IS.member i i1i2i3) (ridgesMap tess)
+
+-- voronoiCell2 :: Delaunay -> Index -> Cell2
+-- voronoiCell2 tess i =
+--   let ridges = getVertexRidges tess i in
+--   map (edgeToEdge2 . fromJust) $
+--       filter isJust $ map (edgesFromRidge tess) ridges
+
+-- voronoiCell2 :: Delaunay -> Index -> Cell2
+-- voronoiCell2 = voronoiCell getVertexRidges edgeToEdge2
+
+-- voronoi2 :: Delaunay -> Voronoi2
+-- voronoi2 tess = let sites = IM.elems $ IM.map _coordinates (_vertices tess) in
+--                     zip sites (map (voronoiCell2 tess) [0 .. length sites -1])

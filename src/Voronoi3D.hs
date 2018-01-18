@@ -1,14 +1,12 @@
 module Voronoi3D
- --  (--Edge3
- --   Edge3(..)
- -- , Cell3
- -- , Voronoi3
- -- , prettyShowVoronoi3
- -- , clipVoronoi3
- -- , testv3
- -- , voronoi3ForRgl
- -- , voronoiCell3
- -- , voronoi3)
+  (Edge3(..)
+ , Cell3
+ , Voronoi3
+ , prettyShowVoronoi3
+ , clipVoronoi3
+ , voronoi3ForRgl
+ , voronoiCell3
+ , voronoi3)
   where
 import           Control.Arrow      (second)
 import qualified Data.IntMap.Strict as IM
@@ -50,7 +48,6 @@ prettyShowVoronoi3 v m = do
     prettyShowCell3 n (site, edges) =
       "Site " ++ ppShow site ++ " :\n" ++ prettyShowEdges3 n edges
 
-
 asTriplet :: [a] -> (a, a, a)
 asTriplet [x,y,z] = (x,y,z)
 asTriplet _       = (undefined, undefined, undefined)
@@ -82,20 +79,10 @@ crossProduct (x1,y1,z1) (x2,y2,z2) = (v3x, v3y, v3z)
     v3z = x1 * y2   -   x2 * y1
 
 voronoiCell3 :: Delaunay -> Index -> Cell3
-voronoiCell3 tess i =
-  let ridges = uniqueWith equalRidges $ getVertexRidges tess i in
-  map (edgeToEdge3 . fromJust) $
-      filter isJust $ map (edgesFromRidge tess) ridges --, map (_vertices . fst3) ridges)
---
-voronoiCell3' :: Delaunay -> Index -> Cell3
-voronoiCell3' tess i =
-  let ridges = uniqueWith' equalRidges $ getVertexRidges' tess i in
-  map (edgeToEdge3 . fromJust) $
-      filter isJust $ map (edgesFromRidge tess) ridges --, map (_vertices . fst3) ridges)
+voronoiCell3 = voronoiCell (nubBy equalRidges) edgeToEdge3
 
 voronoi3 :: Delaunay -> Voronoi3
-voronoi3 tess = let sites = IM.elems $ IM.map _coordinates (_vertices tess) in
-                    zip sites (map (voronoiCell3 tess) [0 .. length sites -1])
+voronoi3 = voronoi voronoiCell3
 
 cell3Vertices :: Cell3 -> [[Double]]
 cell3Vertices cell = nub $ concatMap extractVertices cell
@@ -132,12 +119,6 @@ truncEdge3 (xmin, xmax, ymin, ymax, zmin, zmax) edge =
 clipVoronoi3 :: Box3 -> Voronoi3 -> Voronoi3
 clipVoronoi3 box = map (second (map (truncEdge3 box)))
 
-testv3 :: IO Voronoi3
-testv3 = do
-  tess <- test2
-  return $ voronoi3 tess
-
-
 voronoi3ForRgl :: Voronoi3 -> Maybe Delaunay -> String
 voronoi3ForRgl v d =
   let code = unlines $ map cellForRgl v in
@@ -159,3 +140,20 @@ voronoi3ForRgl v d =
           IEdge3 (x,y) ->
             "segments3d(rbind(c" ++ show x ++ ", c" ++ show (sumTriplet x y) ++ "), col=c(\"red\",\"red\"))"
         sumTriplet (a,b,c) (a',b',c') = (a+a',b+b',c+c')
+
+--
+-- voronoiCell3 :: Delaunay -> Index -> Cell3
+-- voronoiCell3 tess i =
+--   let ridges = uniqueWith equalRidges $ getVertexRidges tess i in
+--   map (edgeToEdge3 . fromJust) $
+--       filter isJust $ map (edgesFromRidge tess) ridges
+-- --
+-- voronoiCell3' :: Delaunay -> Index -> Cell3
+-- voronoiCell3' tess i =
+--   let ridges = uniqueWith' equalRidges $ getVertexRidges' tess i in
+--   map (edgeToEdge3 . fromJust) $
+--       filter isJust $ map (edgesFromRidge tess) ridges
+
+-- voronoi3 :: Delaunay -> Voronoi3
+-- voronoi3 tess = let sites = IM.elems $ IM.map _coordinates (_vertices tess) in
+--                     zip sites (map (voronoiCell3 tess) [0 .. length sites -1])
