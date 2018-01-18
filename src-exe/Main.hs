@@ -35,10 +35,11 @@ delaunay3vis tess = VisObjects $ concatMap visRidge (_ridges tess)
 
 main :: IO ()
 main = do
+  tess <- test3
   -- tess <- test2
   -- let v = voronoi3 tess
   -- writeFile "rgl.txt" (voronoi3ForRgl v Nothing)
-  -- putStrLn $ ppShow tess
+  putStrLn $ ppShow tess
   -- putStrLn $ ppShow v
 
   -- tess <- delaunay cuboctahedron False
@@ -65,14 +66,13 @@ main = do
   -- writeFile "rgl/voronoi_faceCenteredCubic.R" (voronoi3ForRgl v Nothing)
   -- putStrLn $ ppShow tess
 
-  tess <- test3
-  putStrLn $ ppShow tess
-  let v = voronoi2 tess
-  putStrLn $ ppShow v
-  prettyShowVoronoi2 v (Just 3)
-  --let vv = clipVoronoi2 (-1,3,-1,3) r
-  writeFile "Rplots/squareLattice.R" (voronoi2ForR v (Just tess))
-  --prettyShowVoronoi2 vv (Just 3)
+  -- tess <- test3
+  -- putStrLn $ ppShow tess
+  -- let v = voronoi2 tess
+  -- putStrLn $ ppShow v
+  -- prettyShowVoronoi2 v (Just 3)
+  -- --let vv = clipVoronoi2 (-1,3,-1,3) r
+  -- writeFile "Rplots/squareLattice.R" (voronoi2ForR v (Just tess))
 
 --   tess <- delaunay cuboctahedron
 --   let c = voronoiCell3 tess 12

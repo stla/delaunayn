@@ -12,7 +12,6 @@ import           Data.Tuple.Extra   ((&&&))
 import           Delaunay
 
 
-type Index = Int
 type Site = [Double]
 type Point = [Double]
 type Vector = [Double]

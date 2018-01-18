@@ -24,6 +24,7 @@ import           Result
 import           System.IO             (readFile)
 import           TemporaryFile
 
+type Index = Int
 type IndexSet = IntSet
 type IndexMap = IntMap
 
@@ -33,9 +34,10 @@ data Facet = Facet {
 } deriving Show
 
 data Vertex = Vertex {
-    _coordinates :: [Double]
-  , _neighRidges :: Set IndexSet
-  , _neighFacets :: IntSet
+    _coordinates   :: [Double]
+  , _neighVertices :: IntSet
+  , _neighRidges   :: Set IndexSet
+  , _neighFacets   :: IntSet
 } deriving Show
 
 data Polytope = Polytope {
@@ -56,6 +58,8 @@ data Delaunay = Delaunay {
   , _facets   :: IntMap Facet
 } deriving Show
 
+ridgeVertices :: Ridge -> IndexSet
+ridgeVertices = IS.fromList . IM.keys . _points . _polytope
 
 foreign import ccall unsafe "delaunay" c_delaunay
   :: Ptr CDouble -> CUInt -> CUInt -> CUInt -> Ptr CUInt -> Ptr CUInt -> CString
@@ -131,26 +135,32 @@ delaunay sites deg = do
       vfneighbors <- (<$!>) (map IS.fromList . splitPlaces vfnsizes .
                              map fromIntegral)
                             (peekArray (sum vfnsizes) (__vfneighbors result))
+      vvnsizes <- (<$!>) (map fromIntegral)
+                         (peekArray n (_vvnsizes result))
+      vvneighbors <- (<$!>) (map IS.fromList . splitPlaces vvnsizes .
+                             map fromIntegral)
+                            (peekArray (sum vvnsizes) (_vvneighbors result))
       free resultPtr
       let ridges = map (\((a,b),c,d,e) -> doRidge (filter (<nf) a) b c d e)
                   (zip4 (map (splitAt 2) ridges'')
                         ridgesCenters ridgesNormals areas)
       (>>=) (readFile tmpFile) putStrLn -- print summary
       return Delaunay { _vertices = IM.fromList $ zip [0 .. n]
-                                    (zipWith3 toVertex
-                                     sites vrneighbors vfneighbors)
+                                    (zipWith4 toVertex
+                                     sites vrneighbors vfneighbors vvneighbors)
                       , _facets = IM.fromList $ zip [0 .. nf]
                                   (zipWith5 toFacet
                                   (chunksOf (dim+1) indices)
                                   (chunksOf (dim+1) normals)
                                   neighbors' (chunksOf dim centers) volumes)
-                      , _ridges = nubBy ((==) `on` _ridgeVertices) ridges}
+                      , _ridges = nubBy ((==) `on` ridgeVertices) ridges}
   where
-    toVertex :: [Double] -> [IndexSet] -> IntSet -> Vertex
-    toVertex coords nridges nfacets =
-      Vertex {  _coordinates = coords
-              , _neighRidges = S.fromList nridges
-              , _neighFacets = nfacets }
+    toVertex :: [Double] -> [IndexSet] -> IntSet -> IntSet -> Vertex
+    toVertex coords nridges nfacets nvertices =
+      Vertex {  _coordinates   = coords
+              , _neighRidges   = S.fromList nridges
+              , _neighFacets   = nfacets
+              , _neighVertices = nvertices}
     toFacet :: [Int] -> [Double] -> [Int] -> [Double] -> Double -> Facet
     toFacet verts normal neighs center vol =
       Facet { _simplex   = doPolytope verts center normal vol
@@ -166,8 +176,6 @@ delaunay sites deg = do
       Ridge { _polytope = doPolytope is center norm vol
             , _ridgeOf = IS.fromList facets }
 
-ridgeVertices :: Ridge -> IndexSet
-ridgeVertices = IS.fromList . IM.keys . _points . _polytope
 
 -- | the ridges a vertex belongs to
 vertexNeighborRidges :: Delaunay -> Index -> [Ridge]
@@ -260,7 +268,7 @@ delaunay3rgl tess onlyinterior segments colors alpha =
 
 test :: IO Delaunay
 test =
-  delaunay [[-5,-5, 16], [-5, 8, 3 ], [ 4,-1, 3 ], [ 4,-5, 7], [ 4,-1,-10], 
+  delaunay [[-5,-5, 16], [-5, 8, 3 ], [ 4,-1, 3 ], [ 4,-5, 7], [ 4,-1,-10],
             [ 4,-5,-10], [-5, 8,-10], [-5,-5,-10]] False
 -- [[0,0,0], [1,0,0], [1,1,0], [1,1,1], [0,2,0]]
 

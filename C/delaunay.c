@@ -11,6 +11,21 @@ double* nanvector(int dim){
   return out;
 }
 
+void append(unsigned x, unsigned** array, unsigned size, unsigned* flag){
+  unsigned _flag = 1;
+  for(unsigned i=0; i<size; i++){
+    //printf("array[i]: %d\n", *array[i]);
+    if(x==*array[i]){
+      _flag = 0;
+      break;
+    }
+  }
+  if(_flag==1){
+    *array = realloc(*array, (size+1)*sizeof(unsigned));
+    *flag = _flag;
+  }
+}
+
 struct mat3X3 {
     double mat[3][3];
 };
@@ -138,7 +153,7 @@ struct Result* delaunay(
 
     /* Alocate the space */
     unsigned* owners = malloc(nf[0] * sizeof(unsigned));
-    unsigned* indices = malloc(nf[0] * (dim+1) * sizeof(unsigned));
+    unsigned* facetsIndices = malloc(nf[0] * (dim+1) * sizeof(unsigned));
 		double* facetsVolumes = malloc(nf[0] * sizeof(double));
 		unsigned* neighbors = malloc(nf[0] * (dim+1) * sizeof(unsigned));
 		double* centers = malloc(nf[0] * dim * sizeof(double));
@@ -163,7 +178,7 @@ struct Result* delaunay(
       vertexT *vertex, **vertexp;
 			j = 0;
       FOREACHvertex_(facet->vertices) {
-        indices[i_facet*(dim+1)+j] = (unsigned) qh_pointid(qh, vertex->point);
+        facetsIndices[i_facet*(dim+1)+j] = (unsigned) qh_pointid(qh, vertex->point);
         j++;
 			}
 
@@ -203,33 +218,6 @@ struct Result* delaunay(
     free(facetsvisitid);
 
 		/* count number of neighbor facets per vertex */
-		unsigned* n_facets_per_vertex = malloc(n * sizeof(unsigned));
-		unsigned n_total_vertex_neighbors_facets = 0;
-		unsigned verticesFacetsNeighbours[n][nf[0]]; // 0/1 if not neighbour/neighbour
-		for(unsigned v=0; v<n; v++){
-			n_facets_per_vertex[v] = 0;
-			for(unsigned f=0; f<nf[0]; f++){
-				verticesFacetsNeighbours[v][f] = 0;
-			}
-		}
-		vertexT *vertex;
-		FORALLvertices {
-			int vertexid = qh_pointid(qh, vertex->point);
-			facetT *neighbor, **neighborp;
-			FOREACHneighbor_(vertex){
-				if(verticesFacetsNeighbours[vertexid][neighbor->id-1]==0)// &&
-					 //neighborok[neighbor->id-1]==1)
-				{
-          //printf("neighborid: %d", neighbor->id-1);
-					verticesFacetsNeighbours[vertexid][neighbor->id-1] = 1;
-					n_facets_per_vertex[vertexid]++;
-					n_total_vertex_neighbors_facets++;
-				}
-			}
-		}
-
-    /************************************************************/
-    /* second pass: ridges, centers and normals                 */
     unsigned combinations[dim+1][dim];
     for(unsigned m=0; m<dim+1; m++){
       unsigned kk=0;
@@ -239,6 +227,85 @@ struct Result* delaunay(
         }
       }
     }
+		unsigned* n_facets_per_vertex = malloc(n * sizeof(unsigned));
+		unsigned n_total_vertex_neighbors_facets = 0;
+		unsigned verticesFacetsNeighbours[n][nf[0]]; // 0/1 if not neighbour/neighbour
+    unsigned* connectedVertices[n];
+    unsigned* n_vertices_per_vertex = malloc(n * sizeof(unsigned));
+		for(unsigned v=0; v<n; v++){
+      n_vertices_per_vertex[v] = 0;
+      connectedVertices[v] = malloc(0);
+			n_facets_per_vertex[v] = 0;
+			for(unsigned f=0; f<nf[0]; f++){
+				verticesFacetsNeighbours[v][f] = 0;
+			}
+		}
+    for(unsigned f=0; f<nf[0]; f++){
+      for(unsigned j=0; j<dim+1; j++){
+        unsigned vertexid = facetsIndices[f*(dim+1)+j];
+        if(verticesFacetsNeighbours[vertexid][f] == 0){
+          verticesFacetsNeighbours[vertexid][f] = 1;
+          n_facets_per_vertex[vertexid]++;
+          n_total_vertex_neighbors_facets++;
+        }
+        for(unsigned k=0; k<dim; k++){
+          unsigned vertexid2 = facetsIndices[f*(dim+1)+combinations[j][k]];
+          unsigned push = 1;
+          for(unsigned i=0; i<n_vertices_per_vertex[vertexid]; i++){
+            if(vertexid2==connectedVertices[vertexid][i]){
+              push = 0; break;
+            }
+          }
+          if(push==1){
+            connectedVertices[vertexid] = realloc(connectedVertices[vertexid],
+                        (n_vertices_per_vertex[vertexid]+1) * sizeof(unsigned));
+            connectedVertices[vertexid][n_vertices_per_vertex[vertexid]] =
+              vertexid2;
+            n_vertices_per_vertex[vertexid]++;
+          }
+        }
+      }
+    }
+		// vertexT *vertex;
+		// FORALLvertices {
+		// 	int vertexid = qh_pointid(qh, vertex->point);
+    //   printf("vertexid: %d\n", vertexid);
+		// 	facetT *neighbor, **neighborp;
+		// 	FOREACHneighbor_(vertex){
+		// 		if(verticesFacetsNeighbours[vertexid][neighbor->id-1]==0)// &&
+		// 			 //neighborok[neighbor->id-1]==1)
+		// 		{
+    //       //printf("neighborid: %d", neighbor->id-1);
+		// 			verticesFacetsNeighbours[vertexid][neighbor->id-1] = 1;
+		// 			n_facets_per_vertex[vertexid]++;
+		// 			n_total_vertex_neighbors_facets++;
+		// 		}
+    //     for(unsigned v=0; v<dim+1; v++){
+    //       unsigned pid = qh_pointid(qh, ((vertexT*)neighbor->vertices->e[v].p)->point);
+    //       if(pid != vertexid){
+    //         unsigned pushed = 1;
+    //         for(unsigned i=0; i<n_vertices_per_vertex[vertexid]; i++){
+    //           if(pid==connectedVertices[vertexid][i]){
+    //             pushed = 0; break;
+    //           }
+    //         }
+    //         if(pushed==1){
+    //           connectedVertices[vertexid] = realloc(connectedVertices[vertexid],
+    //                           (n_vertices_per_vertex[vertexid]+1) * sizeof(unsigned));
+    //           connectedVertices[vertexid][n_vertices_per_vertex[vertexid]] = pid;
+    //           n_vertices_per_vertex[vertexid]++;
+    //         }
+    //       }
+    //     }
+		// 	}
+		// }
+    for(unsigned v=0; v<n_vertices_per_vertex[0]; v++){
+      printf("connected: %d", connectedVertices[0][v]);
+    }
+
+
+    /************************************************************/
+    /* second pass: ridges, centers and normals                 */
     unsigned n_ridges_dup = nf[0] * (dim+1);
     unsigned i_ridge_dup = 0;
     unsigned ridges_dup[n_ridges_dup][2+dim];
@@ -456,8 +523,7 @@ struct Result* delaunay(
 			malloc(n_total_vertex_neighbors_facets * sizeof(unsigned));
 		unsigned inc_vfn_tot = 0;
 		for(unsigned v=0; v<n; v++){
-			unsigned inc_facet = 0;
-			unsigned inc_vfn = 0;
+			unsigned inc_facet = 0; unsigned inc_vfn = 0;
 			while(inc_vfn < n_facets_per_vertex[v]){
 				if(verticesFacetsNeighbours[v][inc_facet] == 1){
 					verticesFacetsNeighbours_[inc_vfn_tot] = inc_facet;
@@ -467,6 +533,20 @@ struct Result* delaunay(
 			}
 		}
 
+    unsigned n_total_vertex_neighbors_vertices = 0;
+    for(unsigned v=0; v<n; v++){
+      n_total_vertex_neighbors_vertices += n_vertices_per_vertex[v];
+    }
+    unsigned* connectedVertices_ =
+			malloc(n_total_vertex_neighbors_vertices * sizeof(unsigned));
+    unsigned inc_vvn_tot=0;
+		for(unsigned v=0; v<n; v++){
+      for(unsigned inc_vvn=0; inc_vvn<n_vertices_per_vertex[v]; inc_vvn++){
+        connectedVertices_[inc_vvn_tot] = connectedVertices[v][inc_vvn];
+        inc_vvn_tot++;
+      }
+		}
+
     // double* distances = malloc(n_ridges_dup * sizeof(double));
     // for(unsigned i=0; i<n_ridges_dup; i++){
     //   distances[i] = 1;
@@ -474,7 +554,7 @@ struct Result* delaunay(
 
 	  out->dim         = dim;
 	  out->length      = nf[0];
-	  out->indices     = indices;
+	  out->indices     = facetsIndices;
 		out->fvolumes    = facetsVolumes;
     out->owners      = owners;
 		out->neighbors   = neighbors;
@@ -490,8 +570,11 @@ struct Result* delaunay(
 		out->vrnsizes    = n_ridges_per_vertex;
 		out->vfneighbors = verticesFacetsNeighbours_;
 		out->vfnsizes    = n_facets_per_vertex;
+    out->vvneighbors = connectedVertices_;
+    out->vvnsizes    = n_vertices_per_vertex;
 
     for(unsigned v=0; v<n; v++){
+			free(connectedVertices[v]);
 			for(unsigned r=0; r<n_ridges_per_vertex[v]; r++){
 				free(verticesRidgesNeighbours[v][r]);
 			}

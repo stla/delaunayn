@@ -24,7 +24,9 @@ data Result = Result {
   __vrneighbors :: Ptr CUInt,
   _vrnsizes :: Ptr CUInt,
   __vfneighbors :: Ptr CUInt,
-  _vfnsizes :: Ptr CUInt
+  _vfnsizes :: Ptr CUInt,
+  _vvneighbors :: Ptr CUInt,
+  _vvnsizes :: Ptr CUInt
 } -- deriving (Show, Eq)
 
 instance Storable Result where
@@ -49,6 +51,8 @@ instance Storable Result where
       vrnsizes' <- #{peek ResultT, vrnsizes} ptr
       vfneighbors'  <- #{peek ResultT, vfneighbors} ptr
       vfnsizes' <- #{peek ResultT, vfnsizes} ptr
+      vvneighbors'  <- #{peek ResultT, vvneighbors} ptr
+      vvnsizes' <- #{peek ResultT, vvnsizes} ptr
       return Result { _dim = dim'
                     , _length = length'
                     , _indices = indices'
@@ -67,8 +71,10 @@ instance Storable Result where
                     , _vrnsizes = vrnsizes'
                     , __vfneighbors = vfneighbors'
                     , _vfnsizes = vfnsizes'
+                    , _vvneighbors = vvneighbors'
+                    , _vvnsizes = vvnsizes'
                   }
-    poke ptr (Result r1 r2 r3 r4 r5 r6 r7 r8 r9 r10 r11 r12 r13 r14 r15 r16 r17 r18)
+    poke ptr (Result r1 r2 r3 r4 r5 r6 r7 r8 r9 r10 r11 r12 r13 r14 r15 r16 r17 r18 r19 r20)
       = do
           #{poke ResultT, dim}            ptr r1
           #{poke ResultT, length}         ptr r2
@@ -88,3 +94,5 @@ instance Storable Result where
           #{poke ResultT, vrnsizes}       ptr r16
           #{poke ResultT, vfneighbors}    ptr r17
           #{poke ResultT, vfnsizes}       ptr r18
+          #{poke ResultT, vvneighbors}    ptr r19
+          #{poke ResultT, vvnsizes}       ptr r20
