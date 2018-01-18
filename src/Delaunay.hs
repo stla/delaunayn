@@ -59,7 +59,7 @@ data Delaunay = Delaunay {
 } deriving Show
 
 ridgeVertices :: Ridge -> IndexSet
-ridgeVertices = IS.fromList . IM.keys . _points . _polytope
+ridgeVertices = IS.fromAscList . IM.keys . _points . _polytope
 
 foreign import ccall unsafe "delaunay" c_delaunay
   :: Ptr CDouble -> CUInt -> CUInt -> CUInt -> Ptr CUInt -> Ptr CUInt -> CString
@@ -110,7 +110,7 @@ delaunay sites deg = do
                           (peekArray (nf * (dim+1)) (__neighbors result))
       let neighbors' = map (map (subtract 1) . filter (/=0)) $
                            chunksOf (dim+1) neighbors
-          n_ridges = nf * (dim+1);
+          n_ridges = fromIntegral (_nridges result)
 --      toporient <- (<$!>) (map (==1)) (peekArray nf (_toporient result))
       -- owners <- (<$!>) (map (\i -> if i==0 then Nothing else Just $ fromIntegral i-1))
       --                  (peekArray nf (_owners result))
@@ -126,7 +126,7 @@ delaunay sites deg = do
                       (peekArray n_ridges (_areas result))
       vrnsizes <- (<$!>) (map fromIntegral)
                          (peekArray n (_vrnsizes result))
-      vrneighbors <- (<$!>) (map (map IS.fromList) . splitPlaces vrnsizes .
+      vrneighbors <- (<$!>) (map (map IS.fromAscList) . splitPlaces vrnsizes .
                             chunksOf dim . map fromIntegral)
                             (peekArray (sum vrnsizes * dim)
                                        (__vrneighbors result))
@@ -137,7 +137,7 @@ delaunay sites deg = do
                             (peekArray (sum vfnsizes) (__vfneighbors result))
       vvnsizes <- (<$!>) (map fromIntegral)
                          (peekArray n (_vvnsizes result))
-      vvneighbors <- (<$!>) (map IS.fromList . splitPlaces vvnsizes .
+      vvneighbors <- (<$!>) (map IS.fromAscList . splitPlaces vvnsizes .
                              map fromIntegral)
                             (peekArray (sum vvnsizes) (_vvneighbors result))
       free resultPtr
@@ -153,7 +153,7 @@ delaunay sites deg = do
                                   (chunksOf (dim+1) indices)
                                   (chunksOf (dim+1) normals)
                                   neighbors' (chunksOf dim centers) volumes)
-                      , _ridges = nubBy ((==) `on` ridgeVertices) ridges}
+                      , _ridges = ridges } --nubBy ((==) `on` ridgeVertices) ridges}
   where
     toVertex :: [Double] -> [IndexSet] -> IntSet -> IntSet -> Vertex
     toVertex coords nridges nfacets nvertices =
@@ -174,7 +174,7 @@ delaunay sites deg = do
     doRidge :: [Int] -> [Int] -> [Double] -> [Double] -> Double -> Ridge
     doRidge facets is center norm vol =
       Ridge { _polytope = doPolytope is center norm vol
-            , _ridgeOf = IS.fromList facets }
+            , _ridgeOf = IS.fromAscList facets }
 
 
 -- | the ridges a vertex belongs to

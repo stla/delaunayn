@@ -83,13 +83,13 @@ int cmpfunc (const void * a, const void * b) {
 }
 
 struct Result* delaunay(
-	double* vertices,
-	unsigned dim,
-	unsigned n,
-  unsigned degenerate,
+	double*   vertices,
+	unsigned  dim,
+	unsigned  n,
+  unsigned  degenerate,
 	unsigned* nf,
 	unsigned* exitcode,
-	char* tmpFile
+	char*     tmpFile
 )
 {
   printf("HELLO\n");
@@ -117,7 +117,6 @@ struct Result* delaunay(
   fclose(tmpstdout);
   printf("exitcode: %d\n", exitcode[0]);
 
-  int curlong, totlong; /* to free the memory later */
   struct Result* out = malloc(sizeof(ResultT));
 
 	if (!exitcode[0]) {             /* 0 if no error from qhull */
@@ -144,12 +143,15 @@ struct Result* delaunay(
 			}
 		}
 
-		// unsigned connectedVertices[n][n];
-		// for(unsigned m1=0; m1<n; m1++){
-		// 	for(unsigned m2=0; m2<n; m2++){
-		// 		connectedVertices[m1][m2] = 0;
-		// 	}
-		// }
+    unsigned maxid = 0;
+    FORALLfacets {
+      facetT *neighbor, **neighborp;
+      FOREACHneighbor_(facet){
+        if(neighbor->id > maxid){
+          maxid = neighbor->id;
+        }
+      }
+    }
 
     /* Alocate the space */
     unsigned* owners = malloc(nf[0] * sizeof(unsigned));
@@ -159,12 +161,12 @@ struct Result* delaunay(
 		double* centers = malloc(nf[0] * dim * sizeof(double));
 		unsigned* toporient = malloc(nf[0] * sizeof(unsigned));
 		double* facetsNormals = malloc(nf[0] * (dim+1) * sizeof(double));
-		unsigned neighborok[nf[0]][numfacets];
-		for(unsigned f1=0; f1<nf[0]; f1++){
-      for(unsigned f2=0; f2<numfacets; f2++){
-			  neighborok[f1][f2] = 0;
-      }
-		}
+		unsigned neighborok[nf[0]][maxid];
+		// for(unsigned f1=0; f1<nf[0]; f1++){
+    //   for(unsigned f2=0; f2<numfacets; f2++){
+		// 	  neighborok[f1][f2] = 0;
+    //   }
+		// }
 
     /* Iterate through facets to extract information - first pass */
 		unsigned i_facet = 0; // facet counter
@@ -176,11 +178,22 @@ struct Result* delaunay(
       toporient[i_facet] = facet->toporient;
 
       vertexT *vertex, **vertexp;
+      // unsigned vids[dim+1]; // we will sort the indices for later
 			j = 0;
+      // FOREACHvertex_(facet->vertices) {
+      //   vids[j] = (unsigned) qh_pointid(qh, vertex->point);
+      //   j++;
+			// } // ne pas faire ça
+      // qsort(vids, dim+1, sizeof(unsigned), cmpfunc);
+      // for(j=0; j<dim+1; j++){
+      //   facetsIndices[i_facet*(dim+1)+j] = vids[j];
+      // }
       FOREACHvertex_(facet->vertices) {
         facetsIndices[i_facet*(dim+1)+j] = (unsigned) qh_pointid(qh, vertex->point);
         j++;
 			}
+
+
 
 			for(j=0; j<dim+1; j++){
 				facetsNormals[i_facet*(dim+1)+j] = facet->normal[j];
@@ -189,10 +202,13 @@ struct Result* delaunay(
       facetT *neighbor, **neighborp;
 			j = 0;
 			FOREACHneighbor_(facet) {
+        printf("fid: %d, nid: %d, numfacets: %d\n", neighbor->id, facet->id, numfacets);
 				if(neighbor->id > nf[0] ||
            neighbor->visitid != facetsvisitid[neighbor->id-1])
         {
 					neighbors[i_facet*(dim+1)+j] = (unsigned) 0;
+          neighborok[facet->id-1][neighbor->id-1] = 0;
+          //qh_removefacet(qh, neighbor); // plus besoin de neighborok avec ça ?
 				}else{
 					neighbors[i_facet*(dim+1)+j] = (unsigned) neighbor->id;
 					neighborok[facet->id-1][neighbor->id-1] = 1;
@@ -217,7 +233,7 @@ struct Result* delaunay(
 		}
     free(facetsvisitid);
 
-		/* count number of neighbor facets per vertex */
+		/* count number of neighbor facets and neighbor vertices per vertex */
     unsigned combinations[dim+1][dim];
     for(unsigned m=0; m<dim+1; m++){
       unsigned kk=0;
@@ -266,39 +282,6 @@ struct Result* delaunay(
         }
       }
     }
-		// vertexT *vertex;
-		// FORALLvertices {
-		// 	int vertexid = qh_pointid(qh, vertex->point);
-    //   printf("vertexid: %d\n", vertexid);
-		// 	facetT *neighbor, **neighborp;
-		// 	FOREACHneighbor_(vertex){
-		// 		if(verticesFacetsNeighbours[vertexid][neighbor->id-1]==0)// &&
-		// 			 //neighborok[neighbor->id-1]==1)
-		// 		{
-    //       //printf("neighborid: %d", neighbor->id-1);
-		// 			verticesFacetsNeighbours[vertexid][neighbor->id-1] = 1;
-		// 			n_facets_per_vertex[vertexid]++;
-		// 			n_total_vertex_neighbors_facets++;
-		// 		}
-    //     for(unsigned v=0; v<dim+1; v++){
-    //       unsigned pid = qh_pointid(qh, ((vertexT*)neighbor->vertices->e[v].p)->point);
-    //       if(pid != vertexid){
-    //         unsigned pushed = 1;
-    //         for(unsigned i=0; i<n_vertices_per_vertex[vertexid]; i++){
-    //           if(pid==connectedVertices[vertexid][i]){
-    //             pushed = 0; break;
-    //           }
-    //         }
-    //         if(pushed==1){
-    //           connectedVertices[vertexid] = realloc(connectedVertices[vertexid],
-    //                           (n_vertices_per_vertex[vertexid]+1) * sizeof(unsigned));
-    //           connectedVertices[vertexid][n_vertices_per_vertex[vertexid]] = pid;
-    //           n_vertices_per_vertex[vertexid]++;
-    //         }
-    //       }
-    //     }
-		// 	}
-		// }
     for(unsigned v=0; v<n_vertices_per_vertex[0]; v++){
       printf("connected: %d", connectedVertices[0][v]);
     }
@@ -307,8 +290,12 @@ struct Result* delaunay(
     /************************************************************/
     /* second pass: ridges, centers and normals                 */
     unsigned n_ridges_dup = nf[0] * (dim+1);
+    unsigned n_ridges = 0;
     unsigned i_ridge_dup = 0;
-    unsigned ridges_dup[n_ridges_dup][2+dim];
+    unsigned ridges_dup[n_ridges_dup][2+dim+1];
+    for(unsigned r=0; r<n_ridges_dup; r++){
+      ridges_dup[r][2+dim] = 0;
+    }
     double ridgesCenters[n_ridges_dup][dim];
 		double ridgesNormals[n_ridges_dup][dim];
     double* ridgesAreas = malloc(n_ridges_dup * sizeof(double));
@@ -322,6 +309,7 @@ struct Result* delaunay(
     for(unsigned m=0; m<n; m++){
       n_ridges_per_vertex[m] = 0;
     }
+
     i_facet = 0;
     FORALLfacets {
 
@@ -337,121 +325,147 @@ struct Result* delaunay(
   				centers[i_facet*dim+j] = center[j];
   			}
       }
+
       for(unsigned m=0; m<dim+1; m++){
-        ridges_dup[i_ridge_dup][0] = (unsigned) facet->id-1;
+        unsigned fid = facet->id-1;
+        ridges_dup[i_ridge_dup][0] = fid;
         ridges_dup[i_ridge_dup][1] = nf[0];
         pointT* points[dim];
         unsigned ids[dim];
         for(unsigned i=0; i<dim; i++){
           points[i] =
             ((vertexT*)facet->vertices->e[combinations[m][i]].p)->point;
-          ids[i] = (unsigned) qh_pointid(qh, points[i]);
+          ids[i] = facetsIndices[fid*(dim+1)+combinations[m][i]];
         }
         qsort(ids, dim, sizeof(unsigned), cmpfunc);
-        for(unsigned i=0; i<dim; i++){
-          ridges_dup[i_ridge_dup][2+i] = ids[i];
-          flag_vertex_for_ridge[i_ridge_dup][ids[i]] = 1;
-        }
-  	    facetT *neighbor, **neighborp;
-        FOREACHneighbor_(facet){
-          if(neighborok[facet->id-1][neighbor->id-1]==1){
-            unsigned ok;
-            for(unsigned mm=0; mm<dim+1; mm++){
-              ok = 0;
-              unsigned ids2[dim];
-              for(unsigned i=0; i<dim; i++){
-                ids2[i] = (unsigned)
-                          qh_pointid(qh,
-                            ((vertexT*)neighbor->vertices->
-                                              e[combinations[mm][i]].p)->point);
-              }
-              qsort(ids2, dim, sizeof(unsigned), cmpfunc);
-              for(unsigned i=0; i<dim; i++){
-                if(ids2[i] != ids[i]){
-                  break;
-                }else{
-                  ok++;
-                }
-              }
-              if(ok==dim){
+        // for(unsigned i=0; i<dim; i++){
+        //   ridges_dup[i_ridge_dup][2+i] = ids[i];
+        //   flag_vertex_for_ridge[i_ridge_dup][ids[i]] = 1;
+        // }
+
+        unsigned done = 0;
+        unsigned ok;
+        for(unsigned r=0; r<i_ridge_dup; r++){
+          if(ridges_dup[r][2+dim]==1 && ridges_dup[r][1]==fid){
+            ok = 0;
+            unsigned ids2[dim];
+            for(unsigned i=0; i<dim; i++){
+              ids2[i] = ridges_dup[r][2+i];
+              if(ids2[i] != ids[i]){
                 break;
+              }else{
+                ok++;
               }
             }
             if(ok==dim){
-              ridges_dup[i_ridge_dup][1] = (unsigned) neighbor->id-1;
-              printf("facet: %d\n", facet->id-1);
-              printf("neighbor: %d\n", neighbor->id-1);
+              done = 1;
               break;
             }
           }
-        } // end FOREACHneighbor_(facet)
-        double normal[dim];
-        if(dim==2){
-          double u1 = points[1][0] - points[0][0];
-          double v1 = points[1][1] - points[0][1];
-          printf("u1: %f", u1);
-          printf("v1: %f", v1);
-          ridgesAreas[i_ridge_dup] = sqrt(square(u1)+square(v1));
-          ridgesCenters[i_ridge_dup][0] = (points[0][0]+points[1][0])/2;
-          ridgesCenters[i_ridge_dup][1] = (points[0][1]+points[1][1])/2;
-          normal[0] = v1;
-          normal[1] = -u1;
-        }else{
-          int parity=1;
-          double squaredNorm = 0;
+        }
+
+        if(done==0){
+          n_ridges++;
+          ridges_dup[i_ridge_dup][2+dim] = 1;
           for(unsigned i=0; i<dim; i++){
-            double** rows = malloc((dim-1) * sizeof(double*));
-            for(unsigned j=0; j<dim-1; j++){
-              rows[j] = (double*) malloc((dim-1) * sizeof(double));
-              for(unsigned k=0; k<dim-1; k++){
-                unsigned kk = k<i ? k : k+1;
-                rows[j][k] = points[j+1][kk] - points[0][kk];
+            ridges_dup[i_ridge_dup][2+i] = ids[i];
+            flag_vertex_for_ridge[i_ridge_dup][ids[i]] = 1;
+          }
+          facetT *neighbor, **neighborp;
+          FOREACHneighbor_(facet){
+            unsigned fnid = neighbor->id-1;
+            if(neighborok[fid][fnid]==1){
+              unsigned ok;
+              for(unsigned mm=0; mm<dim+1; mm++){
+                ok = 0;
+                unsigned ids2[dim];
+                for(unsigned i=0; i<dim; i++){
+                  ids2[i] = facetsIndices[fnid*(dim+1)+combinations[mm][i]];
+                }
+                qsort(ids2, dim, sizeof(unsigned), cmpfunc);
+                for(unsigned i=0; i<dim; i++){
+                  if(ids2[i] != ids[i]){
+                    break;
+                  }else{
+                    ok++;
+                  }
+                }
+                if(ok==dim){
+                  break;
+                }
+              }
+              if(ok==dim){
+                ridges_dup[i_ridge_dup][1] = fnid;
+                printf("neighid: %d", fnid);
+                break;
               }
             }
-            boolT nearzero;
-            normal[i] = parity * qh_determinant(qh, rows, dim-1, &nearzero);
-            squaredNorm += square(normal[i]);
-            for(unsigned j=0; j<dim-1; j++){
-              free(rows[j]);
-            }
-            free(rows);
-            parity = -parity;
-          }
-          double surface = sqrt(squaredNorm);
-          for(unsigned k=2; k<dim-1; k++){
-            surface /= k;
-          }
-          ridgesAreas[i_ridge_dup] = surface;
-        }
-        qh_normalize2(qh, normal, dim, 1, NULL, NULL);
-        for(unsigned i=0; i<dim; i++){
-          ridgesNormals[i_ridge_dup][i] = normal[i];
-        }
-        if(dim>2){
-          if(facet->degenerate){
-            for(unsigned i=0; i<dim; i++){
-              ridgesCenters[i_ridge_dup][i] = NAN;
-            }
+          } // end FOREACHneighbor_(facet)
+          double normal[dim];
+          if(dim==2){
+            double u1 = points[1][0] - points[0][0];
+            double v1 = points[1][1] - points[0][1];
+            ridgesAreas[i_ridge_dup] = sqrt(square(u1)+square(v1));
+            ridgesCenters[i_ridge_dup][0] = (points[0][0]+points[1][0])/2;
+            ridgesCenters[i_ridge_dup][1] = (points[0][1]+points[1][1])/2;
+            normal[0] = v1; normal[1] = -u1;
           }else{
-            double scal = 0;
+            int parity=1;
+            double squaredNorm = 0;
             for(unsigned i=0; i<dim; i++){
-              scal += (points[0][i]-center[i]) * normal[i];
+              double** rows = malloc((dim-1) * sizeof(double*));
+              for(unsigned j=0; j<dim-1; j++){
+                rows[j] = (double*) malloc((dim-1) * sizeof(double));
+                for(unsigned k=0; k<dim-1; k++){
+                  unsigned kk = k<i ? k : k+1;
+                  rows[j][k] = points[j+1][kk] - points[0][kk];
+                }
+              }
+              boolT nearzero;
+              normal[i] = parity * qh_determinant(qh, rows, dim-1, &nearzero);
+              squaredNorm += square(normal[i]);
+              for(unsigned j=0; j<dim-1; j++){
+                free(rows[j]);
+              }
+              free(rows);
+              parity = -parity;
             }
-            for(unsigned i=0; i<dim; i++){
-              ridgesCenters[i_ridge_dup][i] = center[i] + scal*normal[i];
+            double surface = sqrt(squaredNorm);
+            for(unsigned k=2; k<dim-1; k++){
+              surface /= k;
             }
+            ridgesAreas[i_ridge_dup] = surface;
           }
-        }
-        if(!facet->degenerate || dim==2){
-          double h = 0;
-          pointT* otherpoint = ((vertexT*)facet->vertices->e[m].p)->point;
+          qh_normalize2(qh, normal, dim, 1, NULL, NULL);
           for(unsigned i=0; i<dim; i++){
-            h += (ridgesCenters[i_ridge_dup][i]-otherpoint[i]) *
-                 ridgesNormals[i_ridge_dup][i];
+            ridgesNormals[i_ridge_dup][i] = normal[i];
           }
-          if(h < 0){
+          if(dim>2){
+            if(facet->degenerate){
+              for(unsigned i=0; i<dim; i++){
+                ridgesCenters[i_ridge_dup][i] = NAN;
+              }
+            }else{
+              double scal = 0;
+              for(unsigned i=0; i<dim; i++){
+                scal += (points[0][i]-center[i]) * normal[i];
+              }
+              for(unsigned i=0; i<dim; i++){
+                ridgesCenters[i_ridge_dup][i] = center[i] + scal*normal[i];
+              }
+            }
+          }
+          if(!facet->degenerate || dim==2){
+            double h = 0;
+            pointT* otherpoint = ((vertexT*)facet->vertices->e[m].p)->point;
             for(unsigned i=0; i<dim; i++){
-              ridgesNormals[i_ridge_dup][i] *= -1;
+              h += (ridgesCenters[i_ridge_dup][i]-otherpoint[i]) *
+                   ridgesNormals[i_ridge_dup][i];
+            }
+            if(h < 0){
+              for(unsigned i=0; i<dim; i++){
+                ridgesNormals[i_ridge_dup][i] *= -1;
+              }
             }
           }
         }
@@ -460,7 +474,41 @@ struct Result* delaunay(
       i_facet++;
     } // end FORALLfacets
 
+    for(unsigned r=0; r<n_ridges_dup; r++){
+      if(ridges_dup[r][2+dim]==1){// || ridges_dup[r][1]==nf[0]){
+        printf("%d %d - %d %d\n", ridges_dup[r][0], ridges_dup[r][1], ridges_dup[r][2], ridges_dup[r][3]);
+        printf("center: %f %f\n", ridgesCenters[r][0], ridgesCenters[r][1]);
+      }
+    }
+
 		printf("LEAVING LOOP");
+
+		unsigned* ridges_ = malloc(n_ridges * (2+dim) * sizeof(unsigned));
+    double* ridgesCenters_ = malloc(n_ridges * dim * sizeof(double));
+		double* ridgesNormals_ = malloc(n_ridges * dim * sizeof(double));
+    unsigned inc_ridge = 0;
+		for(unsigned l=0; l<n_ridges_dup; l++){
+      if(ridges_dup[l][2+dim]==1){
+  			for(unsigned ll=0; ll<dim; ll++){
+  				ridges_[inc_ridge*(2+dim)+ll] = ridges_dup[l][ll];
+          ridgesCenters_[inc_ridge*dim+ll] = ridgesCenters[l][ll];
+  				ridgesNormals_[inc_ridge*dim+ll] = ridgesNormals[l][ll];
+  			}
+        for(unsigned ll=dim; ll<2+dim; ll++){
+  				ridges_[inc_ridge*(2+dim)+ll] = ridges_dup[l][ll];
+  			}
+        inc_ridge++;
+      }
+		}
+
+		// double* ridgesCenters_ = malloc(n_ridges_dup * dim * sizeof(double));
+		// double* ridgesNormals_ = malloc(n_ridges_dup * dim * sizeof(double));
+		// for(unsigned l=0; l<n_ridges_dup; l++){
+		// 	for(unsigned ll=0; ll<dim; ll++){
+		// 		ridgesCenters_[l*dim+ll] = ridgesCenters[l][ll];
+		// 		ridgesNormals_[l*dim+ll] = ridgesNormals[l][ll];
+		// 	}
+		// }
 
     for(unsigned l=0; l<n_ridges_dup; l++){
 			for(unsigned v=0; v<n; v++){
@@ -469,32 +517,13 @@ struct Result* delaunay(
         }
 			}
 		}
-
-		unsigned* ridges_ = malloc(n_ridges_dup * (2+dim) * sizeof(unsigned));
-		for(unsigned l=0; l<n_ridges_dup; l++){
-//			printf("l=%d:\n", l);
-			for(unsigned ll=0; ll<2+dim; ll++){
-				ridges_[l*(2+dim)+ll] = ridges_dup[l][ll];
-//				printf("ll=%d - id=%d ", ll, ridges_[l*dim+ll]);
-			}
-		}
-		double* ridgesCenters_ = malloc(n_ridges_dup * dim * sizeof(double));
-		double* ridgesNormals_ = malloc(n_ridges_dup * dim * sizeof(double));
-		for(unsigned l=0; l<n_ridges_dup; l++){
-			for(unsigned ll=0; ll<dim; ll++){
-				ridgesCenters_[l*dim+ll] = ridgesCenters[l][ll];
-				ridgesNormals_[l*dim+ll] = ridgesNormals[l][ll];
-			}
-		}
-
     unsigned n_ridges_per_vertex_total = 0;
     unsigned*** verticesRidgesNeighbours = malloc(n * sizeof(unsigned**));
 		for(unsigned v=0; v<n; v++){
 			verticesRidgesNeighbours[v] =
         (unsigned**) malloc(n_ridges_per_vertex[v] * sizeof(unsigned*));
       n_ridges_per_vertex_total += n_ridges_per_vertex[v];
-			unsigned increment = 0;
-			unsigned count = 0;
+			unsigned increment = 0; unsigned count = 0;
 			while(increment < n_ridges_dup && count<n_ridges_per_vertex[v]){
 				if(flag_vertex_for_ridge[increment][v] == 1){
 					verticesRidgesNeighbours[v][count] =
@@ -541,6 +570,8 @@ struct Result* delaunay(
 			malloc(n_total_vertex_neighbors_vertices * sizeof(unsigned));
     unsigned inc_vvn_tot=0;
 		for(unsigned v=0; v<n; v++){
+      qsort(connectedVertices[v], n_vertices_per_vertex[v], sizeof(unsigned),
+            cmpfunc);
       for(unsigned inc_vvn=0; inc_vvn<n_vertices_per_vertex[v]; inc_vvn++){
         connectedVertices_[inc_vvn_tot] = connectedVertices[v][inc_vvn];
         inc_vvn_tot++;
@@ -561,6 +592,7 @@ struct Result* delaunay(
 		out->centers     = centers;
 		out->toporient   = toporient;
 		out->ridges      = ridges_;
+    out->nridges     = n_ridges;
     out->rvolumes    = ridgesAreas;
 		out->rcenters    = ridgesCenters_;
 		out->rnormals    = ridgesNormals_;
@@ -585,8 +617,9 @@ struct Result* delaunay(
 	}
 
 	/* Do cleanup regardless of whether there is an error */
+  int curlong, totlong;
 	qh_freeqhull(qh, !qh_ALL);                  /* free long memory */
-	qh_memfreeshort (qh, &curlong, &totlong);   /* free short memory and memory allocator */
+	qh_memfreeshort(qh, &curlong, &totlong);   /* free short memory and memory allocator */
 
 	printf("RETURN\n");
   return out;

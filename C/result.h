@@ -19,4 +19,5 @@ typedef struct Result {
   unsigned* vfnsizes;
   unsigned* vvneighbors;
   unsigned* vvnsizes;
+  unsigned nridges;
 } ResultT;

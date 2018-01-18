@@ -6,7 +6,8 @@ module Voronoi3D
  , clipVoronoi3
  , voronoi3ForRgl
  , voronoiCell3
- , voronoi3)
+ , voronoi3
+ , cell3Vertices)
   where
 import           Control.Arrow      (second)
 import qualified Data.IntMap.Strict as IM

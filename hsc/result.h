@@ -8,6 +8,7 @@ typedef struct Result {
   double* centers;
   unsigned* toporient;
   unsigned* ridges;
+  unsigned nridges;
   double* rvolumes;
   double* rcenters;
   double* rnormals;

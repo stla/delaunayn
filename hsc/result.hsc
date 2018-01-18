@@ -16,6 +16,7 @@ data Result = Result {
   _centers :: Ptr CDouble,
   _toporient :: Ptr CUInt,
   __ridges :: Ptr CUInt,
+  _nridges :: CUInt,
   _areas  :: Ptr CDouble,
   _rcenters :: Ptr CDouble,
   _rnormals :: Ptr CDouble,
@@ -42,6 +43,7 @@ instance Storable Result where
       centers'   <- #{peek ResultT, centers} ptr
       toporient' <- #{peek ResultT, toporient} ptr
       ridges'    <- #{peek ResultT, ridges} ptr
+      nridges'    <- #{peek ResultT, nridges} ptr
       areas'     <- #{peek ResultT, rvolumes} ptr
       rcenters'  <- #{peek ResultT, rcenters} ptr
       rnormals'  <- #{peek ResultT, rnormals} ptr
@@ -62,6 +64,7 @@ instance Storable Result where
                     , _centers = centers'
                     , _toporient = toporient'
                     , __ridges    = ridges'
+                    , _nridges = nridges'
                     , _areas    = areas'
                     , _rcenters = rcenters'
                     , _rnormals = rnormals'
@@ -74,7 +77,7 @@ instance Storable Result where
                     , _vvneighbors = vvneighbors'
                     , _vvnsizes = vvnsizes'
                   }
-    poke ptr (Result r1 r2 r3 r4 r5 r6 r7 r8 r9 r10 r11 r12 r13 r14 r15 r16 r17 r18 r19 r20)
+    poke ptr (Result r1 r2 r3 r4 r5 r6 r7 r8 r9 r10 r11 r12 r13 r14 r15 r16 r17 r18 r19 r20 r21)
       = do
           #{poke ResultT, dim}            ptr r1
           #{poke ResultT, length}         ptr r2
@@ -96,3 +99,4 @@ instance Storable Result where
           #{poke ResultT, vfnsizes}       ptr r18
           #{poke ResultT, vvneighbors}    ptr r19
           #{poke ResultT, vvnsizes}       ptr r20
+          #{poke ResultT, nridges}       ptr r21

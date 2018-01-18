@@ -35,25 +35,25 @@ delaunay3vis tess = VisObjects $ concatMap visRidge (_ridges tess)
 
 main :: IO ()
 main = do
-  tess <- test3
+
   -- tess <- test2
   -- let v = voronoi3 tess
   -- writeFile "rgl.txt" (voronoi3ForRgl v Nothing)
-  putStrLn $ ppShow tess
   -- putStrLn $ ppShow v
 
-  -- tess <- delaunay cuboctahedron False
-  -- let v = voronoi3 tess
-  --     code1 = voronoi3ForRgl v Nothing
-  --     bigcell = snd (last v)
-  --     verts = cell3Vertices bigcell
-  -- tess2 <- delaunay verts True
+  tess <- delaunay cuboctahedron False
+  putStrLn $ ppShow $ map ridgeVertices (_ridges tess)
+  let v = voronoi3 tess
+      code1 = voronoi3ForRgl v Nothing
+      bigcell = snd (last v)
+      verts = cell3Vertices bigcell
+  tess2 <- delaunay verts True
   -- putStrLn $ ppShow $ _facets tess2
   -- putStrLn $ ppShow $ IM.map (_volume . _simplex) (_facets tess2)
-  -- putStrLn $ ppShow $ _vertices tess2
+  putStrLn $ ppShow $ _vertices tess2
   -- putStrLn $ ppShow $ _ridges tess2
-  -- let code2 = delaunay3rgl tess2 False False False (Just 0.5)
-  -- writeFile "rgl/voronoi_cuboctahedron02.R" (code1 ++ code2)
+  let code2 = delaunay3rgl tess2 False False False (Just 0.5)
+  writeFile "rgl/voronoi_cuboctahedron02.R" (code1 ++ code2)
 
   --tess <- delaunay rhombicDodecahedron False
   --writeFile "rgl/delaunay_rhombicDodecahedron.R" (delaunay3rgl tess False True False (Just 0.9))
@@ -71,8 +71,9 @@ main = do
   -- let v = voronoi2 tess
   -- putStrLn $ ppShow v
   -- prettyShowVoronoi2 v (Just 3)
+  -- putStrLn $ ppShow $ map ridgeVertices (_ridges tess)
   -- --let vv = clipVoronoi2 (-1,3,-1,3) r
-  -- writeFile "Rplots/squareLattice.R" (voronoi2ForR v (Just tess))
+  -- writeFile "Rplots/squareLattice01.R" (voronoi2ForR v (Just tess))
 
 --   tess <- delaunay cuboctahedron
 --   let c = voronoiCell3 tess 12
