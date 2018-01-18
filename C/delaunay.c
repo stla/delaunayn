@@ -220,10 +220,6 @@ struct Result* delaunay(
       for(j=0; j<dim+1; j++){
         facetsIndices[i_facet*(dim+1)+j] = vids[j];
       }
-      // FOREACHvertex_(facet->vertices) {
-      //   facetsIndices[i_facet*(dim+1)+j] = (unsigned) qh_pointid(qh, vertex->point);
-      //   j++;
-			// }
 
 			for(j=0; j<dim+1; j++){
 				facetsNormals[i_facet*(dim+1)+j] = facet->normal[j];
@@ -278,8 +274,8 @@ struct Result* delaunay(
     unsigned* n_vertices_per_vertex           = malloc(n * sizeof(unsigned));
 		for(unsigned v=0; v<n; v++){
       n_vertices_per_vertex[v] = 0;
-      connectedVertices[v] = malloc(0);
-			n_facets_per_vertex[v] = 0;
+      connectedVertices[v]     = malloc(0);
+			n_facets_per_vertex[v]   = 0;
 			for(unsigned f=0; f<nf[0]; f++){
 				verticesFacetsNeighbours[v][f] = 0;
 			}
@@ -327,7 +323,7 @@ struct Result* delaunay(
     double   ridgesCenters[n_ridges_dup][dim];
 		double   ridgesNormals[n_ridges_dup][dim];
     double*  ridgesAreas = malloc(n_ridges_dup * sizeof(double));
-    unsigned flag_vertex_for_ridge[n_ridges_dup][n];
+    //unsigned flag_vertex_for_ridge[n_ridges_dup][n];
 		for(unsigned adj=0; adj<n_ridges_dup; adj++){
 			for(unsigned v=0; v<n; v++){
 				flag_vertex_for_ridge[adj][v] = 0;
@@ -363,7 +359,6 @@ struct Result* delaunay(
           ids[i] = facetsIndices[fid*(dim+1)+combinations[m][i]];
         }
         //qsort(ids, dim, sizeof(unsigned), cmpfunc);
-
         unsigned done = 0;
         unsigned ok;
         for(unsigned r=0; r<i_ridge_dup; r++){
@@ -390,7 +385,8 @@ struct Result* delaunay(
           ridges_dup[i_ridge_dup][2+dim] = 1;
           for(unsigned i=0; i<dim; i++){
             ridges_dup[i_ridge_dup][2+i] = ids[i];
-            flag_vertex_for_ridge[i_ridge_dup][ids[i]] = 1;
+            n_ridges_per_vertex[ids[i]]++;
+            //flag_vertex_for_ridge[i_ridge_dup][ids[i]] = 1;
           }
           facetT *neighbor, **neighborp;
           FOREACHneighbor_(facet){
@@ -534,32 +530,64 @@ struct Result* delaunay(
 		// 	}
 		// }
 
-    for(unsigned l=0; l<n_ridges_dup; l++){
-			for(unsigned v=0; v<n; v++){
-        if(flag_vertex_for_ridge[l][v] == 1){
-          n_ridges_per_vertex[v]++;
-        }
-			}
-		}
+    // for(unsigned l=0; l<n_ridges_dup; l++){
+		// 	for(unsigned v=0; v<n; v++){
+    //     if(flag_vertex_for_ridge[l][v] == 1){
+    //       n_ridges_per_vertex[v]++;
+    //     }
+		// 	}
+		// }
+    // //or:
+    // for(unsigned l=0; l<n_ridges_dup; l++){
+    //   if(ridges_dup[l][2+dim] == 1){
+    //     for(unsigned i=0; i<dim; i++){
+    //       n_ridges_per_vertex[ridges_dup[l][2+i]]++
+    //     }
+    //   } // pouvait le faire avant
+    // }
     unsigned    n_ridges_per_vertex_total = 0;
     unsigned*** verticesRidgesNeighbours  = malloc(n * sizeof(unsigned**));
+    unsigned*   i_ridges_per_vertex       = malloc(n * sizeof(unsigned));
 		for(unsigned v=0; v<n; v++){
 			verticesRidgesNeighbours[v] =
         (unsigned**) malloc(n_ridges_per_vertex[v] * sizeof(unsigned*));
       n_ridges_per_vertex_total += n_ridges_per_vertex[v];
-			unsigned increment = 0; unsigned count = 0;
-			while(increment < n_ridges_dup && count<n_ridges_per_vertex[v]){
-				if(flag_vertex_for_ridge[increment][v] == 1){
-					verticesRidgesNeighbours[v][count] =
-            (unsigned*) malloc(dim * sizeof(unsigned));
-          for(unsigned i=0; i<dim; i++){
-					  verticesRidgesNeighbours[v][count][i] = ridges_dup[increment][2+i];
+      i_ridges_per_vertex[v] = 0;
+    }
+    for(unsigned l=0; l<n_ridges_dup; l++){
+      if(ridges_dup[l][2+dim] == 1){
+        for(unsigned i=0; i<dim; i++){
+          unsigned v = ridges_dup[l][2+i];
+          verticesRidgesNeighbours[v][i_ridges_per_vertex[v]] =
+              (unsigned*) malloc(dim * sizeof(unsigned));
+          for(unsigned j=0; j<dim; j++){
+            verticesRidgesNeighbours[v][i_ridges_per_vertex[v]][j] =
+                ridges_dup[l][2+j];
           }
-					count++;
-				}
-				increment++;
-			}
-		}
+          i_ridges_per_vertex[v]++;
+        }
+      }
+    }
+
+    // unsigned    n_ridges_per_vertex_total = 0;
+    // unsigned*** verticesRidgesNeighbours  = malloc(n * sizeof(unsigned**));
+		// for(unsigned v=0; v<n; v++){
+		// 	verticesRidgesNeighbours[v] =
+    //     (unsigned**) malloc(n_ridges_per_vertex[v] * sizeof(unsigned*));
+    //   n_ridges_per_vertex_total += n_ridges_per_vertex[v];
+		// 	unsigned increment = 0; unsigned count = 0;
+		// 	while(increment < n_ridges_dup && count<n_ridges_per_vertex[v]){
+		// 		if(flag_vertex_for_ridge[increment][v] == 1){
+		// 			verticesRidgesNeighbours[v][count] =
+    //         (unsigned*) malloc(dim * sizeof(unsigned));
+    //       for(unsigned i=0; i<dim; i++){
+		// 			  verticesRidgesNeighbours[v][count][i] = ridges_dup[increment][2+i];
+    //       }
+		// 			count++;
+		// 		}
+		// 		increment++;
+		// 	}
+		// }
 		unsigned* verticesRidgesNeighbours_ =
       malloc(n_ridges_per_vertex_total * dim * sizeof(unsigned));
 		unsigned count = 0;
