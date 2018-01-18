@@ -67,7 +67,7 @@ main = do
   -- putStrLn $ ppShow tess
 
   -- tess <- test3
-  -- putStrLn $ ppShow tess
+  -- putStrLn $ ppShow $ _facets tess
   -- let v = voronoi2 tess
   -- putStrLn $ ppShow v
   -- prettyShowVoronoi2 v (Just 3)

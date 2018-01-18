@@ -2,7 +2,7 @@
 module Delaunay
   where
 import           Control.Monad         (when, (<$!>))
-import           Data.Function         (on)
+--import           Data.Function         (on)
 import           Data.IntMap.Strict    (IntMap)
 import qualified Data.IntMap.Strict    as IM
 import           Data.IntSet           (IntSet)
@@ -29,8 +29,8 @@ type IndexSet = IntSet
 type IndexMap = IntMap
 
 data Facet = Facet {
-    _simplex    :: Polytope
-  , _neighbours :: IntSet
+    _simplex   :: Polytope
+  , _neighbors :: IntSet
 } deriving Show
 
 data Vertex = Vertex {
@@ -60,6 +60,7 @@ data Delaunay = Delaunay {
 
 ridgeVertices :: Ridge -> IndexSet
 ridgeVertices = IS.fromAscList . IM.keys . _points . _polytope
+
 
 foreign import ccall unsafe "delaunay" c_delaunay
   :: Ptr CDouble -> CUInt -> CUInt -> CUInt -> Ptr CUInt -> Ptr CUInt -> CString
@@ -164,11 +165,10 @@ delaunay sites deg = do
     toFacet :: [Int] -> [Double] -> [Int] -> [Double] -> Double -> Facet
     toFacet verts normal neighs center vol =
       Facet { _simplex   = doPolytope verts center normal vol
-            , _neighbours = IS.fromList neighs }
+            , _neighbors = IS.fromList neighs }
     doPolytope :: [Int] -> [Double] -> [Double] -> Double -> Polytope
-    doPolytope indices center normal volume =
-      Polytope { _points  = IM.fromAscList $
-                            zip indices (map (sites !!) indices)
+    doPolytope is center normal volume =
+      Polytope { _points  = IM.fromAscList $ zip is (map (sites !!) is)
                , _center  = center
                , _normal  = normal
                , _volume  = volume }

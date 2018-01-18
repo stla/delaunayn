@@ -1,8 +1,8 @@
 # delaunayn
 
-Delaunay triangulation in arbitrary dimension.
+Delaunay triangulation and Voronoi diagrams in arbitrary dimension.
 
-## Example
+## Delaunay tesselation
 
 Consider a polyhedron with these vertices:
 
@@ -134,3 +134,8 @@ identifiers;
 to.
 
 [![rgg.gif](https://s13.postimg.org/6h1r72k3r/rgg.gif)](https://postimg.org/image/ojutyafyb/)
+
+
+## Voronoi diagrams
+
+[![voronoi_cuboctahedron.gif](https://s13.postimg.org/6e0vngu1j/voronoi_cuboctahedron.gif)](https://postimg.org/image/ceykkjgnn/)
