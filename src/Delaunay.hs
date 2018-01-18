@@ -132,7 +132,7 @@ delaunay sites deg = do
                                        (__vrneighbors result))
       vfnsizes <- (<$!>) (map fromIntegral)
                          (peekArray n (_vfnsizes result))
-      vfneighbors <- (<$!>) (map IS.fromList . splitPlaces vfnsizes .
+      vfneighbors <- (<$!>) (map IS.fromAscList . splitPlaces vfnsizes .
                              map fromIntegral)
                             (peekArray (sum vfnsizes) (__vfneighbors result))
       vvnsizes <- (<$!>) (map fromIntegral)
@@ -167,7 +167,8 @@ delaunay sites deg = do
             , _neighbours = IS.fromList neighs }
     doPolytope :: [Int] -> [Double] -> [Double] -> Double -> Polytope
     doPolytope indices center normal volume =
-      Polytope { _points  = IM.fromList $ zip indices (map (sites !!) indices)
+      Polytope { _points  = IM.fromAscList $
+                            zip indices (map (sites !!) indices)
                , _center  = center
                , _normal  = normal
                , _volume  = volume }

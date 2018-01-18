@@ -178,22 +178,20 @@ struct Result* delaunay(
       toporient[i_facet] = facet->toporient;
 
       vertexT *vertex, **vertexp;
-      // unsigned vids[dim+1]; // we will sort the indices for later
-			j = 0;
-      // FOREACHvertex_(facet->vertices) {
-      //   vids[j] = (unsigned) qh_pointid(qh, vertex->point);
-      //   j++;
-			// } // ne pas faire ça
-      // qsort(vids, dim+1, sizeof(unsigned), cmpfunc);
-      // for(j=0; j<dim+1; j++){
-      //   facetsIndices[i_facet*(dim+1)+j] = vids[j];
-      // }
+      j = 0;
+      unsigned vids[dim+1]; // we will sort the indices for later
       FOREACHvertex_(facet->vertices) {
-        facetsIndices[i_facet*(dim+1)+j] = (unsigned) qh_pointid(qh, vertex->point);
+        vids[j] = (unsigned) qh_pointid(qh, vertex->point);
         j++;
 			}
-
-
+      qsort(vids, dim+1, sizeof(unsigned), cmpfunc);
+      for(j=0; j<dim+1; j++){
+        facetsIndices[i_facet*(dim+1)+j] = vids[j];
+      }
+      // FOREACHvertex_(facet->vertices) {
+      //   facetsIndices[i_facet*(dim+1)+j] = (unsigned) qh_pointid(qh, vertex->point);
+      //   j++;
+			// }
 
 			for(j=0; j<dim+1; j++){
 				facetsNormals[i_facet*(dim+1)+j] = facet->normal[j];
@@ -330,18 +328,11 @@ struct Result* delaunay(
         unsigned fid = facet->id-1;
         ridges_dup[i_ridge_dup][0] = fid;
         ridges_dup[i_ridge_dup][1] = nf[0];
-        pointT* points[dim];
         unsigned ids[dim];
         for(unsigned i=0; i<dim; i++){
-          points[i] =
-            ((vertexT*)facet->vertices->e[combinations[m][i]].p)->point;
           ids[i] = facetsIndices[fid*(dim+1)+combinations[m][i]];
         }
-        qsort(ids, dim, sizeof(unsigned), cmpfunc);
-        // for(unsigned i=0; i<dim; i++){
-        //   ridges_dup[i_ridge_dup][2+i] = ids[i];
-        //   flag_vertex_for_ridge[i_ridge_dup][ids[i]] = 1;
-        // }
+        //qsort(ids, dim, sizeof(unsigned), cmpfunc);
 
         unsigned done = 0;
         unsigned ok;
@@ -378,13 +369,13 @@ struct Result* delaunay(
               unsigned ok;
               for(unsigned mm=0; mm<dim+1; mm++){
                 ok = 0;
-                unsigned ids2[dim];
+                // unsigned ids2[dim];
                 for(unsigned i=0; i<dim; i++){
-                  ids2[i] = facetsIndices[fnid*(dim+1)+combinations[mm][i]];
-                }
-                qsort(ids2, dim, sizeof(unsigned), cmpfunc);
-                for(unsigned i=0; i<dim; i++){
-                  if(ids2[i] != ids[i]){
+                // ids2[i] = facetsIndices[fnid*(dim+1)+combinations[mm][i]];
+                // }
+                // qsort(ids2, dim, sizeof(unsigned), cmpfunc);
+                // for(unsigned i=0; i<dim; i++){
+                  if(facetsIndices[fnid*(dim+1)+combinations[mm][i]] != ids[i]){
                     break;
                   }else{
                     ok++;
@@ -401,6 +392,13 @@ struct Result* delaunay(
               }
             }
           } // end FOREACHneighbor_(facet)
+          pointT* points[dim];
+          for(unsigned i=0; i<dim; i++){
+            points[i] = malloc(dim*sizeof(double));
+            for(unsigned j=0; j<dim; j++){
+              points[i][j] = vertices[ids[i]*dim+j];
+            }
+          }
           double normal[dim];
           if(dim==2){
             double u1 = points[1][0] - points[0][0];
@@ -467,6 +465,9 @@ struct Result* delaunay(
                 ridgesNormals[i_ridge_dup][i] *= -1;
               }
             }
+          }
+          for(unsigned i=0; i<dim; i++){
+            free(points[i]);
           }
         }
         i_ridge_dup++;
