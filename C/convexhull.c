@@ -3,6 +3,11 @@
 #include "convexhull.h"
 #include "utils.h"
 
+// to use the qsort function
+int cmpvertices (const void * a, const void * b) {
+   return ( (*((VertexT*)a)).id - (*((VertexT*)b)).id );
+}
+
 ConvexHullT* convexHull(
 	double*   points,
 	unsigned  dim,
@@ -35,55 +40,98 @@ ConvexHullT* convexHull(
   	qh_getarea(qh, qh->facet_list);
 
     unsigned   nfaces    = qh->num_facets;
-    unsigned** faces     = malloc(nfaces * sizeof(unsigned*));
+    FaceT*     faces     = malloc(nfaces * sizeof(FaceT));
     unsigned*  facesizes = malloc(nfaces * sizeof(unsigned));
-    double*    areas     = malloc(nfaces * sizeof(double));
-    double**   centers   = malloc(nfaces * sizeof(double*));
     {
       facetT *facet; unsigned i_facet = 0;
       FORALLfacets{
-        areas[i_facet]     = facet->f.area;
-        centers[i_facet]   = facet->center;
+        facet->id = i_facet; // for neighbors
+        faces[i_facet].area    = facet->f.area;
+        faces[i_facet].center  = facet->center;
+        faces[i_facet].normal  = facet->normal;
         facesizes[i_facet] =
           (unsigned) qh_setsize(qh, facet->vertices);
-        faces[i_facet]     =
-          (unsigned*) malloc(facesizes[i_facet] * sizeof(unsigned));
-        { // vertices
+        faces[i_facet].vertices =
+          (VertexT*) malloc(facesizes[i_facet] * sizeof(VertexT));
+        { // facet vertices
           vertexT *vertex, **vertexp;
           unsigned i_vertex = 0;
-          unsigned facetvertices[facesizes[i_facet]];
           FOREACHvertex_(facet->vertices){
-            facetvertices[i_vertex] = qh_pointid(qh, vertex->point);
+            (faces[i_facet].vertices)[i_vertex].id =
+              (unsigned) qh_pointid(qh, vertex->point);
+            (faces[i_facet].vertices)[i_vertex].point =
+              malloc(dim * sizeof(double));
+            for(unsigned i=0; i<dim; i++){
+              ((faces[i_facet].vertices)[i_vertex].point)[i] =
+                points[(faces[i_facet].vertices)[i_vertex].id*dim+i];
+            }
+            // plante dans Haskell: (faces[i_facet].vertices)[i_vertex].point = vertex->point;
             i_vertex++;
           }
-          qsort(facetvertices, facesizes[i_facet], sizeof(unsigned), cmpfunc);
-          for(i_vertex=0; i_vertex<facesizes[i_facet]; i_vertex++){
-            faces[i_facet][i_vertex] = facetvertices[i_vertex];
+          qsort(faces[i_facet].vertices, facesizes[i_facet],
+                sizeof(VertexT), cmpvertices);
+        }
+        {
+          qh_makeridges(qh, facet);
+          unsigned n_ridges = qh_setsize(qh, facet->ridges);
+          EdgeT* ridges = malloc(n_ridges * sizeof(EdgeT));
+          ridgeT *ridge, **ridgep;
+          unsigned i_ridge = 0;
+          FOREACHridge_(facet->ridges){
+            ridges[i_ridge].v1.point =
+              ((vertexT*)ridge->vertices->e[0].p)->point;
+            ridges[i_ridge].v1.id =
+              qh_pointid(qh, ridges[i_ridge].v1.point);
+            ridges[i_ridge].v2.point =
+              ((vertexT*)ridge->vertices->e[1].p)->point;
+            ridges[i_ridge].v2.id =
+              qh_pointid(qh, ridges[i_ridge].v2.point);
           }
-          i_facet++;
+          free(ridges);
         }
-        { // neighbours
-          facet->id = i_facet;
+        i_facet++;
+      }
+    }
+    {
+      facetT *facet;
+      unsigned i_facet = 0;
+      FORALLfacets{
+        faces[i_facet].neighborsize = qh_setsize(qh, facet->neighbors);
+        faces[i_facet].neighbors =
+          malloc(faces[i_facet].neighborsize * sizeof(unsigned));
+        unsigned i_neighbor = 0;
+        facetT *neighbor, **neighborp;
+        FOREACHneighbor_(facet){
+          (faces[i_facet].neighbors)[i_neighbor] = (unsigned) neighbor->id;
+          i_neighbor++;
         }
+        qsort(faces[i_facet].neighbors, faces[i_facet].neighborsize,
+              sizeof(unsigned), cmpfunc);
+        i_facet++;
       }
     }
 
-    unsigned  nvertices = qh->num_vertices;
-    unsigned* vertices  = malloc(nvertices * sizeof(unsigned));
+    unsigned nvertices = qh->num_vertices;
+    //unsigned* vertices  = malloc(nvertices * sizeof(unsigned));
+    VertexT* vertices = malloc(nvertices * sizeof(VertexT));
     {
       vertexT *vertex;
       unsigned i_vertex=0;
-      unsigned vertices_[nvertices];
+      //VertexT vertices_[nvertices];
       FORALLvertices{
-        vertices_[i_vertex] = qh_pointid(qh, vertex->point);
+        printf("ivertex: %d\n", i_vertex);
+        vertices[i_vertex].id = (unsigned) qh_pointid(qh, vertex->point);
+//        vertices[i_vertex].point = vertex->point;
+        vertices[i_vertex].point = malloc(dim * sizeof(double));
+        for(unsigned i=0; i<dim; i++){
+          (vertices[i_vertex].point)[i] = points[vertices[i_vertex].id*dim+i];
+        }
+        printf("point: %f %f %f\n", vertices[i_vertex].point[0], vertices[i_vertex].point[1], vertices[i_vertex].point[2]);
         i_vertex++;
       }
-      qsort(vertices_, nvertices, sizeof(unsigned), cmpfunc);
-      vertices = vertices_;
+      qsort(vertices, nvertices, sizeof(VertexT), cmpvertices);
     }
 
-    free(areas);
-    free(centers)
     out->dim       = dim;
     out->vertices  = vertices;
     out->nvertices = nvertices;
@@ -91,6 +139,11 @@ ConvexHullT* convexHull(
     out->facesizes = facesizes;
     out->nfaces    = nfaces;
   } // end if exitocde
+
+  /* Do cleanup regardless of whether there is an error */
+  int curlong, totlong;
+	qh_freeqhull(qh, !qh_ALL);                  /* free long memory */
+	qh_memfreeshort(qh, &curlong, &totlong);   /* free short memory and memory allocator */
 
   return out;
 }

@@ -1,37 +1,11 @@
-{-# LANGUAGE ForeignFunctionInterface #-}
 module ConvexHull.ConvexHull
   where
 import           ConvexHull.CConvexHull
-import           Control.Monad         (when, (<$!>))
-import           Data.IntMap.Strict    (IntMap)
-import qualified Data.IntMap.Strict    as IM
-import           Data.IntSet           (IntSet)
-import qualified Data.IntSet           as IS
-import           Data.List
-import           Data.List.Split       (chunksOf, splitPlaces)
-import           Data.Map.Strict       (Map)
-import qualified Data.Map.Strict       as M
-import           Data.Maybe
-import           Data.Set              (Set)
-import qualified Data.Set              as S
-import           Foreign.C.String
+import           Control.Monad         (when)
 import           Foreign.C.Types
 import           Foreign.Marshal.Alloc (free, mallocBytes)
-import           Foreign.Marshal.Array (peekArray, pokeArray)
-import           Foreign.Ptr           (Ptr)
+import           Foreign.Marshal.Array (pokeArray)
 import           Foreign.Storable      (peek, sizeOf)
-import           System.IO             (readFile)
-import           TemporaryFile
-
-type Index = Int
-type IndexSet = IntSet
-type IndexMap = IntMap
-
-
-cdbl2dbl :: CDouble -> Double
-cdbl2dbl x = if isNaN x
-                then 0/0
-                else realToFrac x
 
 
 convexHull :: [[Double]] -> Bool -> IO ConvexHull

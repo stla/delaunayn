@@ -151,7 +151,7 @@ delaunay sites deg = do -- on pourrait définir tout ça dans le peek ; oui mais
       return Delaunay { _vertices = IM.fromList $ zip [0 .. n]
                                     (zipWith4 toVertex
                                      sites vrneighbors vfneighbors vvneighbors)
-                      , _facets = IM.fromList $ zip [0 .. nf]
+                      , _facets = IM.fromList $ zip [0 .. nf-1]
                                   (zipWith5 toFacet
                                   (chunksOf (dim+1) indices)
                                   (chunksOf (dim+1) normals)
