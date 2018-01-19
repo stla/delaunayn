@@ -47,36 +47,35 @@ cVertexToVertex dim cvertex = do
   point <- (<$!>) (map realToFrac) (peekArray dim (__point cvertex))
   return Vertex { _id = id', _point = point }
 
-data CRidge = CRidge {
+data CEdge = CEdge {
     __v1 :: CVertex
   , __v2 :: CVertex
 }
 
-instance Storable CRidge where
-    sizeOf    __ = #{size RidgeT}
-    alignment __ = #{alignment RidgeT}
+instance Storable CEdge where
+    sizeOf    __ = #{size EdgeT}
+    alignment __ = #{alignment EdgeT}
     peek ptr = do
-      v1'     <- #{peek RidgeT, v1}    ptr
-      v2'     <- #{peek RidgeT, v2}    ptr
-      return CRidge { __v1 = v1'
+      v1'     <- #{peek EdgeT, v1}    ptr
+      v2'     <- #{peek EdgeT, v2}    ptr
+      return CEdge { __v1 = v1'
                     , __v2 = v2' }
-    poke ptr (CRidge r1 r2)
+    poke ptr (CEdge r1 r2)
       = do
-          #{poke RidgeT, v1}      ptr r1
-          #{poke RidgeT, v2}      ptr r2
+          #{poke EdgeT, v1}      ptr r1
+          #{poke EdgeT, v2}      ptr r2
 
-data Ridge = (Vertex, Vertex)
-     deriving Show
+type Edge = (Vertex, Vertex)
 
-cRidgeToRidge :: Int -> CRidge -> IO Ridge
-cRidgeToRidge dim cridge = do
+cEdgeToEdge :: Int -> CEdge -> IO Edge
+cEdgeToEdge dim cridge = do
   v1 <- cVertexToVertex dim (__v1 cridge)
   v2 <- cVertexToVertex dim (__v2 cridge)
   return (v1, v2)
 
 data CFace = CFace {
     __fvertices :: Ptr CVertex
-  , __ridges :: Ptr CRidge
+  , __edges :: Ptr CEdge
   , __center :: Ptr CDouble
   , __normal :: Ptr CDouble -- & offset
   , __area :: CDouble
@@ -89,13 +88,14 @@ instance Storable CFace where
     alignment __ = #{alignment FaceT}
     peek ptr = do
       fvertices' <- #{peek FaceT, vertices}     ptr
-      ridges'    <- #{peek FaceT, ridges}       ptr
+      edges'     <- #{peek FaceT, edges}       ptr
       center'    <- #{peek FaceT, center}       ptr
       normal'    <- #{peek FaceT, normal}       ptr
       area'      <- #{peek FaceT, area}         ptr
       neighbors' <- #{peek FaceT, neighbors}    ptr
       neighsize  <- #{peek FaceT, neighborsize} ptr
       return CFace { __fvertices    = fvertices'
+                   , __edges        = edges'
                    , __center       = center'
                    , __normal       = normal'
                    , __area         = area'
@@ -104,7 +104,7 @@ instance Storable CFace where
     poke ptr (CFace r1 r2 r3 r4 r5 r6 r7)
       = do
           #{poke FaceT, vertices}     ptr r1
-          #{poke FaceT, ridges}       ptr r2
+          #{poke FaceT, edges}        ptr r2
           #{poke FaceT, center}       ptr r3
           #{poke FaceT, normal}       ptr r4
           #{poke FaceT, area}         ptr r5
@@ -113,7 +113,7 @@ instance Storable CFace where
 
 data Face = Face {
     _fvertices :: IndexMap [Double]
-  , _ridges :: [Ridge]
+  , _edges :: [Edge]
   , _center :: [Double]
   , _normal :: [Double]
   , _area :: Double
@@ -128,12 +128,12 @@ cFaceToFace dim nvertices cface = do
   normal    <- (<$!>) (map realToFrac) (peekArray dim (__normal cface))
   vertices  <- (=<<) (mapM (cVertexToVertex dim))
                     (peekArray nvertices (__fvertices cface))
-  ridges  <- (=<<) (mapM (cRidgeToRidge dim))
-                   (peekArray nvertices (__ridges cface))
+  edges  <- (=<<) (mapM (cEdgeToEdge dim))
+                   (peekArray nvertices (__edges cface))
   neighbors <- (<$!>) (map fromIntegral)
                       (peekArray neighsize (__neighbors cface))
   return Face { _fvertices = IM.fromAscList (map (_id &&& _point) vertices)
-              , _ridges    = ridges
+              , _edges     = edges
               , _center    = center
               , _normal    = normal
               , _area      = area

@@ -3,13 +3,19 @@ typedef struct Vertex {
   double* point;
 } VertexT;
 
+typedef struct Edge {
+    VertexT v1;
+    VertexT v2;
+} EdgeT;
+
 typedef struct Face {
-  VertexT* vertices;
-  double* center;
-  double* normal;
-  double area;
+  VertexT*  vertices;
+  EdgeT*    edges;
+  double*   center;
+  double*   normal;
+  double    area;
   unsigned* neighbors;
-  unsigned neighborsize;
+  unsigned  neighborsize;
 } FaceT;
 
 typedef struct ConvexHull {
@@ -20,8 +26,3 @@ typedef struct ConvexHull {
   unsigned*  facesizes;
   unsigned   nfaces;
 } ConvexHullT;
-
-typedef struct Edge {
-    VertexT v1;
-    VertexT v2;    
-} EdgeT;
