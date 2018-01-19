@@ -12,21 +12,6 @@ double* nanvector(int dim){
   return out;
 }
 
-void append(unsigned x, unsigned** array, unsigned size, unsigned* flag){
-  unsigned _flag = 1;
-  for(unsigned i=0; i<size; i++){
-    //printf("array[i]: %d\n", *array[i]);
-    if(x==*array[i]){ // il faut peut-être faire *(array + i)
-      _flag = 0;
-      break;
-    }
-  }
-  if(_flag==1){
-    *array = realloc(*array, (size+1)*sizeof(unsigned));
-    *flag = _flag;
-  }
-}
-
 struct mat3X3 {
     double mat[3][3];
 };

@@ -25,4 +25,6 @@ typedef struct ConvexHull {
   FaceT*     faces;
   unsigned*  facesizes;
   unsigned   nfaces;
+  EdgeT*     edges;
+  unsigned   nedges;
 } ConvexHullT;
