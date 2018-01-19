@@ -1,11 +1,11 @@
 {-# LINE 1 "result.hsc" #-}
 {-# LANGUAGE ForeignFunctionInterface #-}
-module Result
+module CDelaunay
   where
 import           Foreign
 import           Foreign.C.Types
 
-data Result = Result {
+data CDelaunay = CDelaunay {
   _dim          :: CUInt,
   _length       :: CUInt,
   _indices      :: Ptr CUInt,
@@ -29,7 +29,7 @@ data Result = Result {
   _vvnsizes     :: Ptr CUInt
 } -- deriving (Show, Eq)
 
-instance Storable Result where
+instance Storable CDelaunay where
     sizeOf    _ = (160)
 {-# LINE 35 "result.hsc" #-}
     alignment _ = 8
@@ -39,7 +39,7 @@ instance Storable Result where
 {-# LINE 38 "result.hsc" #-}
       length'    <- (\hsc_ptr -> peekByteOff hsc_ptr 4) ptr
 {-# LINE 39 "result.hsc" #-}
-      indices'   <- (\hsc_ptr -> peekByteOff hsc_ptr 8) ptr -- peekArray (fromIntegral $ length' * (dim'+1)) $ #{ptr ResultT, indices} ptr
+      indices'   <- (\hsc_ptr -> peekByteOff hsc_ptr 8) ptr -- peekArray (fromIntegral $ length' * (dim'+1)) $ #{ptr CDelaunayT, indices} ptr
 {-# LINE 40 "result.hsc" #-}
       volumes'   <- (\hsc_ptr -> peekByteOff hsc_ptr 16) ptr
 {-# LINE 41 "result.hsc" #-}
@@ -77,7 +77,7 @@ instance Storable Result where
 {-# LINE 57 "result.hsc" #-}
       vvnsizes' <- (\hsc_ptr -> peekByteOff hsc_ptr 144) ptr
 {-# LINE 58 "result.hsc" #-}
-      return Result { _dim = dim'
+      return CDelaunay { _dim = dim'
                     , _length = length'
                     , _indices = indices'
                     , _volumes = volumes'
@@ -99,7 +99,7 @@ instance Storable Result where
                     , _vvneighbors = vvneighbors'
                     , _vvnsizes = vvnsizes'
                   }
-    poke ptr (Result r1 r2 r3 r4 r5 r6 r7 r8 r9 r10 r11 r12 r13 r14 r15 r16 r17 r18 r19 r20 r21)
+    poke ptr (CDelaunay r1 r2 r3 r4 r5 r6 r7 r8 r9 r10 r11 r12 r13 r14 r15 r16 r17 r18 r19 r20 r21)
       = do
           (\hsc_ptr -> pokeByteOff hsc_ptr 0)            ptr r1
 {-# LINE 83 "result.hsc" #-}

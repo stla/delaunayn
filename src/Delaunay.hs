@@ -20,7 +20,7 @@ import           Foreign.Marshal.Alloc (free, mallocBytes)
 import           Foreign.Marshal.Array (peekArray, pokeArray)
 import           Foreign.Ptr           (Ptr)
 import           Foreign.Storable      (peek, sizeOf)
-import           Result
+import           CDelaunay
 import           System.IO             (readFile)
 import           TemporaryFile
 
@@ -64,7 +64,7 @@ ridgeVertices = IS.fromAscList . IM.keys . _points . _polytope
 
 foreign import ccall unsafe "delaunay" c_delaunay
   :: Ptr CDouble -> CUInt -> CUInt -> CUInt -> Ptr CUInt -> Ptr CUInt -> CString
-  -> IO (Ptr Result)
+  -> IO (Ptr CDelaunay)
 
 
 cdbl2dbl :: CDouble -> Double
@@ -74,9 +74,11 @@ cdbl2dbl x = if isNaN x
 
 
 delaunay :: [[Double]] -> Bool -> IO Delaunay
-delaunay sites deg = do
+delaunay sites deg = do -- on pourrait définir tout ça dans le peek ; oui mais le poke ?
   let n = length sites
-      dim = length (head sites)
+      dim = length (head sites) -- TODO check même longueur
+  when (dim < 2) $
+    error "dimension must be at least 2"
   when (n <= dim+1) $
     error "insufficient number of points"
   sitesPtr <- mallocBytes (n * dim * sizeOf (undefined :: CDouble))
@@ -197,7 +199,7 @@ ridgesMap tess = M.fromList ridges'
 
 
 -- _facetVertices :: Facet -> IndexSet
--- _facetVertices = IS.fromList . IM.keys . _points . _simplex
+-- _facetVertices = IS.fromAscList . IM.keys . _points . _simplex
 --
 -- allFacets :: Delaunay -> [IndexSet]
 -- allFacets d = map _facetVertices (IM.elems $ _facets d)

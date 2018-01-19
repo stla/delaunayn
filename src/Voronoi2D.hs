@@ -9,15 +9,12 @@ module Voronoi2D
  , voronoi2ForR)
   where
 import           Control.Arrow      (second)
-import qualified Data.IntMap.Strict as IM
---import qualified Data.IntSet        as IS
 import           Data.List
 import           Data.Maybe
 import           Data.Tuple.Extra   (both)
 import           Delaunay
 import           Text.Show.Pretty   (ppShow)
 import           VoronoiShared
---import qualified Data.Map.Strict as M
 
 
 type Point2 = (Double, Double)

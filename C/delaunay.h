@@ -1,4 +1,4 @@
-typedef struct Result {
+typedef struct Delaunay {
   unsigned dim;      // to remove
   unsigned length;   // to remove
   unsigned* indices; // to rename to vertices
@@ -8,6 +8,7 @@ typedef struct Result {
   double* centers;
   unsigned* toporient;
   unsigned* ridges;
+  unsigned nridges;
   double* rvolumes;
   double* rcenters;
   double* rnormals;
@@ -19,5 +20,4 @@ typedef struct Result {
   unsigned* vfnsizes;
   unsigned* vvneighbors;
   unsigned* vvnsizes;
-  unsigned nridges;
-} ResultT;
+} DelaunayT;

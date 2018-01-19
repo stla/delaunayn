@@ -1,6 +1,7 @@
 #define qh_QHimport
 #include "qhull_ra.h"
-#include "result.h"
+#include "delaunay.h"
+#include "utils.h"
 #include <math.h> // to use NAN
 
 double* nanvector(int dim){
@@ -78,11 +79,6 @@ double square(double x){
   return x*x;
 }
 
-// to use the qsort function
-int cmpfunc (const void * a, const void * b) {
-   return ( *(int*)a - *(int*)b );
-}
-
 void printfacet(qhT* qh, facetT* facet){
   vertexT *vertex, **vertexp;
   FOREACHvertex_(facet->vertices){
@@ -95,7 +91,7 @@ unsigned facetOK(facetT* facet, unsigned degenerate){
 } // && simplicial, && !facet->redundant
 
 
-struct Result* delaunay(
+struct Delaunay* delaunay(
 	double*   vertices,
 	unsigned  dim,
 	unsigned  n,
@@ -129,7 +125,7 @@ struct Result* delaunay(
   fclose(tmpstdout);
   printf("exitcode: %d\n", exitcode[0]);
 
-  struct Result* out = malloc(sizeof(ResultT));
+  struct Delaunay* out = malloc(sizeof(DelaunayT));
 
 	if (!exitcode[0]) {             /* 0 if no error from qhull */
     printf("START\n");
@@ -324,11 +320,11 @@ struct Result* delaunay(
 		double   ridgesNormals[n_ridges_dup][dim];
     double*  ridgesAreas = malloc(n_ridges_dup * sizeof(double));
     //unsigned flag_vertex_for_ridge[n_ridges_dup][n];
-		for(unsigned adj=0; adj<n_ridges_dup; adj++){
-			for(unsigned v=0; v<n; v++){
-				flag_vertex_for_ridge[adj][v] = 0;
-			}
-		}
+		// for(unsigned adj=0; adj<n_ridges_dup; adj++){
+		// 	for(unsigned v=0; v<n; v++){
+		// 		flag_vertex_for_ridge[adj][v] = 0;
+		// 	}
+		// }
     unsigned* n_ridges_per_vertex = malloc(n * sizeof(unsigned));
     for(unsigned m=0; m<n; m++){
       n_ridges_per_vertex[m] = 0;
@@ -362,7 +358,7 @@ struct Result* delaunay(
         unsigned done = 0;
         unsigned ok;
         for(unsigned r=0; r<i_ridge_dup; r++){
-          if(ridges_dup[r][2+dim]==1 && ridges_dup[r][1]==fid){
+          if(ridges_dup[r][1]==fid && ridges_dup[r][2+dim]==1){
             ok = 0;
             unsigned ids2[dim];
             for(unsigned i=0; i<dim; i++){
