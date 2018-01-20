@@ -55,7 +55,7 @@ ridgeVertices = IS.fromAscList . IM.keys . _points . _subsimplex
 -- | the ridges a vertex belongs to
 vertexNeighborRidges :: Delaunay -> Index -> [Ridge]
 vertexNeighborRidges tess i =
-  filter (\r -> ridgeVertices r `elem` _neighRidges (_vertices tess IM.! i))
+  filter (\r -> ridgeVertices r `elem` _neighRidges (_sites tess IM.! i))
          (_ridges tess)
 
 -- | whether a ridge is sandwiched between two facets
@@ -161,11 +161,14 @@ test3 = delaunay [[0,0],[0,1],[0,2],[1,0],[1,1],[1,2],[2,0],[2,1],[2,2]] False
 test4 :: IO Delaunay
 test4 = delaunay [[0,0],[0,2],[2,0],[2,2],[1,1]] False
 
-cuboctahedron :: [[Double]]
-cuboctahedron = [[i,j,0] | i <- [-1,1], j <- [-1,1]] ++
-                [[i,0,j] | i <- [-1,1], j <- [-1,1]] ++
-                [[0,i,j] | i <- [-1,1], j <- [-1,1]] ++
-                [[0,0,0]]
+square :: [[Double]] -- TODO test point at infinity (Qz)
+square = [[0,0],[0,1],[1,0],[1,1]]
+
+centricCuboctahedron :: [[Double]]
+centricCuboctahedron = [[i,j,0] | i <- [-1,1], j <- [-1,1]] ++
+                       [[i,0,j] | i <- [-1,1], j <- [-1,1]] ++
+                       [[0,i,j] | i <- [-1,1], j <- [-1,1]] ++
+                       [[0,0,0]]
 
 rhombicDodecahedron :: [[Double]]
 rhombicDodecahedron = [[-1.0, 0.0, 0.0], [-0.5,-0.5,-0.5], [-0.5,-0.5, 0.5],

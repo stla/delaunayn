@@ -56,7 +56,7 @@ voronoiCell ridgesQuotienter edgeTransformer tess i =
 
 voronoi :: (Delaunay -> Index -> a) -> Delaunay -> [([Double], a)]
 voronoi cellGetter tess =
-  let sites = IM.elems $ IM.map _coordinates (_vertices tess) in
+  let sites = IM.elems $ IM.map _coordinates (_sites tess) in
     zip sites (map (cellGetter tess) [0 .. length sites -1])
 
 voronoi' :: Delaunay -> [([Double], [Edge])]

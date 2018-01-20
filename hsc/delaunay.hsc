@@ -47,7 +47,7 @@ data Ridge = Ridge {
 } deriving Show
 
 data Delaunay = Delaunay {
-    _vertices :: IndexMap Site
+    _sites :: IndexMap Site
   , _ridges   :: [Ridge]
   , _facets   :: IntMap Facet
 } deriving Show
@@ -206,9 +206,9 @@ cDelaunayPtrToDelaunay cdelaunayPtr sites = do
   let ridges = map (\((a,b),c,d,e) -> doRidge (filter (<nf) a) b c d e)
               (zip4 (map (splitAt 2) ridges'')
                     ridgesCenters ridgesNormals areas)
-  return Delaunay { _vertices = IM.fromList $ zip [0 .. n]
-                                (zipWith4 toSite
-                                 sites vrneighbors vfneighbors vvneighbors)
+  return Delaunay { _sites = IM.fromList $ zip [0 .. n]
+                             (zipWith4 toSite
+                             sites vrneighbors vfneighbors vvneighbors)
                   , _facets = IM.fromList $ zip [0 .. nf-1]
                               (zipWith5 toFacet
                               (chunksOf (dim+1) indices)

@@ -2,7 +2,7 @@ module ConvexHull
   ( module X
   , test
   ) where
-import ConvexHull.CConvexHull as X (ConvexHull(..))
+import ConvexHull.Types as X 
 import ConvexHull.ConvexHull  as X
 
 test :: IO ConvexHull

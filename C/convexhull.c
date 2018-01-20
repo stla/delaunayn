@@ -101,6 +101,9 @@ unsigned* neighEdges(unsigned id, EdgeT* alledges, unsigned nedges,
   return neighs;
 }
 
+// ATTENTION avec Qt le center est le centre de l'union des triangles, ainsi que normal et center
+// dim 4: les "triangles" ont 4 vertices
+
 ConvexHullT* convexHull(
 	double*   points,
 	unsigned  dim,
@@ -130,7 +133,8 @@ ConvexHullT* convexHull(
     // FILE* summaryFile = fopen(tmpFile, "w");
   	// qh_printsummary(qh, summaryFile);
   	// fclose(summaryFile);
-  	qh_getarea(qh, qh->facet_list);
+
+    //qh_getarea(qh, qh->facet_list);
 
     unsigned   nfaces    = qh->num_facets;
     FaceT*     faces     = malloc(nfaces * sizeof(FaceT));
@@ -140,15 +144,15 @@ ConvexHullT* convexHull(
       facetT *facet; unsigned i_facet = 0;
       FORALLfacets{
         facet->id              = i_facet; // for neighbors
-        faces[i_facet].area    = facet->f.area;
-        faces[i_facet].center  = facet->center;
+        faces[i_facet].area    = qh_facetarea(qh, facet); // facet->f.area;
+        faces[i_facet].center  = qh_getcenter(qh, facet->vertices);
         faces[i_facet].normal  = facet->normal;
         faces[i_facet].offset  = facet->offset;
         facesizes[i_facet] =
           (unsigned) qh_setsize(qh, facet->vertices);
-        faces[i_facet].vertices =
-          (VertexT*) malloc(facesizes[i_facet] * sizeof(VertexT));
         { /* face vertices */
+          faces[i_facet].vertices =
+            (VertexT*) malloc(facesizes[i_facet] * sizeof(VertexT));
           vertexT *vertex, **vertexp;
           unsigned i_vertex = 0;
           FOREACHvertex_(facet->vertices){
@@ -173,6 +177,7 @@ ConvexHullT* convexHull(
           ridgeT *ridge, **ridgep;
           unsigned i_ridge = 0;
           FOREACHridge_(facet->ridges){
+            printf("ridge size: %d\n", qh_setsize(qh, ridge->vertices)); // dim-1
             unsigned ids[2] =
               { qh_pointid(qh, ((vertexT*)ridge->vertices->e[0].p)->point)
               , qh_pointid(qh, ((vertexT*)ridge->vertices->e[1].p)->point) };
@@ -194,21 +199,40 @@ ConvexHullT* convexHull(
     unsigned n_alledges;
     EdgeT* alledges = allEdges(faces, edgesizes, nfaces, &n_alledges);
 
-    { /* neighbor faces */
+    { /* neighbor faces and faces families */
       facetT *facet;
       unsigned i_facet = 0;
       FORALLfacets{
-        faces[i_facet].neighborsize = qh_setsize(qh, facet->neighbors);
-        faces[i_facet].neighbors =
-          malloc(faces[i_facet].neighborsize * sizeof(unsigned));
-        unsigned i_neighbor = 0;
-        facetT *neighbor, **neighborp;
-        FOREACHneighbor_(facet){
-          faces[i_facet].neighbors[i_neighbor] = (unsigned) neighbor->id;
-          i_neighbor++;
+        {
+          faces[i_facet].neighborsize = qh_setsize(qh, facet->neighbors);
+          faces[i_facet].neighbors =
+            malloc(faces[i_facet].neighborsize * sizeof(unsigned));
+          unsigned i_neighbor = 0;
+          facetT *neighbor, **neighborp;
+          FOREACHneighbor_(facet){
+            faces[i_facet].neighbors[i_neighbor] = (unsigned) neighbor->id;
+            i_neighbor++;
+          }
+          qsort(faces[i_facet].neighbors, faces[i_facet].neighborsize,
+                sizeof(unsigned), cmpfunc);
         }
-        qsort(faces[i_facet].neighbors, faces[i_facet].neighborsize,
-              sizeof(unsigned), cmpfunc);
+        { /* face family, when option Qt */
+          if(facet->tricoplanar){
+            faces[i_facet].family = facet->f.triowner->id;
+            // faire ça dans delaunay.c ; il ne faut pas faire qh_getarea
+            // vertexT* apex = facet->vertices->e[0].p;
+            // facetT *neighbor, **neighborp;
+            // FOREACHneighbor_(apex){
+            //   if(neighbor->keepcentrum){
+            //     faces[i_facet].family = neighbor->id;
+            //     break;
+            //   }
+            // }
+          }else{
+            faces[i_facet].family = -1;
+          }
+        }
+        /**/
         i_facet++;
       }
     }
@@ -220,7 +244,6 @@ ConvexHullT* convexHull(
       vertexT *vertex;
       unsigned i_vertex=0;
       FORALLvertices{
-        printf("vertex %d\n", vertex->id);
         /* vertex id and coordinates */
         vertices[i_vertex].id = (unsigned) qh_pointid(qh, vertex->point);
         vertices[i_vertex].point = getpoint(points, dim, vertices[i_vertex].id);

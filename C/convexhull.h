@@ -28,6 +28,7 @@ typedef struct Face {
   double    area;
   unsigned* neighbors;
   unsigned  neighborsize;
+  int       family;
 } FaceT;
 
 typedef struct ConvexHull {

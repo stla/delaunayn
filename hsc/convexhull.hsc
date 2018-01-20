@@ -1,29 +1,23 @@
 {-# LANGUAGE ForeignFunctionInterface #-}
 module ConvexHull.CConvexHull
-  ( ConvexHull(..)
-  , Face(..)
-  , Vertex(..)
-  , peekConvexHull
+  ( peekConvexHull
   , c_convexhull )
   where
 import           Control.Monad         ((<$!>), (=<<))
+import ConvexHull.Types
 import Foreign
 import Foreign.C.Types
 import Data.List
 import Data.List.Index (imapM)
 import           Data.IntMap.Strict    (IntMap)
 import qualified Data.IntMap.Strict    as IM
-import           Data.IntSet           (IntSet)
 import qualified Data.IntSet           as IS
 
 #include "convexhull.h"
 
-type IndexMap = IntMap
-type IndexSet = IntSet
-
 data CVertex = CVertex {
-    __id :: CUInt,
-    __point :: Ptr CDouble
+    __id :: CUInt
+  , __point :: Ptr CDouble
 }
 
 instance Storable CVertex where
@@ -50,10 +44,10 @@ cVerticesToMap dim cvertices = do
   points <- mapM (\cv -> (<$!>) (map realToFrac) (peekArray dim (__point cv)))
                  cvertices
   return $ IM.fromAscList (zip ids points)
---
+
 data CVertex' = CVertex' {
     __id' :: CUInt
-  , __point':: Ptr CDouble
+  , __point' :: Ptr CDouble
   , __neighfacets :: Ptr CUInt
   , __nneighfacets :: CUInt
   , __neighvertices :: Ptr CUInt
@@ -94,13 +88,6 @@ instance Storable CVertex' where
           #{poke FullVertexT, neighedges}       ptr r7
           #{poke FullVertexT, nneighedges}      ptr r8
 
-data Vertex = Vertex {
-    _point :: [Double]
-  , _neighfacets :: IntSet
-  , _neighvertices :: IndexSet
-  , _neighedges :: IndexSet
-} deriving Show
-
 cVerticesToVertexMap :: Int -> [CVertex'] -> IO (IntMap Vertex)
 cVerticesToVertexMap dim cvertices = do
   let ids             = map (fromIntegral . __id') cvertices
@@ -124,11 +111,11 @@ cVerticesToVertexMap dim cvertices = do
                             (map (\(pt, fneighs, vneighs, eneighs) ->
                                   Vertex { _point = pt
                                          , _neighfacets =
-                                            IS.fromAscList fneighs
+                                              IS.fromAscList fneighs
                                          , _neighvertices =
-                                            IS.fromAscList vneighs
+                                              IS.fromAscList vneighs
                                          , _neighedges =
-                                            IS.fromAscList eneighs
+                                              IS.fromAscList eneighs
                                          })
                                   (zip4 points neighfacets neighvertices
                                         neighedges)))
@@ -151,8 +138,6 @@ instance Storable CEdge where
           #{poke EdgeT, v1}      ptr r1
           #{poke EdgeT, v2}      ptr r2
 
-type Edge = IntMap [Double]
-
 cEdgeToEdge :: Int -> CEdge -> IO Edge
 cEdgeToEdge dim cridge = do
   let v1 = __v1 cridge
@@ -168,20 +153,22 @@ data CFace = CFace {
   , __area :: CDouble
   , __neighbors :: Ptr CUInt
   , __neighborsize :: CUInt
+  , __family :: CInt
 }
 
 instance Storable CFace where
     sizeOf    __ = #{size FaceT}
     alignment __ = #{alignment FaceT}
     peek ptr = do
-      fvertices' <- #{peek FaceT, vertices}     ptr
-      edges'     <- #{peek FaceT, edges}        ptr
-      center'    <- #{peek FaceT, center}       ptr
-      normal'    <- #{peek FaceT, normal}       ptr
-      offset'    <- #{peek FaceT, offset}       ptr
-      area'      <- #{peek FaceT, area}         ptr
-      neighbors' <- #{peek FaceT, neighbors}    ptr
+      fvertices' <- #{peek FaceT, vertices} ptr
+      edges'     <- #{peek FaceT, edges} ptr
+      center'    <- #{peek FaceT, center} ptr
+      normal'    <- #{peek FaceT, normal} ptr
+      offset'    <- #{peek FaceT, offset} ptr
+      area'      <- #{peek FaceT, area} ptr
+      neighbors' <- #{peek FaceT, neighbors} ptr
       neighsize  <- #{peek FaceT, neighborsize} ptr
+      family'    <- #{peek FaceT, family} ptr
       return CFace { __fvertices    = fvertices'
                    , __edges        = edges'
                    , __center       = center'
@@ -189,8 +176,9 @@ instance Storable CFace where
                    , __offset       = offset'
                    , __area         = area'
                    , __neighbors    = neighbors'
-                   , __neighborsize = neighsize }
-    poke ptr (CFace r1 r2 r3 r4 r5 r6 r7 r8)
+                   , __neighborsize = neighsize
+                   , __family       = family' }
+    poke ptr (CFace r1 r2 r3 r4 r5 r6 r7 r8 r9)
       = do
           #{poke FaceT, vertices}     ptr r1
           #{poke FaceT, edges}        ptr r2
@@ -200,22 +188,14 @@ instance Storable CFace where
           #{poke FaceT, area}         ptr r6
           #{poke FaceT, neighbors}    ptr r7
           #{poke FaceT, neighborsize} ptr r8
-
-data Face = Face {
-    _fvertices :: IndexMap [Double]
-  , _edges :: [Edge]
-  , _center :: [Double]
-  , _normal :: [Double]
-  , _offset :: Double
-  , _area :: Double
-  , _neighbors :: IntSet
-} deriving Show
+          #{poke FaceT, family}       ptr r9
 
 cFaceToFace :: Int -> Int -> CFace -> IO Face
 cFaceToFace dim nvertices cface = do
   let area      = realToFrac (__area cface)
       neighsize = fromIntegral (__neighborsize cface)
       offset    = realToFrac (__offset cface)
+      family    = fromIntegral (__family cface)
   center    <- (<$!>) (map realToFrac) (peekArray dim (__center cface))
   normal    <- (<$!>) (map realToFrac) (peekArray dim (__normal cface))
   vertices  <- (=<<) (cVerticesToMap dim)
@@ -226,11 +206,12 @@ cFaceToFace dim nvertices cface = do
                       (peekArray neighsize (__neighbors cface))
   return Face { _fvertices = vertices
               , _edges     = edges
-              , _center    = center
+              , _centroid  = center
               , _normal    = normal
               , _offset    = offset
               , _area      = area
-              , _neighbors = IS.fromAscList neighbors}
+              , _neighbors = IS.fromAscList neighbors
+              , _family    = if family == -1 then Nothing else Just family }
 
 data CConvexHull = CConvexHull {
     __dim    :: CUInt
@@ -282,13 +263,6 @@ foreign import ccall unsafe "convexHull" c_convexhull
   -> CUInt -- triangulate
   -> Ptr CUInt -- exitcode
   -> IO (Ptr CConvexHull)
-
-data ConvexHull = ConvexHull {
-    _allvertices :: IndexMap Vertex
-  , _faces :: IntMap Face
-  , _alledges :: IntMap Edge
-} deriving Show
-
 
 peekConvexHull :: Ptr CConvexHull -> IO ConvexHull
 peekConvexHull ptr = do

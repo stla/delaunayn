@@ -30,7 +30,7 @@ delaunay3vis tess = VisObjects $ concatMap visRidge (_ridges tess)
       [ Triangle (pts!!0) (pts!!1) (pts!!2) (makeColor 0 0 1 0.5)
       , Line Nothing ((pts!!0) : pts) black ]
       where
-        pts = map (\p -> V3 (p!!0) (p!!1) (p!!2)) (IM.elems $ _points $ _polytope ridge)
+        pts = map (\p -> V3 (p!!0) (p!!1) (p!!2)) (IM.elems $ _points $ _subsimplex ridge)
 
 
 main :: IO ()
@@ -41,19 +41,19 @@ main = do
   -- writeFile "rgl.txt" (voronoi3ForRgl v Nothing)
   -- putStrLn $ ppShow v
 
-  tess <- delaunay cuboctahedron False
-  putStrLn $ ppShow $ map ridgeVertices (_ridges tess)
-  let v = voronoi3 tess
-      code1 = voronoi3ForRgl v Nothing
-      bigcell = snd (last v)
-      verts = cell3Vertices bigcell
-  tess2 <- delaunay verts True
-  -- putStrLn $ ppShow $ _facets tess2
-  -- putStrLn $ ppShow $ IM.map (_volume . _simplex) (_facets tess2)
-  putStrLn $ ppShow $ _vertices tess2
-  -- putStrLn $ ppShow $ _ridges tess2
-  let code2 = delaunay3rgl tess2 False False False (Just 0.5)
-  writeFile "rgl/voronoi_cuboctahedron02.R" (code1 ++ code2)
+  -- tess <- delaunay centricCuboctahedron False
+  -- putStrLn $ ppShow $ map ridgeVertices (_ridges tess)
+  -- let v = voronoi3 tess
+  --     code1 = voronoi3ForRgl v Nothing
+  --     bigcell = snd (last v)
+  --     verts = cell3Vertices bigcell
+  -- tess2 <- delaunay verts True
+  -- -- putStrLn $ ppShow $ _facets tess2
+  -- -- putStrLn $ ppShow $ IM.map (_volume . _simplex) (_facets tess2)
+  -- -- putStrLn $ ppShow $ _vertices tess2
+  -- -- putStrLn $ ppShow $ _ridges tess2
+  -- let code2 = delaunay3rgl tess2 False False False (Just 0.5)
+  -- writeFile "rgl/voronoi_cuboctahedron02.R" (code1 ++ code2)
 
   --tess <- delaunay rhombicDodecahedron False
   --writeFile "rgl/delaunay_rhombicDodecahedron.R" (delaunay3rgl tess False True False (Just 0.9))
@@ -85,11 +85,11 @@ main = do
 --   let verts = foldr union [] $ map edgeVertices c
 --   putStrLn $ show verts
 
-  -- tess <- test
-  -- putStrLn $ ppShow $ _facets tess
-  -- putStrLn $ ppShow $ _ridges tess
-  -- putStrLn $ ppShow $ _vertices tess
-  -- writeFile "rgl/rgg.R" (delaunay3rgl tess True (Just 0.9))
+  tess <- test
+  putStrLn $ ppShow $ _facets tess
+  putStrLn $ ppShow $ _ridges tess
+  putStrLn $ ppShow $ _sites tess
+  --writeFile "rgl/rgg.R" (delaunay3rgl tess True (Just 0.9))
 
 --  display (defaultOpts {optWindowName = "display test"}) (delaunay3vis tess)
   --putStrLn $ ppShow $ IM.map _owner (_facets tess)
