@@ -81,7 +81,6 @@ struct Delaunay* delaunay(
 	unsigned  dim,
 	unsigned  n,
   unsigned  degenerate,
-	unsigned* nf,
 	unsigned* exitcode,
 	char*     tmpFile
 )
@@ -121,15 +120,15 @@ struct Delaunay* delaunay(
 
 		//int numfacets = qh->num_facets;
     /* Count the number of facets so we know how much space to allocate */
-		nf[0] = 0; /* Number of facets */
+		unsigned nf = 0; /* Number of facets */
 		//int* facetsvisitid = malloc(numfacets * sizeof(int));
     facetT *facet;  /* set by FORALLfacets */
 		FORALLfacets {
       // printf("facetid: %d - simplicial: %d - degenerate: %d\n", facet->id, facet->simplicial, facet->degenerate);
 			if(facetOK(facet, degenerate)){
-        //facetsvisitid[nf[0]] = facet->visitid;
-	      nf[0]++;
-				facet->id = nf[0];
+        //facetsvisitid[nf] = facet->visitid;
+	      nf++;
+				facet->id = nf;
       }else{
 				qh_removefacet(qh, facet);
 			}
@@ -160,22 +159,22 @@ struct Delaunay* delaunay(
     // FORALLfacets {
     //   for(unsigned i=0; i<qh_setsize(qh, facet->neighbors); i++){
     //     facetT* neigh = facet->neighbors->e[i].p;
-    //     if(neigh->id>nf[0]){
+    //     if(neigh->id>nf){
     //       qh_setdelnth(qh, facet->neighbors, i)
     //     }
     //   }
     // }
 
     /* Alocate the space */
-    unsigned* owners        = malloc(nf[0] * sizeof(unsigned));
-    unsigned* facetsIndices = malloc(nf[0] * (dim+1) * sizeof(unsigned));
-		double*   facetsVolumes = malloc(nf[0] * sizeof(double));
-		unsigned* neighbors     = malloc(nf[0] * (dim+1) * sizeof(unsigned));
-		double*   centers       = malloc(nf[0] * dim * sizeof(double));
-		unsigned* toporient     = malloc(nf[0] * sizeof(unsigned));
-		double*   facetsNormals = malloc(nf[0] * (dim+1) * sizeof(double));
-		//unsigned  neighborok[nf[0]][maxid];
-		// for(unsigned f1=0; f1<nf[0]; f1++){
+    unsigned* owners        = malloc(nf * sizeof(unsigned));
+    unsigned* facetsIndices = malloc(nf * (dim+1) * sizeof(unsigned));
+		double*   facetsVolumes = malloc(nf * sizeof(double));
+		unsigned* neighbors     = malloc(nf * (dim+1) * sizeof(unsigned));
+		double*   centers       = malloc(nf * dim * sizeof(double));
+		unsigned* toporient     = malloc(nf * sizeof(unsigned));
+		double*   facetsNormals = malloc(nf * (dim+1) * sizeof(double));
+		//unsigned  neighborok[nf][maxid];
+		// for(unsigned f1=0; f1<nf; f1++){
     //   for(unsigned f2=0; f2<numfacets; f2++){
 		// 	  neighborok[f1][f2] = 0;
     //   }
@@ -250,18 +249,18 @@ struct Delaunay* delaunay(
     }
 		unsigned* n_facets_per_vertex             = malloc(n * sizeof(unsigned));
 		unsigned  n_total_vertex_neighbors_facets = 0;
-		unsigned  verticesFacetsNeighbours[n][nf[0]]; // 0/1 if not neighbour/neighbour
+		unsigned  verticesFacetsNeighbours[n][nf]; // 0/1 if not neighbour/neighbour
     unsigned* connectedVertices[n];
     unsigned* n_vertices_per_vertex           = malloc(n * sizeof(unsigned));
 		for(unsigned v=0; v<n; v++){
       n_vertices_per_vertex[v] = 0;
       connectedVertices[v]     = malloc(0);
 			n_facets_per_vertex[v]   = 0;
-			for(unsigned f=0; f<nf[0]; f++){
+			for(unsigned f=0; f<nf; f++){
 				verticesFacetsNeighbours[v][f] = 0;
 			}
 		}
-    for(unsigned f=0; f<nf[0]; f++){
+    for(unsigned f=0; f<nf; f++){
       for(unsigned j=0; j<dim+1; j++){
         unsigned vertexid = facetsIndices[f*(dim+1)+j];
         if(verticesFacetsNeighbours[vertexid][f] == 0){
@@ -294,7 +293,7 @@ struct Delaunay* delaunay(
 
     /************************************************************/
     /* second pass: ridges, centers and normals                 */
-    unsigned n_ridges_dup = nf[0] * (dim+1);
+    unsigned n_ridges_dup = nf * (dim+1);
     unsigned n_ridges     = 0;
     unsigned i_ridge_dup  = 0;
     unsigned ridges_dup[n_ridges_dup][2+dim+1];
@@ -334,7 +333,7 @@ struct Delaunay* delaunay(
       for(unsigned m=0; m<dim+1; m++){
         unsigned fid = facet->id-1;
         ridges_dup[i_ridge_dup][0] = fid;
-        ridges_dup[i_ridge_dup][1] = nf[0];
+        ridges_dup[i_ridge_dup][1] = nf;
         unsigned ids[dim];
         for(unsigned i=0; i<dim; i++){
           ids[i] = facetsIndices[fid*(dim+1)+combinations[m][i]];
@@ -617,7 +616,7 @@ struct Delaunay* delaunay(
     // }
 
 	  out->dim         = dim;
-	  out->length      = nf[0];
+	  out->nfaces      = nf;
 	  out->indices     = facetsIndices;
 		out->fvolumes    = facetsVolumes;
     out->owners      = owners;

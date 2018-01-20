@@ -1,3 +1,4 @@
+{-# LINE 1 "delaunay.hsc" #-}
 {-# LANGUAGE ForeignFunctionInterface #-}
 module Delaunay.CDelaunay
   where
@@ -16,8 +17,6 @@ import           Foreign.Marshal.Alloc (free)
 import           Foreign.Marshal.Array (peekArray)
 import           Foreign.Ptr           (Ptr)
 import           Foreign.Storable
-
-#include "delaunay.h"
 
 type Index = Int
 type IndexSet = IntSet
@@ -54,54 +53,77 @@ data Delaunay = Delaunay {
 } deriving Show
 
 data CDelaunay = CDelaunay {
-  _dim :: CUInt,
-  _nfaces :: CUInt,
-  _indices :: Ptr CUInt,
-  _volumes :: Ptr CDouble,
-  _owners  :: Ptr CUInt,
-  __neighbors :: Ptr CUInt,
-  _centers :: Ptr CDouble,
-  _toporient :: Ptr CUInt,
-  __ridges :: Ptr CUInt,
-  _nridges :: CUInt,
-  _areas  :: Ptr CDouble,
-  _rcenters :: Ptr CDouble,
-  _rnormals :: Ptr CDouble,
-  _fnormals :: Ptr CDouble,
-  _rdistances :: Ptr CDouble,
+  _dim          :: CUInt,
+  _nfaces       :: CUInt,
+  _indices      :: Ptr CUInt,
+  _volumes      :: Ptr CDouble,
+  _owners       :: Ptr CUInt,
+  __neighbors   :: Ptr CUInt,
+  _centers      :: Ptr CDouble,
+  _toporient    :: Ptr CUInt,
+  __ridges      :: Ptr CUInt,
+  _nridges      :: CUInt,
+  _areas        :: Ptr CDouble,
+  _rcenters     :: Ptr CDouble,
+  _rnormals     :: Ptr CDouble,
+  _fnormals     :: Ptr CDouble,
+  _rdistances   :: Ptr CDouble,
   __vrneighbors :: Ptr CUInt,
-  _vrnsizes :: Ptr CUInt,
+  _vrnsizes     :: Ptr CUInt,
   __vfneighbors :: Ptr CUInt,
-  _vfnsizes :: Ptr CUInt,
-  _vvneighbors :: Ptr CUInt,
-  _vvnsizes :: Ptr CUInt
+  _vfnsizes     :: Ptr CUInt,
+  _vvneighbors  :: Ptr CUInt,
+  _vvnsizes     :: Ptr CUInt
 } -- deriving (Show, Eq)
 
 instance Storable CDelaunay where
-    sizeOf    _ = #{size DelaunayT}
-    alignment _ = #{alignment DelaunayT}
+    sizeOf    _ = (160)
+{-# LINE 82 "delaunay.hsc" #-}
+    alignment _ = 8
+{-# LINE 83 "delaunay.hsc" #-}
     peek ptr = do
-      dim'       <- #{peek DelaunayT, dim} ptr
-      nfaces'    <- #{peek DelaunayT, nfaces} ptr
-      indices'   <- #{peek DelaunayT, indices} ptr
-      volumes'   <- #{peek DelaunayT, fvolumes} ptr
-      owners'    <- #{peek DelaunayT, owners} ptr
-      neighbors' <- #{peek DelaunayT, neighbors} ptr
-      centers'   <- #{peek DelaunayT, centers} ptr
-      toporient' <- #{peek DelaunayT, toporient} ptr
-      ridges'    <- #{peek DelaunayT, ridges} ptr
-      nridges'   <- #{peek DelaunayT, nridges} ptr
-      areas'     <- #{peek DelaunayT, rvolumes} ptr
-      rcenters'  <- #{peek DelaunayT, rcenters} ptr
-      rnormals'  <- #{peek DelaunayT, rnormals} ptr
-      fnormals'  <- #{peek DelaunayT, fnormals} ptr
-      rdistances'  <- #{peek DelaunayT, rdistances} ptr
-      vrneighbors'  <- #{peek DelaunayT, vrneighbors} ptr
-      vrnsizes' <- #{peek DelaunayT, vrnsizes} ptr
-      vfneighbors'  <- #{peek DelaunayT, vfneighbors} ptr
-      vfnsizes' <- #{peek DelaunayT, vfnsizes} ptr
-      vvneighbors'  <- #{peek DelaunayT, vvneighbors} ptr
-      vvnsizes' <- #{peek DelaunayT, vvnsizes} ptr
+      dim'       <- (\hsc_ptr -> peekByteOff hsc_ptr 0) ptr
+{-# LINE 85 "delaunay.hsc" #-}
+      nfaces'    <- (\hsc_ptr -> peekByteOff hsc_ptr 4) ptr
+{-# LINE 86 "delaunay.hsc" #-}
+      indices'   <- (\hsc_ptr -> peekByteOff hsc_ptr 8) ptr
+{-# LINE 87 "delaunay.hsc" #-}
+      volumes'   <- (\hsc_ptr -> peekByteOff hsc_ptr 16) ptr
+{-# LINE 88 "delaunay.hsc" #-}
+      owners'    <- (\hsc_ptr -> peekByteOff hsc_ptr 24) ptr
+{-# LINE 89 "delaunay.hsc" #-}
+      neighbors' <- (\hsc_ptr -> peekByteOff hsc_ptr 32) ptr
+{-# LINE 90 "delaunay.hsc" #-}
+      centers'   <- (\hsc_ptr -> peekByteOff hsc_ptr 40) ptr
+{-# LINE 91 "delaunay.hsc" #-}
+      toporient' <- (\hsc_ptr -> peekByteOff hsc_ptr 48) ptr
+{-# LINE 92 "delaunay.hsc" #-}
+      ridges'    <- (\hsc_ptr -> peekByteOff hsc_ptr 56) ptr
+{-# LINE 93 "delaunay.hsc" #-}
+      nridges'   <- (\hsc_ptr -> peekByteOff hsc_ptr 64) ptr
+{-# LINE 94 "delaunay.hsc" #-}
+      areas'     <- (\hsc_ptr -> peekByteOff hsc_ptr 72) ptr
+{-# LINE 95 "delaunay.hsc" #-}
+      rcenters'  <- (\hsc_ptr -> peekByteOff hsc_ptr 80) ptr
+{-# LINE 96 "delaunay.hsc" #-}
+      rnormals'  <- (\hsc_ptr -> peekByteOff hsc_ptr 88) ptr
+{-# LINE 97 "delaunay.hsc" #-}
+      fnormals'  <- (\hsc_ptr -> peekByteOff hsc_ptr 96) ptr
+{-# LINE 98 "delaunay.hsc" #-}
+      rdistances'  <- (\hsc_ptr -> peekByteOff hsc_ptr 104) ptr
+{-# LINE 99 "delaunay.hsc" #-}
+      vrneighbors'  <- (\hsc_ptr -> peekByteOff hsc_ptr 112) ptr
+{-# LINE 100 "delaunay.hsc" #-}
+      vrnsizes' <- (\hsc_ptr -> peekByteOff hsc_ptr 120) ptr
+{-# LINE 101 "delaunay.hsc" #-}
+      vfneighbors'  <- (\hsc_ptr -> peekByteOff hsc_ptr 128) ptr
+{-# LINE 102 "delaunay.hsc" #-}
+      vfnsizes' <- (\hsc_ptr -> peekByteOff hsc_ptr 136) ptr
+{-# LINE 103 "delaunay.hsc" #-}
+      vvneighbors'  <- (\hsc_ptr -> peekByteOff hsc_ptr 144) ptr
+{-# LINE 104 "delaunay.hsc" #-}
+      vvnsizes' <- (\hsc_ptr -> peekByteOff hsc_ptr 152) ptr
+{-# LINE 105 "delaunay.hsc" #-}
       return CDelaunay { _dim = dim'
                        , _nfaces = nfaces'
                        , _indices = indices'
@@ -126,27 +148,48 @@ instance Storable CDelaunay where
                      }
     poke ptr (CDelaunay r1 r2 r3 r4 r5 r6 r7 r8 r9 r10 r11 r12 r13 r14 r15 r16 r17 r18 r19 r20 r21)
       = do
-          #{poke DelaunayT, dim}            ptr r1
-          #{poke DelaunayT, nfaces}         ptr r2
-          #{poke DelaunayT, indices}        ptr r3
-          #{poke DelaunayT, fvolumes}       ptr r4
-          #{poke DelaunayT, owners}         ptr r5
-          #{poke DelaunayT, neighbors}      ptr r6
-          #{poke DelaunayT, centers}        ptr r7
-          #{poke DelaunayT, toporient}      ptr r8
-          #{poke DelaunayT, ridges}         ptr r9
-          #{poke DelaunayT, rvolumes}       ptr r10
-          #{poke DelaunayT, rcenters}       ptr r11
-          #{poke DelaunayT, rnormals}       ptr r12
-          #{poke DelaunayT, fnormals}       ptr r13
-          #{poke DelaunayT, rdistances}     ptr r14
-          #{poke DelaunayT, vrneighbors}    ptr r15
-          #{poke DelaunayT, vrnsizes}       ptr r16
-          #{poke DelaunayT, vfneighbors}    ptr r17
-          #{poke DelaunayT, vfnsizes}       ptr r18
-          #{poke DelaunayT, vvneighbors}    ptr r19
-          #{poke DelaunayT, vvnsizes}       ptr r20
-          #{poke DelaunayT, nridges}        ptr r21
+          (\hsc_ptr -> pokeByteOff hsc_ptr 0)            ptr r1
+{-# LINE 130 "delaunay.hsc" #-}
+          (\hsc_ptr -> pokeByteOff hsc_ptr 4)         ptr r2
+{-# LINE 131 "delaunay.hsc" #-}
+          (\hsc_ptr -> pokeByteOff hsc_ptr 8)        ptr r3
+{-# LINE 132 "delaunay.hsc" #-}
+          (\hsc_ptr -> pokeByteOff hsc_ptr 16)       ptr r4
+{-# LINE 133 "delaunay.hsc" #-}
+          (\hsc_ptr -> pokeByteOff hsc_ptr 24)         ptr r5
+{-# LINE 134 "delaunay.hsc" #-}
+          (\hsc_ptr -> pokeByteOff hsc_ptr 32)      ptr r6
+{-# LINE 135 "delaunay.hsc" #-}
+          (\hsc_ptr -> pokeByteOff hsc_ptr 40)        ptr r7
+{-# LINE 136 "delaunay.hsc" #-}
+          (\hsc_ptr -> pokeByteOff hsc_ptr 48)      ptr r8
+{-# LINE 137 "delaunay.hsc" #-}
+          (\hsc_ptr -> pokeByteOff hsc_ptr 56)         ptr r9
+{-# LINE 138 "delaunay.hsc" #-}
+          (\hsc_ptr -> pokeByteOff hsc_ptr 72)       ptr r10
+{-# LINE 139 "delaunay.hsc" #-}
+          (\hsc_ptr -> pokeByteOff hsc_ptr 80)       ptr r11
+{-# LINE 140 "delaunay.hsc" #-}
+          (\hsc_ptr -> pokeByteOff hsc_ptr 88)       ptr r12
+{-# LINE 141 "delaunay.hsc" #-}
+          (\hsc_ptr -> pokeByteOff hsc_ptr 96)       ptr r13
+{-# LINE 142 "delaunay.hsc" #-}
+          (\hsc_ptr -> pokeByteOff hsc_ptr 104)     ptr r14
+{-# LINE 143 "delaunay.hsc" #-}
+          (\hsc_ptr -> pokeByteOff hsc_ptr 112)    ptr r15
+{-# LINE 144 "delaunay.hsc" #-}
+          (\hsc_ptr -> pokeByteOff hsc_ptr 120)       ptr r16
+{-# LINE 145 "delaunay.hsc" #-}
+          (\hsc_ptr -> pokeByteOff hsc_ptr 128)    ptr r17
+{-# LINE 146 "delaunay.hsc" #-}
+          (\hsc_ptr -> pokeByteOff hsc_ptr 136)       ptr r18
+{-# LINE 147 "delaunay.hsc" #-}
+          (\hsc_ptr -> pokeByteOff hsc_ptr 144)    ptr r19
+{-# LINE 148 "delaunay.hsc" #-}
+          (\hsc_ptr -> pokeByteOff hsc_ptr 152)       ptr r20
+{-# LINE 149 "delaunay.hsc" #-}
+          (\hsc_ptr -> pokeByteOff hsc_ptr 64)        ptr r21
+{-# LINE 150 "delaunay.hsc" #-}
 
 foreign import ccall unsafe "delaunay" c_delaunay
   :: Ptr CDouble -- sites

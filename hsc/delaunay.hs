@@ -1,3 +1,4 @@
+{-# LINE 1 "delaunay.hsc" #-}
 {-# LANGUAGE ForeignFunctionInterface #-}
 module Delaunay.CDelaunay
   where
@@ -15,9 +16,9 @@ import           Foreign.C.Types
 import           Foreign.Marshal.Alloc (free)
 import           Foreign.Marshal.Array (peekArray)
 import           Foreign.Ptr           (Ptr)
-import           Foreign.Storable
+import           Foreign.Storable      (peek)
 
-#include "delaunay.h"
+
 
 type Index = Int
 type IndexSet = IntSet
@@ -78,30 +79,53 @@ data CDelaunay = CDelaunay {
 } -- deriving (Show, Eq)
 
 instance Storable CDelaunay where
-    sizeOf    _ = #{size DelaunayT}
-    alignment _ = #{alignment DelaunayT}
+    sizeOf    _ = (160)
+{-# LINE 82 "delaunay.hsc" #-}
+    alignment _ = 8
+{-# LINE 83 "delaunay.hsc" #-}
     peek ptr = do
-      dim'       <- #{peek DelaunayT, dim} ptr
-      nfaces'    <- #{peek DelaunayT, nfaces} ptr
-      indices'   <- #{peek DelaunayT, indices} ptr
-      volumes'   <- #{peek DelaunayT, fvolumes} ptr
-      owners'    <- #{peek DelaunayT, owners} ptr
-      neighbors' <- #{peek DelaunayT, neighbors} ptr
-      centers'   <- #{peek DelaunayT, centers} ptr
-      toporient' <- #{peek DelaunayT, toporient} ptr
-      ridges'    <- #{peek DelaunayT, ridges} ptr
-      nridges'   <- #{peek DelaunayT, nridges} ptr
-      areas'     <- #{peek DelaunayT, rvolumes} ptr
-      rcenters'  <- #{peek DelaunayT, rcenters} ptr
-      rnormals'  <- #{peek DelaunayT, rnormals} ptr
-      fnormals'  <- #{peek DelaunayT, fnormals} ptr
-      rdistances'  <- #{peek DelaunayT, rdistances} ptr
-      vrneighbors'  <- #{peek DelaunayT, vrneighbors} ptr
-      vrnsizes' <- #{peek DelaunayT, vrnsizes} ptr
-      vfneighbors'  <- #{peek DelaunayT, vfneighbors} ptr
-      vfnsizes' <- #{peek DelaunayT, vfnsizes} ptr
-      vvneighbors'  <- #{peek DelaunayT, vvneighbors} ptr
-      vvnsizes' <- #{peek DelaunayT, vvnsizes} ptr
+      dim'       <- (\hsc_ptr -> peekByteOff hsc_ptr 0) ptr
+{-# LINE 85 "delaunay.hsc" #-}
+      nfaces'    <- (\hsc_ptr -> peekByteOff hsc_ptr 4) ptr
+{-# LINE 86 "delaunay.hsc" #-}
+      indices'   <- (\hsc_ptr -> peekByteOff hsc_ptr 8) ptr
+{-# LINE 87 "delaunay.hsc" #-}
+      volumes'   <- (\hsc_ptr -> peekByteOff hsc_ptr 16) ptr
+{-# LINE 88 "delaunay.hsc" #-}
+      owners'    <- (\hsc_ptr -> peekByteOff hsc_ptr 24) ptr
+{-# LINE 89 "delaunay.hsc" #-}
+      neighbors' <- (\hsc_ptr -> peekByteOff hsc_ptr 32) ptr
+{-# LINE 90 "delaunay.hsc" #-}
+      centers'   <- (\hsc_ptr -> peekByteOff hsc_ptr 40) ptr
+{-# LINE 91 "delaunay.hsc" #-}
+      toporient' <- (\hsc_ptr -> peekByteOff hsc_ptr 48) ptr
+{-# LINE 92 "delaunay.hsc" #-}
+      ridges'    <- (\hsc_ptr -> peekByteOff hsc_ptr 56) ptr
+{-# LINE 93 "delaunay.hsc" #-}
+      nridges'   <- (\hsc_ptr -> peekByteOff hsc_ptr 64) ptr
+{-# LINE 94 "delaunay.hsc" #-}
+      areas'     <- (\hsc_ptr -> peekByteOff hsc_ptr 72) ptr
+{-# LINE 95 "delaunay.hsc" #-}
+      rcenters'  <- (\hsc_ptr -> peekByteOff hsc_ptr 80) ptr
+{-# LINE 96 "delaunay.hsc" #-}
+      rnormals'  <- (\hsc_ptr -> peekByteOff hsc_ptr 88) ptr
+{-# LINE 97 "delaunay.hsc" #-}
+      fnormals'  <- (\hsc_ptr -> peekByteOff hsc_ptr 96) ptr
+{-# LINE 98 "delaunay.hsc" #-}
+      rdistances'  <- (\hsc_ptr -> peekByteOff hsc_ptr 104) ptr
+{-# LINE 99 "delaunay.hsc" #-}
+      vrneighbors'  <- (\hsc_ptr -> peekByteOff hsc_ptr 112) ptr
+{-# LINE 100 "delaunay.hsc" #-}
+      vrnsizes' <- (\hsc_ptr -> peekByteOff hsc_ptr 120) ptr
+{-# LINE 101 "delaunay.hsc" #-}
+      vfneighbors'  <- (\hsc_ptr -> peekByteOff hsc_ptr 128) ptr
+{-# LINE 102 "delaunay.hsc" #-}
+      vfnsizes' <- (\hsc_ptr -> peekByteOff hsc_ptr 136) ptr
+{-# LINE 103 "delaunay.hsc" #-}
+      vvneighbors'  <- (\hsc_ptr -> peekByteOff hsc_ptr 144) ptr
+{-# LINE 104 "delaunay.hsc" #-}
+      vvnsizes' <- (\hsc_ptr -> peekByteOff hsc_ptr 152) ptr
+{-# LINE 105 "delaunay.hsc" #-}
       return CDelaunay { _dim = dim'
                        , _nfaces = nfaces'
                        , _indices = indices'
@@ -126,27 +150,48 @@ instance Storable CDelaunay where
                      }
     poke ptr (CDelaunay r1 r2 r3 r4 r5 r6 r7 r8 r9 r10 r11 r12 r13 r14 r15 r16 r17 r18 r19 r20 r21)
       = do
-          #{poke DelaunayT, dim}            ptr r1
-          #{poke DelaunayT, nfaces}         ptr r2
-          #{poke DelaunayT, indices}        ptr r3
-          #{poke DelaunayT, fvolumes}       ptr r4
-          #{poke DelaunayT, owners}         ptr r5
-          #{poke DelaunayT, neighbors}      ptr r6
-          #{poke DelaunayT, centers}        ptr r7
-          #{poke DelaunayT, toporient}      ptr r8
-          #{poke DelaunayT, ridges}         ptr r9
-          #{poke DelaunayT, rvolumes}       ptr r10
-          #{poke DelaunayT, rcenters}       ptr r11
-          #{poke DelaunayT, rnormals}       ptr r12
-          #{poke DelaunayT, fnormals}       ptr r13
-          #{poke DelaunayT, rdistances}     ptr r14
-          #{poke DelaunayT, vrneighbors}    ptr r15
-          #{poke DelaunayT, vrnsizes}       ptr r16
-          #{poke DelaunayT, vfneighbors}    ptr r17
-          #{poke DelaunayT, vfnsizes}       ptr r18
-          #{poke DelaunayT, vvneighbors}    ptr r19
-          #{poke DelaunayT, vvnsizes}       ptr r20
-          #{poke DelaunayT, nridges}        ptr r21
+          (\hsc_ptr -> pokeByteOff hsc_ptr 0)            ptr r1
+{-# LINE 130 "delaunay.hsc" #-}
+          (\hsc_ptr -> pokeByteOff hsc_ptr 4)         ptr r2
+{-# LINE 131 "delaunay.hsc" #-}
+          (\hsc_ptr -> pokeByteOff hsc_ptr 8)        ptr r3
+{-# LINE 132 "delaunay.hsc" #-}
+          (\hsc_ptr -> pokeByteOff hsc_ptr 16)       ptr r4
+{-# LINE 133 "delaunay.hsc" #-}
+          (\hsc_ptr -> pokeByteOff hsc_ptr 24)         ptr r5
+{-# LINE 134 "delaunay.hsc" #-}
+          (\hsc_ptr -> pokeByteOff hsc_ptr 32)      ptr r6
+{-# LINE 135 "delaunay.hsc" #-}
+          (\hsc_ptr -> pokeByteOff hsc_ptr 40)        ptr r7
+{-# LINE 136 "delaunay.hsc" #-}
+          (\hsc_ptr -> pokeByteOff hsc_ptr 48)      ptr r8
+{-# LINE 137 "delaunay.hsc" #-}
+          (\hsc_ptr -> pokeByteOff hsc_ptr 56)         ptr r9
+{-# LINE 138 "delaunay.hsc" #-}
+          (\hsc_ptr -> pokeByteOff hsc_ptr 72)       ptr r10
+{-# LINE 139 "delaunay.hsc" #-}
+          (\hsc_ptr -> pokeByteOff hsc_ptr 80)       ptr r11
+{-# LINE 140 "delaunay.hsc" #-}
+          (\hsc_ptr -> pokeByteOff hsc_ptr 88)       ptr r12
+{-# LINE 141 "delaunay.hsc" #-}
+          (\hsc_ptr -> pokeByteOff hsc_ptr 96)       ptr r13
+{-# LINE 142 "delaunay.hsc" #-}
+          (\hsc_ptr -> pokeByteOff hsc_ptr 104)     ptr r14
+{-# LINE 143 "delaunay.hsc" #-}
+          (\hsc_ptr -> pokeByteOff hsc_ptr 112)    ptr r15
+{-# LINE 144 "delaunay.hsc" #-}
+          (\hsc_ptr -> pokeByteOff hsc_ptr 120)       ptr r16
+{-# LINE 145 "delaunay.hsc" #-}
+          (\hsc_ptr -> pokeByteOff hsc_ptr 128)    ptr r17
+{-# LINE 146 "delaunay.hsc" #-}
+          (\hsc_ptr -> pokeByteOff hsc_ptr 136)       ptr r18
+{-# LINE 147 "delaunay.hsc" #-}
+          (\hsc_ptr -> pokeByteOff hsc_ptr 144)    ptr r19
+{-# LINE 148 "delaunay.hsc" #-}
+          (\hsc_ptr -> pokeByteOff hsc_ptr 152)       ptr r20
+{-# LINE 149 "delaunay.hsc" #-}
+          (\hsc_ptr -> pokeByteOff hsc_ptr 64)        ptr r21
+{-# LINE 150 "delaunay.hsc" #-}
 
 foreign import ccall unsafe "delaunay" c_delaunay
   :: Ptr CDouble -- sites
@@ -157,12 +202,10 @@ foreign import ccall unsafe "delaunay" c_delaunay
   -> CString     -- file
   -> IO (Ptr CDelaunay)
 
-cDelaunayPtrToDelaunay :: Ptr CDelaunay -> [[Double]] -> IO Delaunay
-cDelaunayPtrToDelaunay cdelaunayPtr sites = do
+cDelaunayPtrToDelaunay :: Ptr CDelaunay -> IO Delaunay
+cDelaunayPtrToDelaunay cdelaunayPtr = do
   result <- peek cdelaunayPtr
-  let nf  = fromIntegral $ _nfaces result
-      dim = fromIntegral $ _dim result
-      n   = length sites
+  let nf = _nfaces result
   indices   <- (<$!>) (map fromIntegral)
                       (peekArray (nf * (dim+1)) (_indices result))
   centers   <- (<$!>) (map cdbl2dbl)
@@ -207,7 +250,7 @@ cDelaunayPtrToDelaunay cdelaunayPtr sites = do
   let ridges = map (\((a,b),c,d,e) -> doRidge (filter (<nf) a) b c d e)
               (zip4 (map (splitAt 2) ridges'')
                     ridgesCenters ridgesNormals areas)
-  -- (>>=) (readFile tmpFile) putStrLn -- print summary
+  (>>=) (readFile tmpFile) putStrLn -- print summary
   return Delaunay { _vertices = IM.fromList $ zip [0 .. n]
                                 (zipWith4 toVertex
                                  sites vrneighbors vfneighbors vvneighbors)
@@ -218,25 +261,25 @@ cDelaunayPtrToDelaunay cdelaunayPtr sites = do
                               neighbors' (chunksOf dim centers) volumes)
                   , _ridges = ridges } --nubBy ((==) `on` ridgeVertices) ridges}
   where
-    toVertex :: [Double] -> [IndexSet] -> IntSet -> IntSet -> Vertex
-    toVertex coords nridges nfacets nvertices =
-      Vertex {  _coordinates   = coords
-              , _neighRidges   = S.fromList nridges
-              , _neighFacets   = nfacets
-              , _neighVertices = nvertices}
-    toFacet :: [Int] -> [Double] -> [Int] -> [Double] -> Double -> Facet
-    toFacet verts normal neighs center vol =
-      Facet { _simplex   = doPolytope verts center normal vol
-            , _neighbors = IS.fromList neighs }
-    doPolytope :: [Int] -> [Double] -> [Double] -> Double -> Polytope
-    doPolytope is center normal volume =
-      Polytope { _points  = IM.fromAscList $ zip is (map (sites !!) is)
-               , _center  = center
-               , _normal  = normal
-               , _volume  = volume }
-    doRidge :: [Int] -> [Int] -> [Double] -> [Double] -> Double -> Ridge
-    doRidge facets is center norm vol =
-      Ridge { _polytope = doPolytope is center norm vol
-            , _ridgeOf = IS.fromAscList facets }
-    cdbl2dbl :: CDouble -> Double
-    cdbl2dbl x = if isNaN x then 0/0 else realToFrac x
+  toVertex :: [Double] -> [IndexSet] -> IntSet -> IntSet -> Vertex
+  toVertex coords nridges nfacets nvertices =
+  Vertex {  _coordinates   = coords
+          , _neighRidges   = S.fromList nridges
+          , _neighFacets   = nfacets
+          , _neighVertices = nvertices}
+  toFacet :: [Int] -> [Double] -> [Int] -> [Double] -> Double -> Facet
+  toFacet verts normal neighs center vol =
+  Facet { _simplex   = doPolytope verts center normal vol
+        , _neighbors = IS.fromList neighs }
+  doPolytope :: [Int] -> [Double] -> [Double] -> Double -> Polytope
+  doPolytope is center normal volume =
+  Polytope { _points  = IM.fromAscList $ zip is (map (sites !!) is)
+           , _center  = center
+           , _normal  = normal
+           , _volume  = volume }
+  doRidge :: [Int] -> [Int] -> [Double] -> [Double] -> Double -> Ridge
+  doRidge facets is center norm vol =
+  Ridge { _polytope = doPolytope is center norm vol
+        , _ridgeOf = IS.fromAscList facets }
+  cdbl2dbl :: CDouble -> Double
+  cdbl2dbl x = if isNaN x then 0/0 else realToFrac x

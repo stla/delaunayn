@@ -1,6 +1,6 @@
 typedef struct Delaunay {
-  unsigned dim;      // to remove
-  unsigned length;   // to remove
+  unsigned dim;
+  unsigned nfaces;
   unsigned* indices; // to rename to vertices
   double* fvolumes;
   unsigned* owners;

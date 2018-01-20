@@ -13,7 +13,6 @@ import           Data.IntMap.Strict    (IntMap)
 import qualified Data.IntMap.Strict    as IM
 import           Data.IntSet           (IntSet)
 import qualified Data.IntSet           as IS
-import Data.Tuple.Extra ((&&&))
 
 #include "convexhull.h"
 

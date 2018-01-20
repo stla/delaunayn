@@ -213,16 +213,15 @@ ConvexHullT* convexHull(
       }
     }
 
-    /* vertices */
+    /* all vertices */
     unsigned nvertices = qh->num_vertices;
     FullVertexT* vertices = malloc(nvertices * sizeof(FullVertexT));
     {
       vertexT *vertex;
-      //unsigned verticesIds[nvertices];
       unsigned i_vertex=0;
       FORALLvertices{
         printf("vertex %d\n", vertex->id);
-        //verticesIds[i_vertex] = (unsigned) qh_pointid(qh, vertex->point);
+        /* vertex id and coordinates */
         vertices[i_vertex].id = (unsigned) qh_pointid(qh, vertex->point);
         vertices[i_vertex].point = getpoint(points, dim, vertices[i_vertex].id);
         /* neighbor faces of the vertex */
@@ -271,8 +270,8 @@ ConvexHullT* convexHull(
 
   /* Do cleanup regardless of whether there is an error */
   int curlong, totlong;
-	qh_freeqhull(qh, !qh_ALL);                  /* free long memory */
-	qh_memfreeshort(qh, &curlong, &totlong);   /* free short memory and memory allocator */
+	qh_freeqhull(qh, !qh_ALL);               /* free long memory */
+	qh_memfreeshort(qh, &curlong, &totlong); /* free short memory and memory allocator */
 
   printf("RETURN\n");
   return out;

@@ -10,7 +10,7 @@ module Voronoi3D
  , cell3Vertices)
   where
 import           Control.Arrow      (second)
-import qualified Data.IntMap.Strict as IM
+--import qualified Data.IntMap.Strict as IM
 import           Data.List
 import           Data.Maybe
 import           Data.Tuple.Extra   (both)

@@ -1,11 +1,11 @@
 module VoronoiShared
   where
 import qualified Data.IntMap.Strict as IM
-import           Data.IntSet        (IntSet)
+-- import           Data.IntSet        (IntSet)
 import qualified Data.IntSet        as IS
-import           Data.List
-import           Data.Map.Strict    (Map)
-import qualified Data.Map.Strict    as M
+-- import           Data.List
+-- import           Data.Map.Strict    (Map)
+-- import qualified Data.Map.Strict    as M
 import           Data.Maybe
 --import qualified Data.Set           as S
 import           Data.Tuple.Extra   ((&&&))
