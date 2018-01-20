@@ -7,6 +7,7 @@ module ConvexHull.CConvexHull
 import           Control.Monad         ((<$!>), (=<<))
 import Foreign
 import Foreign.C.Types
+import Data.List 
 import Data.List.Index (imapM)
 import           Data.IntMap.Strict    (IntMap)
 import qualified Data.IntMap.Strict    as IM
@@ -17,6 +18,7 @@ import Data.Tuple.Extra ((&&&))
 #include "convexhull.h"
 
 type IndexMap = IntMap
+type IndexSet = IntSet
 
 data CVertex = CVertex {
     __id :: CUInt,
@@ -53,47 +55,65 @@ data CVertex' = CVertex' {
   , __point':: Ptr CDouble
   , __neighfacets :: Ptr CUInt
   , __nneighfacets :: CUInt
+  , __neighvertices :: Ptr CUInt
+  , __nneighvertices :: CUInt
 }
 
 instance Storable CVertex' where
     sizeOf    __ = #{size FullVertexT}
     alignment __ = #{alignment FullVertexT}
     peek ptr = do
-      id'           <- #{peek FullVertexT, id}         ptr
-      point'        <- #{peek FullVertexT, point}      ptr
-      neighfacets'  <- #{peek FullVertexT, neighfacets} ptr
-      nneighfacets' <- #{peek FullVertexT, nneighfacets} ptr
+      id'              <- #{peek FullVertexT, id}              ptr
+      point'           <- #{peek FullVertexT, point}           ptr
+      neighfacets'     <- #{peek FullVertexT, neighfacets}     ptr
+      nneighfacets'    <- #{peek FullVertexT, nneighfacets}    ptr
+      neighvertices'   <- #{peek FullVertexT, neighvertices}   ptr
+      nneighsvertices' <- #{peek FullVertexT, nneighsvertices} ptr
       return CVertex' { __id' = id'
-                     , __point' = point'
-                     , __neighfacets = neighfacets'
-                     , __nneighfacets = nneighfacets' }
-    poke ptr (CVertex' r1 r2 r3 r4)
+                      , __point' = point'
+                      , __neighfacets = neighfacets'
+                      , __nneighfacets = nneighfacets'
+                      , __neighvertices = neighvertices'
+                      , __nneighvertices = nneighsvertices'
+                      }
+    poke ptr (CVertex' r1 r2 r3 r4 r5 r6)
       = do
-          #{poke FullVertexT, id}            ptr r1
-          #{poke FullVertexT, point}         ptr r2
-          #{poke FullVertexT, neighfacets}   ptr r3
-          #{poke FullVertexT, nneighfacets}  ptr r4
+          #{poke FullVertexT, id}               ptr r1
+          #{poke FullVertexT, point}            ptr r2
+          #{poke FullVertexT, neighfacets}      ptr r3
+          #{poke FullVertexT, nneighfacets}     ptr r4
+          #{poke FullVertexT, neighvertices}    ptr r5
+          #{poke FullVertexT, nneighsvertices}  ptr r6
 
 data Vertex = Vertex {
     _point :: [Double]
   , _neighfacets :: IntSet
+  , _neighvertices :: IndexSet
 } deriving Show
 
 cVerticesToVertexMap :: Int -> [CVertex'] -> IO (IntMap Vertex)
 cVerticesToVertexMap dim cvertices = do
-  let ids          = map (fromIntegral . __id') cvertices
-      nneighfacets = map (fromIntegral . __nneighfacets) cvertices
+  let ids             = map (fromIntegral . __id') cvertices
+      nneighfacets    = map (fromIntegral . __nneighfacets) cvertices
+      nneighsvertices = map (fromIntegral . __nneighvertices) cvertices
   points <- mapM (\cv -> (<$!>) (map realToFrac) (peekArray dim (__point' cv)))
                  cvertices
   neighfacets <- mapM (\(i, cv) -> (<$!>) (map fromIntegral)
                                           (peekArray i (__neighfacets cv)))
                        (zip nneighfacets cvertices)
+  neighvertices <- mapM (\(i, cv) ->
+                          (<$!>) (map fromIntegral)
+                                 (peekArray i (__neighvertices cv)))
+                        (zip nneighsvertices cvertices)
   return $ IM.fromList (zip ids
-                            (map (\(pt, neighs) ->
+                            (map (\(pt, fneighs, vneighs) ->
                                   Vertex { _point = pt
                                          , _neighfacets =
-                                            IS.fromAscList neighs})
-                                  (zip points neighfacets)))
+                                            IS.fromAscList fneighs
+                                         , _neighvertices =
+                                            IS.fromAscList vneighs
+                                         })
+                                  (zip3 points neighfacets neighvertices)))
 
 data CEdge = CEdge {
     __v1 :: CVertex

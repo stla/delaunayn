@@ -1,13 +1,15 @@
 typedef struct Vertex {
   unsigned id;
-  double* point;
+  double*  point;
 } VertexT;
 
 typedef struct FullVertex {
-  unsigned id;
-  double* point;
+  unsigned  id;
+  double*   point;
   unsigned* neighfacets;
-  unsigned nneighfacets;
+  unsigned  nneighfacets;
+  unsigned* neighvertices;
+  unsigned  nneighsvertices;
 } FullVertexT;
 
 typedef struct Edge {
