@@ -7,7 +7,7 @@ module ConvexHull.CConvexHull
 import           Control.Monad         ((<$!>), (=<<))
 import Foreign
 import Foreign.C.Types
-import Data.List 
+import Data.List
 import Data.List.Index (imapM)
 import           Data.IntMap.Strict    (IntMap)
 import qualified Data.IntMap.Strict    as IM
@@ -57,6 +57,8 @@ data CVertex' = CVertex' {
   , __nneighfacets :: CUInt
   , __neighvertices :: Ptr CUInt
   , __nneighvertices :: CUInt
+  , __neighedges :: Ptr CUInt
+  , __nneighedges :: CUInt
 }
 
 instance Storable CVertex' where
@@ -69,14 +71,18 @@ instance Storable CVertex' where
       nneighfacets'    <- #{peek FullVertexT, nneighfacets}    ptr
       neighvertices'   <- #{peek FullVertexT, neighvertices}   ptr
       nneighsvertices' <- #{peek FullVertexT, nneighsvertices} ptr
+      neighedges'      <- #{peek FullVertexT, neighedges}      ptr
+      nneighedges'     <- #{peek FullVertexT, nneighedges}     ptr
       return CVertex' { __id' = id'
                       , __point' = point'
                       , __neighfacets = neighfacets'
                       , __nneighfacets = nneighfacets'
                       , __neighvertices = neighvertices'
                       , __nneighvertices = nneighsvertices'
+                      , __neighedges = neighedges'
+                      , __nneighedges = nneighedges'
                       }
-    poke ptr (CVertex' r1 r2 r3 r4 r5 r6)
+    poke ptr (CVertex' r1 r2 r3 r4 r5 r6 r7 r8)
       = do
           #{poke FullVertexT, id}               ptr r1
           #{poke FullVertexT, point}            ptr r2
@@ -84,11 +90,14 @@ instance Storable CVertex' where
           #{poke FullVertexT, nneighfacets}     ptr r4
           #{poke FullVertexT, neighvertices}    ptr r5
           #{poke FullVertexT, nneighsvertices}  ptr r6
+          #{poke FullVertexT, neighedges}       ptr r7
+          #{poke FullVertexT, nneighedges}      ptr r8
 
 data Vertex = Vertex {
     _point :: [Double]
   , _neighfacets :: IntSet
   , _neighvertices :: IndexSet
+  , _neighedges :: IndexSet
 } deriving Show
 
 cVerticesToVertexMap :: Int -> [CVertex'] -> IO (IntMap Vertex)
@@ -96,6 +105,7 @@ cVerticesToVertexMap dim cvertices = do
   let ids             = map (fromIntegral . __id') cvertices
       nneighfacets    = map (fromIntegral . __nneighfacets) cvertices
       nneighsvertices = map (fromIntegral . __nneighvertices) cvertices
+      nneighedges     = map (fromIntegral . __nneighedges) cvertices
   points <- mapM (\cv -> (<$!>) (map realToFrac) (peekArray dim (__point' cv)))
                  cvertices
   neighfacets <- mapM (\(i, cv) -> (<$!>) (map fromIntegral)
@@ -105,15 +115,22 @@ cVerticesToVertexMap dim cvertices = do
                           (<$!>) (map fromIntegral)
                                  (peekArray i (__neighvertices cv)))
                         (zip nneighsvertices cvertices)
+  neighedges <- mapM (\(i, cv) ->
+                       (<$!>) (map fromIntegral)
+                              (peekArray i (__neighedges cv)))
+                     (zip nneighedges cvertices)
   return $ IM.fromList (zip ids
-                            (map (\(pt, fneighs, vneighs) ->
+                            (map (\(pt, fneighs, vneighs, eneighs) ->
                                   Vertex { _point = pt
                                          , _neighfacets =
                                             IS.fromAscList fneighs
                                          , _neighvertices =
                                             IS.fromAscList vneighs
+                                         , _neighedges =
+                                            IS.fromAscList eneighs
                                          })
-                                  (zip3 points neighfacets neighvertices)))
+                                  (zip4 points neighfacets neighvertices
+                                        neighedges)))
 
 data CEdge = CEdge {
     __v1 :: CVertex
@@ -268,7 +285,7 @@ foreign import ccall unsafe "convexHull" c_convexhull
 data ConvexHull = ConvexHull {
     _allvertices :: IndexMap Vertex
   , _faces :: IntMap Face
-  , _alledges :: [Edge]
+  , _alledges :: IntMap Edge
 } deriving Show
 
 
@@ -290,5 +307,5 @@ peekConvexHull ptr = do
                           (peekArray nedges (__alledges cconvexhull))
   return ConvexHull { _allvertices = vertices
                     , _faces = IM.fromAscList (zip [0 .. nfaces-1] faces)
-                    , _alledges = alledges
+                    , _alledges = IM.fromAscList (zip [0 .. nedges-1] alledges)
                     }

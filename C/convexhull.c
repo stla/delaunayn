@@ -33,7 +33,9 @@ void appendu(unsigned x, unsigned** array, unsigned length, unsigned* flag){
   }
 }
 
-EdgeT* allEdges(FaceT *faces, unsigned* edgesizes, unsigned nfaces, unsigned* length){
+EdgeT* allEdges(FaceT *faces, unsigned* edgesizes, unsigned nfaces,
+                unsigned* length)
+{
   EdgeT* out = malloc(edgesizes[0] * sizeof(EdgeT));
   for(unsigned i=0; i<edgesizes[0]; i++){
     out[i] = faces[0].edges[i];
@@ -65,7 +67,9 @@ EdgeT* allEdges(FaceT *faces, unsigned* edgesizes, unsigned nfaces, unsigned* le
   return out;
 }
 
-unsigned* neighVertices(unsigned id, EdgeT* alledges, unsigned nedges, unsigned* length){
+unsigned* neighVertices(unsigned id, EdgeT* alledges, unsigned nedges,
+                        unsigned* length)
+{
   unsigned* neighs = malloc(0);
   *length = 0;
   for(unsigned e=0; e<nedges; e++){
@@ -82,6 +86,21 @@ unsigned* neighVertices(unsigned id, EdgeT* alledges, unsigned nedges, unsigned*
   return neighs;
 }
 
+unsigned* neighEdges(unsigned id, EdgeT* alledges, unsigned nedges,
+                     unsigned* length)
+{
+  unsigned* neighs = malloc(0);
+  *length = 0;
+  for(unsigned e=0; e<nedges; e++){
+    if(id == alledges[e].v1.id || id == alledges[e].v2.id){
+      neighs = realloc(neighs, (*length+1)*sizeof(unsigned));
+      neighs[*length] = e;
+      (*length)++;
+    }
+  }
+  return neighs;
+}
+
 ConvexHullT* convexHull(
 	double*   points,
 	unsigned  dim,
@@ -90,9 +109,9 @@ ConvexHullT* convexHull(
 	unsigned* exitcode
 )
 {
-	char flags[250];             /* option flags for qhull, see qh_opt.htm */
+	char flags[250]; /* option flags for qhull, see qh_opt.htm */
   sprintf(flags, "qhull s FF %s", triangulate ? "Qt" : "");
-	qhT qh_qh;                /* Qhull's data structure.  First argument of most calls */
+	qhT qh_qh;       /* Qhull's data structure */
   qhT *qh= &qh_qh;
   QHULL_LIB_CHECK
   qh_meminit(qh, stderr);
@@ -160,13 +179,15 @@ ConvexHullT* convexHull(
             qsort(ids, 2, sizeof(unsigned), cmpfunc);
             faces[i_facet].edges[i_ridge].v1.id = ids[0];
             faces[i_facet].edges[i_ridge].v1.point =
-              getpoint(points, dim, ids[0]); //faces[i_facet].edges[i_ridge].v1.id);
+              getpoint(points, dim, ids[0]);
             faces[i_facet].edges[i_ridge].v2.id = ids[1];
             faces[i_facet].edges[i_ridge].v2.point =
-              getpoint(points, dim, ids[1]); //faces[i_facet].edges[i_ridge].v2.id);
+              getpoint(points, dim, ids[1]);
+            /**/
             i_ridge++;
           }
         }
+        /**/
         i_facet++;
       }
     }
@@ -224,6 +245,14 @@ ConvexHullT* convexHull(
         qsort(vertices[i_vertex].neighvertices, nneighsvertices,
               sizeof(unsigned), cmpfunc);
         vertices[i_vertex].nneighsvertices = nneighsvertices;
+        /* neighbor edges of the vertex */
+        unsigned nneighedges;
+        vertices[i_vertex].neighedges =
+          neighEdges(vertices[i_vertex].id, alledges, n_alledges,
+                     &nneighedges);
+        qsort(vertices[i_vertex].neighedges, nneighedges,
+              sizeof(unsigned), cmpfunc);
+        vertices[i_vertex].nneighedges = nneighedges;
         /**/
         i_vertex++;
       }

@@ -10,6 +10,8 @@ typedef struct FullVertex {
   unsigned  nneighfacets;
   unsigned* neighvertices;
   unsigned  nneighsvertices;
+  unsigned* neighedges;
+  unsigned  nneighedges;
 } FullVertexT;
 
 typedef struct Edge {
