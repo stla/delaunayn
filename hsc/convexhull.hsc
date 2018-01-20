@@ -1,6 +1,8 @@
 {-# LANGUAGE ForeignFunctionInterface #-}
 module ConvexHull.CConvexHull
   ( ConvexHull(..)
+  , Face(..)
+  , Vertex(..)
   , peekConvexHull
   , c_convexhull )
   where

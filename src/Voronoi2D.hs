@@ -14,7 +14,7 @@ import           Data.Maybe
 import           Data.Tuple.Extra   (both)
 import           Delaunay
 import           Text.Show.Pretty   (ppShow)
-import           VoronoiShared
+import           Voronoi
 
 
 type Point2 = (Double, Double)
@@ -23,7 +23,7 @@ data Edge2 = Edge2 (Point2, Point2) | IEdge2 (Point2, Vector2)
              | TIEdge2 (Point2, Point2)
               deriving Show
 type Cell2 = [Edge2]
-type Voronoi2 = [(Site, Cell2)]
+type Voronoi2 = [([Double], Cell2)]
 type Box2 = (Double, Double, Double, Double)
 
 prettyShowVoronoi2 :: Voronoi2 -> Maybe Int -> IO ()
@@ -43,9 +43,9 @@ prettyShowVoronoi2 v m = do
         string x = ppShow $ maybe x (roundPairPoint2 x) n
     prettyShowEdges2 :: Maybe Int -> [Edge2] -> String
     prettyShowEdges2 n edges = intercalate "\n" (map (prettyShowEdge2 n) edges)
-    prettyShowCell2 :: Maybe Int -> (Site, Cell2) -> String
+    prettyShowCell2 :: Maybe Int -> ([Double], Cell2) -> String
     prettyShowCell2 n (site, edges) =
-      "Site " ++ ppShow site ++ " :\n" ++ prettyShowEdges2 n edges
+      "[Double] " ++ ppShow site ++ " :\n" ++ prettyShowEdges2 n edges
 
 asPair :: [Double] -> (Double, Double)
 asPair [a,b] = (a,b)
@@ -80,7 +80,7 @@ voronoi2ForR v d =
   (if isJust d then dcode else "") ++ unlines (map cellForRgl v)
   where
     dcode = delaunay2ForR (fromJust d) True
-    cellForRgl :: (Site, Cell2) -> String
+    cellForRgl :: ([Double], Cell2) -> String
     cellForRgl (site, edges) =
       point ++ "\n" ++ unlines (map f edges)
       where

@@ -7,16 +7,16 @@ module Voronoi3D
  , voronoi3ForRgl
  , voronoiCell3
  , voronoi3
- , cell3Vertices)
+ , cell3Vertices
+ , voronoi3vertices)
   where
 import           Control.Arrow      (second)
---import qualified Data.IntMap.Strict as IM
 import           Data.List
 import           Data.Maybe
 import           Data.Tuple.Extra   (both)
 import           Delaunay
 import           Text.Show.Pretty   (ppShow)
-import           VoronoiShared
+import           Voronoi
 
 type Point3 = (Double, Double, Double)
 type Vector3 = (Double, Double, Double)
@@ -24,7 +24,7 @@ data Edge3 = Edge3 (Point3, Point3) | IEdge3 (Point3, Vector3)
              | TIEdge3 (Point3, Point3)
               deriving Show
 type Cell3 = [Edge3]
-type Voronoi3 = [(Site, Cell3)]
+type Voronoi3 = [([Double], Cell3)]
 type Box3 = (Double, Double, Double, Double, Double, Double)
 
 prettyShowVoronoi3 :: Voronoi3 -> Maybe Int -> IO ()
@@ -45,9 +45,9 @@ prettyShowVoronoi3 v m = do
         string x = ppShow $ maybe x (roundPairPoint3 x) n
     prettyShowEdges3 :: Maybe Int -> [Edge3] -> String
     prettyShowEdges3 n edges = intercalate "\n" (map (prettyShowEdge3 n) edges)
-    prettyShowCell3 :: Maybe Int -> (Site, Cell3) -> String
+    prettyShowCell3 :: Maybe Int -> ([Double], Cell3) -> String
     prettyShowCell3 n (site, edges) =
-      "Site " ++ ppShow site ++ " :\n" ++ prettyShowEdges3 n edges
+      "[Double] " ++ ppShow site ++ " :\n" ++ prettyShowEdges3 n edges
 
 asTriplet :: [a] -> (a, a, a)
 asTriplet [x,y,z] = (x,y,z)
@@ -64,7 +64,7 @@ equalRidges ridge1 ridge2 = -- same ridges or same centers and parallel normals
   -- || _vertices p1 == _vertices p2 -- inutile je pense, c'est déjà unique
   -- ||
   length f1 == 1 && length f2 == 1 &&
-  _center p1 == _center p2 &&
+  _circumcenter p1 == _circumcenter p2 &&
   _normal p1 == _normal p2
 --   crossProduct (asTriplet $ _normal p1) (asTriplet $ _normal p2) == (0,0,0))
   where
@@ -72,12 +72,12 @@ equalRidges ridge1 ridge2 = -- same ridges or same centers and parallel normals
     (p2, f2) = ridgeAsPair ridge2
 --    facets = _facets tess
 
-crossProduct :: Vector3 -> Vector3 -> Vector3
-crossProduct (x1,y1,z1) (x2,y2,z2) = (v3x, v3y, v3z)
-  where
-    v3x = y1 * z2   -   y2 * z1
-    v3y = z1 * x2   -   z2 * x1
-    v3z = x1 * y2   -   x2 * y1
+-- crossProduct :: Vector3 -> Vector3 -> Vector3
+-- crossProduct (x1,y1,z1) (x2,y2,z2) = (v3x, v3y, v3z)
+--   where
+--     v3x = y1 * z2   -   y2 * z1
+--     v3y = z1 * x2   -   z2 * x1
+--     v3z = x1 * y2   -   x2 * y1
 
 voronoiCell3 :: Delaunay -> Index -> Cell3
 voronoiCell3 = voronoiCell (nubBy equalRidges) edgeToEdge3
@@ -128,7 +128,7 @@ voronoi3ForRgl v d =
          delaunay3rgl (fromJust d) True True True (Just 0.9)
     else code
   where
-    cellForRgl :: (Site, Cell3) -> String
+    cellForRgl :: ([Double], Cell3) -> String
     cellForRgl (site, cell) = plotpoint ++ unlines (map f cell)
       where
         plotpoint = "spheres3d(" ++ intercalate "," (map show site) ++ ", radius=0.1, color=\"red\")\n"

@@ -1,4 +1,4 @@
-module VoronoiShared
+module Voronoi
   where
 import qualified Data.IntMap.Strict as IM
 -- import           Data.IntSet        (IntSet)
@@ -12,7 +12,6 @@ import           Data.Tuple.Extra   ((&&&))
 import           Delaunay
 
 
-type Site = [Double]
 type Point = [Double]
 type Vector = [Double]
 data Edge = Edge (Point, Point) | IEdge (Point, Vector)
@@ -31,21 +30,22 @@ factor2 box@(xmin, xmax, ymin, ymax) p@(p1,p2) (v1,v2)
 approx :: RealFrac a => Int -> a -> a
 approx n x = fromInteger (round $ x * (10^n)) / (10.0^^n)
 
------
-ridgeAsPair :: Ridge -> (Polytope, [Int])
-ridgeAsPair = _polytope &&& (IS.toList . _ridgeOf)
+---
+
+ridgeAsPair :: Ridge -> (Simplex, [Int])
+ridgeAsPair = _subsimplex &&& (IS.toList . _ridgeOf)
 
 edgesFromRidge :: Delaunay -> Ridge -> Maybe Edge
 edgesFromRidge tess ridge
   | length facetindices == 1
-    = Just $ IEdge (c1, _normal polytope)
+    = Just $ IEdge (c1, _normal simplex)
   | c1 == c2 = Nothing
   | otherwise = Just $ Edge (c1, c2)
   where
-    (polytope, facetindices) = ridgeAsPair ridge
+    (simplex, facetindices) = ridgeAsPair ridge
     facets = _facets tess
-    c1 = _center $ _simplex (facets IM.! head facetindices)
-    c2 = _center $ _simplex (facets IM.! last facetindices)
+    c1 = _circumcenter $ _simplex (facets IM.! head facetindices)
+    c2 = _circumcenter $ _simplex (facets IM.! last facetindices)
 
 
 voronoiCell :: ([Ridge] -> [Ridge]) -> (Edge -> a) -> Delaunay -> Index -> [a]
@@ -54,11 +54,13 @@ voronoiCell ridgesQuotienter edgeTransformer tess i =
   map (edgeTransformer . fromJust) $
       filter isJust $ map (edgesFromRidge tess) ridges
 
-voronoi :: (Delaunay -> Index -> a) -> Delaunay -> [(Site, a)]
+voronoi :: (Delaunay -> Index -> a) -> Delaunay -> [([Double], a)]
 voronoi cellGetter tess =
   let sites = IM.elems $ IM.map _coordinates (_vertices tess) in
     zip sites (map (cellGetter tess) [0 .. length sites -1])
 
+voronoi' :: Delaunay -> [([Double], [Edge])]
+voronoi' = voronoi (voronoiCell id id)
 
 -- getVertexRidges' :: Delaunay -> Index -> [(CentredPolytope, [Int], Double)]
 -- getVertexRidges' tess i =

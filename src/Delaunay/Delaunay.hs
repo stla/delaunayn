@@ -1,15 +1,14 @@
 module Delaunay.Delaunay
   where
-import           Control.Monad         (when)
+import           Control.Monad         (when, unless)
 import qualified Data.IntMap.Strict    as IM
 import qualified Data.IntSet           as IS
-import           Data.List
 import           Data.Map.Strict       (Map)
 import qualified Data.Map.Strict       as M
 import           Data.Maybe
 import           Delaunay.CDelaunay
 import           Foreign.C.String
-import Foreign.C.Types
+import           Foreign.C.Types
 import           Foreign.Marshal.Alloc (free, mallocBytes)
 import           Foreign.Marshal.Array (pokeArray)
 import           Foreign.Storable      (peek, sizeOf)
@@ -19,8 +18,11 @@ import           TemporaryFile
 
 delaunay :: [[Double]] -> Bool -> IO Delaunay
 delaunay sites deg = do
-  let n = length sites
-      dim = length (head sites) -- TODO check même longueur
+  let n     = length sites
+      dim   = length (head sites)
+      check = all (== dim) (map length (tail sites))
+  unless check $
+    error "the points must have the same dimension"
   when (dim < 2) $
     error "dimension must be at least 2"
   when (n <= dim+1) $
@@ -33,6 +35,7 @@ delaunay sites deg = do
   resultPtr <- c_delaunay sitesPtr
                (fromIntegral dim) (fromIntegral n) (fromIntegral $ fromEnum deg)
                exitcodePtr tmpFile'
+  (>>=) (readFile tmpFile) putStrLn -- print summary
   exitcode <- peek exitcodePtr
   free exitcodePtr
   free sitesPtr
@@ -47,7 +50,7 @@ delaunay sites deg = do
 
 -- | vertices ids of a ridge
 ridgeVertices :: Ridge -> IndexSet
-ridgeVertices = IS.fromAscList . IM.keys . _points . _polytope
+ridgeVertices = IS.fromAscList . IM.keys . _points . _subsimplex
 
 -- | the ridges a vertex belongs to
 vertexNeighborRidges :: Delaunay -> Index -> [Ridge]
@@ -55,9 +58,11 @@ vertexNeighborRidges tess i =
   filter (\r -> ridgeVertices r `elem` _neighRidges (_vertices tess IM.! i))
          (_ridges tess)
 
+-- | whether a ridge is sandwiched between two facets
 sandwichedRidge :: Ridge -> Bool
 sandwichedRidge ridge = IS.size (_ridgeOf ridge) == 2
 
+-- | the ridges as a map
 ridgesMap :: Delaunay -> Map IndexSet Ridge -- not used now
 ridgesMap tess = M.fromList ridges'
   where
@@ -73,7 +78,7 @@ ridgesMap tess = M.fromList ridges'
 -- allFacets :: Delaunay -> [IndexSet]
 -- allFacets d = map _facetVertices (IM.elems $ _facets d)
 
-
+-- R code to plot a 2D Delaunay tesselation
 delaunay2ForR :: Delaunay -> Bool -> String
 delaunay2ForR tess colors =
   let facets = IM.elems (_facets tess) in
@@ -96,6 +101,7 @@ delaunay2ForR tess colors =
                      then "col=colors[" ++ show i ++ "])\n"
                      else "col=\"lightblue\")\n")
 
+-- R code to plot a 3D Delaunay tesselation
 delaunay3rgl :: Delaunay -> Bool -> Bool -> Bool -> Maybe Double -> String
 delaunay3rgl tess onlyinterior segments colors alpha =
   let ridges = _ridges tess in
@@ -135,7 +141,8 @@ delaunay3rgl tess onlyinterior segments colors alpha =
           "), color=\"black\")\n"
         else "\n"
       where
-        pts = map (\p -> (p!!0,p!!1,p!!2)) (IM.elems $ _points $ _polytope ridge)
+        pts = map (\p -> (p!!0,p!!1,p!!2))
+                  (IM.elems $ _points $ _subsimplex ridge)
 
 
 test :: IO Delaunay

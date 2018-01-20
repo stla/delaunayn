@@ -13,7 +13,6 @@ import           Data.Set              (Set)
 import qualified Data.Set              as S
 import           Foreign.C.String
 import           Foreign.C.Types
-import           Foreign.Marshal.Alloc (free)
 import           Foreign.Marshal.Array (peekArray)
 import           Foreign.Ptr           (Ptr)
 import           Foreign.Storable
@@ -23,31 +22,31 @@ type IndexSet = IntSet
 type IndexMap = IntMap
 
 data Facet = Facet {
-    _simplex   :: Polytope
+    _simplex   :: Simplex
   , _neighbors :: IntSet
 } deriving Show
 
-data Vertex = Vertex {
+data Site = Site {
     _coordinates   :: [Double]
-  , _neighVertices :: IntSet
+  , _neighSites :: IntSet
   , _neighRidges   :: Set IndexSet
   , _neighFacets   :: IntSet
 } deriving Show
 
-data Polytope = Polytope {
+data Simplex = Simplex {
     _points :: IndexMap [Double]
-  , _center :: [Double]
+  , _circumcenter :: [Double]
   , _normal :: [Double]
   , _volume :: Double
 } deriving Show
 
 data Ridge = Ridge {
-    _polytope :: Polytope
+    _subsimplex :: Simplex
   , _ridgeOf  :: IntSet
 } deriving Show
 
 data Delaunay = Delaunay {
-    _vertices :: IndexMap Vertex
+    _vertices :: IndexMap Site
   , _ridges   :: [Ridge]
   , _facets   :: IntMap Facet
 } deriving Show
@@ -252,7 +251,7 @@ cDelaunayPtrToDelaunay cdelaunayPtr sites = do
                     ridgesCenters ridgesNormals areas)
   -- (>>=) (readFile tmpFile) putStrLn -- print summary
   return Delaunay { _vertices = IM.fromList $ zip [0 .. n]
-                                (zipWith4 toVertex
+                                (zipWith4 toSite
                                  sites vrneighbors vfneighbors vvneighbors)
                   , _facets = IM.fromList $ zip [0 .. nf-1]
                               (zipWith5 toFacet
@@ -261,25 +260,25 @@ cDelaunayPtrToDelaunay cdelaunayPtr sites = do
                               neighbors' (chunksOf dim centers) volumes)
                   , _ridges = ridges } --nubBy ((==) `on` ridgeVertices) ridges}
   where
-    toVertex :: [Double] -> [IndexSet] -> IntSet -> IntSet -> Vertex
-    toVertex coords nridges nfacets nvertices =
-      Vertex {  _coordinates   = coords
-              , _neighRidges   = S.fromList nridges
-              , _neighFacets   = nfacets
-              , _neighVertices = nvertices}
+    toSite :: [Double] -> [IndexSet] -> IntSet -> IntSet -> Site
+    toSite coords nridges nfacets nvertices =
+      Site {  _coordinates   = coords
+            , _neighRidges   = S.fromList nridges
+            , _neighFacets   = nfacets
+            , _neighSites    = nvertices }
     toFacet :: [Int] -> [Double] -> [Int] -> [Double] -> Double -> Facet
     toFacet verts normal neighs center vol =
-      Facet { _simplex   = doPolytope verts center normal vol
+      Facet { _simplex   = doSimplex verts center normal vol
             , _neighbors = IS.fromList neighs }
-    doPolytope :: [Int] -> [Double] -> [Double] -> Double -> Polytope
-    doPolytope is center normal volume =
-      Polytope { _points  = IM.fromAscList $ zip is (map (sites !!) is)
-               , _center  = center
-               , _normal  = normal
-               , _volume  = volume }
+    doSimplex :: [Int] -> [Double] -> [Double] -> Double -> Simplex
+    doSimplex is center normal volume =
+      Simplex { _points        = IM.fromAscList $ zip is (map (sites !!) is)
+              , _circumcenter  = center
+              , _normal        = normal
+              , _volume        = volume }
     doRidge :: [Int] -> [Int] -> [Double] -> [Double] -> Double -> Ridge
     doRidge facets is center norm vol =
-      Ridge { _polytope = doPolytope is center norm vol
+      Ridge { _subsimplex = doSimplex is center norm vol
             , _ridgeOf = IS.fromAscList facets }
     cdbl2dbl :: CDouble -> Double
     cdbl2dbl x = if isNaN x then 0/0 else realToFrac x

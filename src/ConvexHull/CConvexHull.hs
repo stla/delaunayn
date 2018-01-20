@@ -2,6 +2,8 @@
 {-# LANGUAGE ForeignFunctionInterface #-}
 module ConvexHull.CConvexHull
   ( ConvexHull(..)
+  , Face(..)
+  , Vertex(..)
   , peekConvexHull
   , c_convexhull )
   where
@@ -42,10 +44,6 @@ instance Storable CVertex where
           (\hsc_ptr -> pokeByteOff hsc_ptr 8)      ptr r2
 {-# LINE 40 "convexhull.hsc" #-}
 
---data Vertex = Vertex {
---    _id :: Int
---  , _point :: [Double]
---} deriving Show
 
 cVerticesToMap :: Int -> [CVertex] -> IO (IntMap [Double])
 cVerticesToMap dim cvertices = do
@@ -53,7 +51,7 @@ cVerticesToMap dim cvertices = do
   points <- mapM (\cv -> (<$!>) (map realToFrac) (peekArray dim (__point cv)))
                  cvertices
   return $ IM.fromAscList (zip ids points)
---
+
 data CVertex' = CVertex' {
     __id' :: CUInt
   , __point':: Ptr CDouble
@@ -275,7 +273,7 @@ cFaceToFace dim nvertices cface = do
               , _normal    = normal
               , _offset    = offset
               , _area      = area
-              , _neighbors = IS.fromAscList neighbors}
+              , _neighbors = IS.fromAscList neighbors }
 
 data CConvexHull = CConvexHull {
     __dim    :: CUInt
@@ -366,7 +364,6 @@ peekConvexHull ptr = do
                     (peekArray nvertices (__allvertices cconvexhull))
   faces <- (=<<) (imapM (\i cface -> cFaceToFace dim (facesizes !! i) cface))
                         (peekArray nfaces (__faces cconvexhull))
-  --faces <- mapM (\i -> (<$!>) (map fromIntegral) (peekArray (facesizes !! i) (faces' !! i))) [0 .. length faces'-1]
   alledges <- (=<<) (mapM (cEdgeToEdge dim))
                           (peekArray nedges (__alledges cconvexhull))
   return ConvexHull { _allvertices = vertices
