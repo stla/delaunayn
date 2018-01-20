@@ -7,6 +7,9 @@
 int cmpvertices (const void * a, const void * b) {
    return ( (*((VertexT*)a)).id - (*((VertexT*)b)).id );
 }
+int cmpfullvertices (const void * a, const void * b) {
+   return ( (*((FullVertexT*)a)).id - (*((FullVertexT*)b)).id );
+}
 
 double* getpoint(double* points, unsigned dim, unsigned id){
   double* out = malloc(dim * sizeof(double));
@@ -60,6 +63,8 @@ EdgeT* allEdges(FaceT *faces, unsigned* edgesizes, unsigned nfaces, unsigned* le
   return out;
 }
 
+// TODO neighbor facets of vertices (vertex->neighbors)
+
 ConvexHullT* convexHull(
 	double*   points,
 	unsigned  dim,
@@ -102,6 +107,7 @@ ConvexHullT* convexHull(
         faces[i_facet].area    = facet->f.area;
         faces[i_facet].center  = facet->center;
         faces[i_facet].normal  = facet->normal;
+        faces[i_facet].offset  = facet->offset;
         facesizes[i_facet] =
           (unsigned) qh_setsize(qh, facet->vertices);
         faces[i_facet].vertices =
@@ -178,20 +184,29 @@ ConvexHullT* convexHull(
     /* vertices */
     unsigned nvertices = qh->num_vertices;
     //unsigned* vertices  = malloc(nvertices * sizeof(unsigned));
-    VertexT* vertices = malloc(nvertices * sizeof(VertexT));
+    FullVertexT* vertices = malloc(nvertices * sizeof(FullVertexT));
     {
       vertexT *vertex;
       unsigned i_vertex=0;
       //VertexT vertices_[nvertices];
       FORALLvertices{
-//        printf("ivertex: %d\n", i_vertex);
+        printf("vertex %d\n", vertex->id);
         vertices[i_vertex].id = (unsigned) qh_pointid(qh, vertex->point);
-//        vertices[i_vertex].point = vertex->point;
         vertices[i_vertex].point = getpoint(points, dim, vertices[i_vertex].id);
-//        printf("point: %f %f %f\n", vertices[i_vertex].point[0], vertices[i_vertex].point[1], vertices[i_vertex].point[2]);
+        vertices[i_vertex].nneighfacets = qh_setsize(qh, vertex->neighbors);
+        vertices[i_vertex].neighfacets =
+          malloc(vertices[i_vertex].nneighfacets * sizeof(unsigned));
+        facetT *neighbor, **neighborp;
+        unsigned i_neighbor = 0;
+        FOREACHneighbor_(vertex){
+          vertices[i_vertex].neighfacets[i_neighbor] = neighbor->id;
+          i_neighbor++;
+        }
+        qsort(vertices[i_vertex].neighfacets, vertices[i_vertex].nneighfacets,
+              sizeof(unsigned), cmpfunc);
         i_vertex++;
       }
-      qsort(vertices, nvertices, sizeof(VertexT), cmpvertices);
+      qsort(vertices, nvertices, sizeof(FullVertexT), cmpfullvertices);
     }
 
     out->dim       = dim;
