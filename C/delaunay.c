@@ -60,10 +60,6 @@ unsigned upow(unsigned base, unsigned exp)
     return result;
 }
 
-double square(double x){
-  return x*x;
-}
-
 void printfacet(qhT* qh, facetT* facet){
   vertexT *vertex, **vertexp;
   FOREACHvertex_(facet->vertices){

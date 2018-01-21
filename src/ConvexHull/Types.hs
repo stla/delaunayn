@@ -10,16 +10,19 @@ type IndexSet = IntSet
 
 data Vertex = Vertex {
     _point         :: [Double]
-  , _neighfacets   :: IntSet
+  , _neighfaces    :: IntSet
   , _neighvertices :: IndexSet
   , _neighedges    :: IndexSet
 } deriving Show
 
-type Edge = IntMap [Double]
+data Ridge = Ridge {
+    _rvertices :: IndexMap [Double]
+  , _ridgeOf   :: IntSet
+} deriving Show
 
 data Face = Face {
     _fvertices :: IndexMap [Double]
-  , _edges     :: [Edge]
+  , _edges     :: [Ridge]
   , _centroid  :: [Double]
   , _normal    :: [Double]
   , _offset    :: Double
@@ -31,5 +34,5 @@ data Face = Face {
 data ConvexHull = ConvexHull {
     _allvertices :: IndexMap Vertex
   , _faces       :: IntMap Face
-  , _alledges    :: IntMap Edge
+  , _alledges    :: IntMap Ridge
 } deriving Show

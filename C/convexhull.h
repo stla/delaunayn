@@ -14,14 +14,16 @@ typedef struct FullVertex {
   unsigned  nneighedges;
 } FullVertexT;
 
-typedef struct Edge {
-    VertexT v1;
-    VertexT v2;
-} EdgeT;
+typedef struct Ridge {
+    VertexT* vertices;
+    unsigned ridgeOf1;
+    unsigned ridgeOf2;
+} RidgeT;
 
 typedef struct Face {
   VertexT*  vertices;
-  EdgeT*    edges;
+  RidgeT*   edges;
+  unsigned  nedges;
   double*   center;
   double*   normal;
   double    offset;
@@ -38,6 +40,6 @@ typedef struct ConvexHull {
   FaceT*       faces;
   unsigned*    facesizes;
   unsigned     nfaces;
-  EdgeT*       edges;
+  RidgeT*      edges;
   unsigned     nedges;
 } ConvexHullT;

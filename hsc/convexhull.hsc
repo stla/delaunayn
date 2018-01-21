@@ -110,7 +110,7 @@ cVerticesToVertexMap dim cvertices = do
   return $ IM.fromList (zip ids
                             (map (\(pt, fneighs, vneighs, eneighs) ->
                                   Vertex { _point = pt
-                                         , _neighfacets =
+                                         , _neighfaces =
                                               IS.fromAscList fneighs
                                          , _neighvertices =
                                               IS.fromAscList vneighs
@@ -120,33 +120,41 @@ cVerticesToVertexMap dim cvertices = do
                                   (zip4 points neighfacets neighvertices
                                         neighedges)))
 
-data CEdge = CEdge {
-    __v1 :: CVertex
-  , __v2 :: CVertex
+data CRidge = CRidge {
+    __rvertices :: Ptr CVertex
+  , __ridgeOf1 :: CUInt
+  , __ridgeOf2 :: CUInt
 }
 
-instance Storable CEdge where
-    sizeOf    __ = #{size EdgeT}
-    alignment __ = #{alignment EdgeT}
+instance Storable CRidge where
+    sizeOf    __ = #{size RidgeT}
+    alignment __ = #{alignment RidgeT}
     peek ptr = do
-      v1'     <- #{peek EdgeT, v1}    ptr
-      v2'     <- #{peek EdgeT, v2}    ptr
-      return CEdge { __v1 = v1'
-                   , __v2 = v2' }
-    poke ptr (CEdge r1 r2)
+      rvertices <- #{peek RidgeT, vertices} ptr
+      ridgeOf1' <- #{peek RidgeT, ridgeOf1} ptr
+      ridgeOf2' <- #{peek RidgeT, ridgeOf2} ptr
+      return CRidge { __rvertices = rvertices
+                    , __ridgeOf1 = ridgeOf1'
+                    , __ridgeOf2 = ridgeOf2' }
+    poke ptr (CRidge r1 r2 r3)
       = do
-          #{poke EdgeT, v1}      ptr r1
-          #{poke EdgeT, v2}      ptr r2
+          #{poke RidgeT, vertices} ptr r1
+          #{poke RidgeT, ridgeOf1} ptr r2
+          #{poke RidgeT, ridgeOf2} ptr r3
 
-cEdgeToEdge :: Int -> CEdge -> IO Edge
-cEdgeToEdge dim cridge = do
-  let v1 = __v1 cridge
-      v2 = __v2 cridge
-  cVerticesToMap dim [v1,v2]
+cRidgeToRidge :: Int -> CRidge -> IO Ridge
+cRidgeToRidge dim cridge = do
+  let f1 = fromIntegral $ __ridgeOf1 cridge
+      f2 = fromIntegral $ __ridgeOf2 cridge
+  vertices <- peekArray (dim-1) (__rvertices cridge)
+  rvertices <- cVerticesToMap dim vertices
+  return Ridge { _rvertices = rvertices
+               , _ridgeOf = IS.fromAscList [f1,f2] }
 
 data CFace = CFace {
     __fvertices :: Ptr CVertex
-  , __edges :: Ptr CEdge
+  , __edges :: Ptr CRidge
+  , __nedges' :: CUInt
   , __center :: Ptr CDouble
   , __normal :: Ptr CDouble
   , __offset :: CDouble
@@ -162,6 +170,7 @@ instance Storable CFace where
     peek ptr = do
       fvertices' <- #{peek FaceT, vertices} ptr
       edges'     <- #{peek FaceT, edges} ptr
+      nedges'    <- #{peek FaceT, nedges} ptr
       center'    <- #{peek FaceT, center} ptr
       normal'    <- #{peek FaceT, normal} ptr
       offset'    <- #{peek FaceT, offset} ptr
@@ -171,6 +180,7 @@ instance Storable CFace where
       family'    <- #{peek FaceT, family} ptr
       return CFace { __fvertices    = fvertices'
                    , __edges        = edges'
+                   , __nedges'      = nedges'
                    , __center       = center'
                    , __normal       = normal'
                    , __offset       = offset'
@@ -178,17 +188,18 @@ instance Storable CFace where
                    , __neighbors    = neighbors'
                    , __neighborsize = neighsize
                    , __family       = family' }
-    poke ptr (CFace r1 r2 r3 r4 r5 r6 r7 r8 r9)
+    poke ptr (CFace r1 r2 r3 r4 r5 r6 r7 r8 r9 r10)
       = do
           #{poke FaceT, vertices}     ptr r1
           #{poke FaceT, edges}        ptr r2
-          #{poke FaceT, center}       ptr r3
-          #{poke FaceT, normal}       ptr r4
-          #{poke FaceT, offset}       ptr r5
-          #{poke FaceT, area}         ptr r6
-          #{poke FaceT, neighbors}    ptr r7
-          #{poke FaceT, neighborsize} ptr r8
-          #{poke FaceT, family}       ptr r9
+          #{poke FaceT, nedges}       ptr r3
+          #{poke FaceT, center}       ptr r4
+          #{poke FaceT, normal}       ptr r5
+          #{poke FaceT, offset}       ptr r6
+          #{poke FaceT, area}         ptr r7
+          #{poke FaceT, neighbors}    ptr r8
+          #{poke FaceT, neighborsize} ptr r9
+          #{poke FaceT, family}       ptr r10
 
 cFaceToFace :: Int -> Int -> CFace -> IO Face
 cFaceToFace dim nvertices cface = do
@@ -196,12 +207,13 @@ cFaceToFace dim nvertices cface = do
       neighsize = fromIntegral (__neighborsize cface)
       offset    = realToFrac (__offset cface)
       family    = fromIntegral (__family cface)
+      nedges    = fromIntegral (__nedges' cface)
   center    <- (<$!>) (map realToFrac) (peekArray dim (__center cface))
   normal    <- (<$!>) (map realToFrac) (peekArray dim (__normal cface))
   vertices  <- (=<<) (cVerticesToMap dim)
                      (peekArray nvertices (__fvertices cface))
-  edges  <- (=<<) (mapM (cEdgeToEdge dim))
-                   (peekArray nvertices (__edges cface))
+  edges  <- (=<<) (mapM (cRidgeToRidge dim))
+                  (peekArray nedges (__edges cface))
   neighbors <- (<$!>) (map fromIntegral)
                       (peekArray neighsize (__neighbors cface))
   return Face { _fvertices = vertices
@@ -220,7 +232,7 @@ data CConvexHull = CConvexHull {
   , __faces :: Ptr CFace
   , __facesizes :: Ptr CUInt
   , __nfaces :: CUInt
-  , __alledges :: Ptr CEdge
+  , __alledges :: Ptr CRidge
   , __nedges :: CUInt
 }
 
@@ -278,7 +290,7 @@ peekConvexHull ptr = do
   faces <- (=<<) (imapM (\i cface -> cFaceToFace dim (facesizes !! i) cface))
                         (peekArray nfaces (__faces cconvexhull))
   --faces <- mapM (\i -> (<$!>) (map fromIntegral) (peekArray (facesizes !! i) (faces' !! i))) [0 .. length faces'-1]
-  alledges <- (=<<) (mapM (cEdgeToEdge dim))
+  alledges <- (=<<) (mapM (cRidgeToRidge dim))
                           (peekArray nedges (__alledges cconvexhull))
   return ConvexHull { _allvertices = vertices
                     , _faces = IM.fromAscList (zip [0 .. nfaces-1] faces)

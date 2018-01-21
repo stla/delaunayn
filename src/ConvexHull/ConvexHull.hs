@@ -43,33 +43,35 @@ convexHull points triangulate = do
 hullVertices :: ConvexHull -> [[Double]]
 hullVertices chull = map _point (IM.elems (_allvertices chull))
 
--- | get edges of a convex hull
-hullEdges :: ConvexHull -> [([Double], [Double])]
-hullEdges chull = map ((\x -> (x!!0, x!!1)) . IM.elems)
-                      (IM.elems (_alledges chull))
+-- -- | get edges of a convex hull
+-- hullEdges :: ConvexHull -> [([Double], [Double])]
+-- hullEdges chull = map ((\x -> (x!!0, x!!1)) . IM.elems)
+--                       (IM.elems (_alledges chull))
+xxx :: ConvexHull -> [[Int]]
+xxx chull = map (IM.keys . _rvertices) (IM.elems (_alledges chull))
 
 -- | get vertices of a face
 faceVertices :: Face -> [[Double]]
 faceVertices = IM.elems . _fvertices
 
--- | get edges of a face
-faceEdges :: Face -> [([Double], [Double])]
-faceEdges face = map ((\x -> (x!!0, x!!1)) . IM.elems) (_edges face)
-
--- | whether a pair of vertices form an edge
-isEdge :: ConvexHull -> (Index, Index) -> Bool
-isEdge hull edge = (edge `elem` edges) || (swap edge `elem` edges)
-  where
-    edges = map ((\x -> (x!!0, x!!1)) . IM.keys) (IM.elems (_alledges hull))
-
--- | get faces ids an edge belongs to
-edgeOf :: ConvexHull -> (Index, Index) -> Maybe [Int]
-edgeOf hull v1v2@(v1, v2) =
-  if not (isEdge hull v1v2)
-    then Nothing
-    else Just $ IM.keys (IM.filter (elem v1v2') facesEdges)
-  where
-    edgeIds :: Edge -> (Index, Index)
-    edgeIds edge = (\x -> (x!!0, x!!1)) (IM.keys edge)
-    facesEdges = IM.map (map edgeIds . _edges) (_faces hull)
-    v1v2' = if v1<v2 then v1v2 else (v2,v1)
+-- -- | get edges of a face
+-- faceEdges :: Face -> [([Double], [Double])]
+-- faceEdges face = map ((\x -> (x!!0, x!!1)) . IM.elems) (_edges face)
+--
+-- -- | whether a pair of vertices form an edge
+-- isEdge :: ConvexHull -> (Index, Index) -> Bool
+-- isEdge hull edge = (edge `elem` edges) || (swap edge `elem` edges)
+--   where
+--     edges = map ((\x -> (x!!0, x!!1)) . IM.keys) (IM.elems (_alledges hull))
+--
+-- -- | get faces ids an edge belongs to
+-- edgeOf :: ConvexHull -> (Index, Index) -> Maybe [Int] -- c'est dans ridge->top et ridge->bottom
+-- edgeOf hull v1v2@(v1, v2) =
+--   if not (isEdge hull v1v2)
+--     then Nothing
+--     else Just $ IM.keys (IM.filter (elem v1v2') facesEdges)
+--   where
+--     edgeIds :: Edge -> (Index, Index)
+--     edgeIds edge = (\x -> (x!!0, x!!1)) (IM.keys edge)
+--     facesEdges = IM.map (map edgeIds . _edges) (_faces hull)
+--     v1v2' = if v1<v2 then v1v2 else (v2,v1)
