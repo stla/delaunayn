@@ -124,6 +124,7 @@ data CRidge = CRidge {
     __rvertices :: Ptr CVertex
   , __ridgeOf1 :: CUInt
   , __ridgeOf2 :: CUInt
+  , __ridgeSize :: CUInt
 }
 
 instance Storable CRidge where
@@ -133,20 +134,24 @@ instance Storable CRidge where
       rvertices <- #{peek RidgeT, vertices} ptr
       ridgeOf1' <- #{peek RidgeT, ridgeOf1} ptr
       ridgeOf2' <- #{peek RidgeT, ridgeOf2} ptr
+      ridgeSize <- #{peek RidgeT, nvertices} ptr
       return CRidge { __rvertices = rvertices
                     , __ridgeOf1 = ridgeOf1'
-                    , __ridgeOf2 = ridgeOf2' }
-    poke ptr (CRidge r1 r2 r3)
+                    , __ridgeOf2 = ridgeOf2'
+                    , __ridgeSize = ridgeSize }
+    poke ptr (CRidge r1 r2 r3 r4)
       = do
           #{poke RidgeT, vertices} ptr r1
           #{poke RidgeT, ridgeOf1} ptr r2
           #{poke RidgeT, ridgeOf2} ptr r3
+          #{poke RidgeT, nvertices} ptr r4
 
 cRidgeToRidge :: Int -> CRidge -> IO Ridge
 cRidgeToRidge dim cridge = do
   let f1 = fromIntegral $ __ridgeOf1 cridge
       f2 = fromIntegral $ __ridgeOf2 cridge
-  vertices <- peekArray (dim-1) (__rvertices cridge)
+      n  = fromIntegral $ __ridgeSize cridge
+  vertices <- peekArray n (__rvertices cridge)
   rvertices <- cVerticesToMap dim vertices
   return Ridge { _rvertices = rvertices
                , _ridgeOf = IS.fromAscList [f1,f2] }

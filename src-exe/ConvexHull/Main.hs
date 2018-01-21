@@ -36,7 +36,9 @@ main = do
               ,[ 1, 1,-1, 1]
               ,[ 1, 1, 1, 1]]
   chull <- convexHull hcube False
+  pPrint (_alledges chull)
   pPrint (_allvertices chull)
+  pPrint (_faces chull)
 
   -- let cube5 = [[-1,-1,-1,-1,-1]
   --             ,[-1,-1, 1,-1,-1]

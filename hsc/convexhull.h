@@ -18,6 +18,7 @@ typedef struct Ridge {
     VertexT* vertices;
     unsigned ridgeOf1;
     unsigned ridgeOf2;
+    unsigned nvertices;
 } RidgeT;
 
 typedef struct Face {
