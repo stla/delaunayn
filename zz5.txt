@@ -1,0 +1,6155 @@
+Vertices and facets:
+- p18(v27):    -1     1    -1    -1     1
+  neighbors: f2 f3 f5 f36 f53
+- p10(v26):    -1     1    -1     1    -1
+  neighbors: f1 f3 f5 f36 f50
+- p3(v25):    -1     1     1    -1    -1
+  neighbors: f1 f2 f5 f36 f47
+- p6(v22):     1     1    -1    -1    -1
+  neighbors: f1 f2 f3 f35 f36
+- p26(v20):    -1     1    -1     1     1
+  neighbors: f3 f5 f36 f53 f50
+- p19(v19):    -1     1     1    -1     1
+  neighbors: f2 f5 f36 f47 f53
+- p11(v18):    -1     1     1     1    -1
+  neighbors: f1 f5 f36 f50 f47
+- p22(v15):     1     1    -1    -1     1
+  neighbors: f2 f3 f36 f35 f53
+- p14(v14):     1     1    -1     1    -1
+  neighbors: f1 f3 f35 f36 f50
+- p7(v13):     1     1     1    -1    -1
+  neighbors: f1 f2 f36 f35 f47
+- p27(v12):    -1     1     1     1     1
+  neighbors: f5 f36 f47 f53 f50
+- p30(v10):     1     1    -1     1     1
+  neighbors: f3 f35 f53 f36 f50
+- p23(v9):     1     1     1    -1     1
+  neighbors: f2 f36 f35 f47 f53
+- p15(v8):     1     1     1     1    -1
+  neighbors: f1 f35 f36 f50 f47
+- p31(v7):     1     1     1     1     1
+  neighbors: f35 f36 f53 f47 f50
+- p2(v2):    -1     1    -1    -1    -1
+  neighbors: f1 f2 f3 f5 f36
+- p24(v29):    -1    -1    -1     1     1
+  neighbors: f3 f4 f5 f50 f53
+- p9(v28):    -1    -1     1     1    -1
+  neighbors: f1 f4 f5 f47 f50
+- p12(v24):     1    -1    -1     1    -1
+  neighbors: f1 f3 f4 f35 f50
+- p25(v21):    -1    -1     1     1     1
+  neighbors: f4 f5 f50 f53 f47
+- p28(v17):     1    -1    -1     1     1
+  neighbors: f3 f4 f50 f53 f35
+- p13(v16):     1    -1     1     1    -1
+  neighbors: f1 f4 f50 f47 f35
+- p29(v11):     1    -1     1     1     1
+  neighbors: f4 f50 f53 f35 f47
+- p8(v4):    -1    -1    -1     1    -1
+  neighbors: f1 f3 f4 f5 f50
+- p5(v30):     1    -1     1    -1    -1
+  neighbors: f1 f2 f35 f47 f4
+- p1(v3):    -1    -1     1    -1    -1
+  neighbors: f1 f2 f4 f5 f47
+- p4(v1):     1    -1    -1    -1    -1
+  neighbors: f1 f2 f3 f4 f35
+- p0(v0):    -1    -1    -1    -1    -1
+  neighbors: f1 f2 f3 f4 f5
+- p20(v31):     1    -1    -1    -1     1
+  neighbors: f3 f2 f4 f35 f53
+- p16(v5):    -1    -1    -1    -1     1
+  neighbors: f2 f3 f4 f5 f53
+- p21(v23):     1    -1     1    -1     1
+  neighbors: f2 f4 f35 f53 f47
+- p17(v32):    -1    -1     1    -1     1
+  neighbors: f5 f2 f4 f47 f53
+- f36
+    - flags: top tested seen coplanar keepcentrum
+    - merges: 23
+    - normal:        -0        1        0        0        0
+    - offset:         -1
+    - center:    0.4      1    0.2    0.2      0 
+    - vertices: p18(v27) p10(v26) p3(v25) p6(v22) p26(v20) p19(v19) p11(v18) p22(v15) p14(v14) p7(v13) p27(v12) p30(v10) p23(v9) p15(v8) p31(v7) p2(v2)
+    - neighboring facets: f35 f47 f50 f53 f1 f2 f5 f3
+- f50
+    - flags: top tested seen coplanar keepcentrum
+    - merges: 23
+    - normal:         0       -0        0        1       -0
+    - offset:         -1
+    - center:    0.4    0.2    0.2      1      0 
+    - vertices: p24(v29) p9(v28) p10(v26) p12(v24) p25(v21) p26(v20) p11(v18) p28(v17) p13(v16) p14(v14) p27(v12) p29(v11) p30(v10) p15(v8) p31(v7) p8(v4)
+    - neighboring facets: f36 f47 f1 f53 f35 f3 f5 f4
+- f1
+    - flags: top tested seen coplanar keepcentrum
+    - merges: 17
+    - normal:         0        0        0       -0       -1
+    - offset:         -1
+    - center: 0.09090909090909091 0.09090909090909091 -0.09090909090909091 -0.09090909090909091     -1 
+    - vertices: p5(v30) p9(v28) p10(v26) p3(v25) p12(v24) p6(v22) p11(v18) p13(v16) p14(v14) p7(v13) p15(v8) p8(v4) p1(v3) p2(v2) p4(v1) p0(v0)
+    - neighboring facets: f2 f3 f4 f5 f50 f35 f36 f47
+- f3
+    - flags: top tested seen coplanar keepcentrum
+    - merges: 17
+    - normal:        -0       -0       -1       -0       -0
+    - offset:         -1
+    - center: 0.09090909090909091 0.09090909090909091     -1 -0.09090909090909091 -0.09090909090909091 
+    - vertices: p20(v31) p24(v29) p18(v27) p10(v26) p12(v24) p6(v22) p26(v20) p28(v17) p22(v15) p14(v14) p30(v10) p16(v5) p8(v4) p2(v2) p4(v1) p0(v0)
+    - neighboring facets: f1 f2 f4 f5 f53 f50 f36 f35
+- f35
+    - flags: bottom tested seen coplanar keepcentrum
+    - merges: 23
+    - normal:         1        0        0        0        0
+    - offset:         -1
+    - center:      1    0.4    0.2    0.2      0 
+    - vertices: p20(v31) p5(v30) p12(v24) p21(v23) p6(v22) p28(v17) p13(v16) p22(v15) p14(v14) p7(v13) p29(v11) p30(v10) p23(v9) p15(v8) p31(v7) p4(v1)
+    - neighboring facets: f36 f47 f50 f53 f1 f2 f4 f3
+- f5
+    - flags: top tested seen coplanar keepcentrum
+    - merges: 17
+    - normal:        -1       -0       -0       -0       -0
+    - offset:         -1
+    - center:     -1 0.09090909090909091 0.09090909090909091 -0.09090909090909091 -0.09090909090909091 
+    - vertices: p17(v32) p24(v29) p9(v28) p18(v27) p10(v26) p3(v25) p25(v21) p26(v20) p19(v19) p11(v18) p27(v12) p16(v5) p8(v4) p1(v3) p2(v2) p0(v0)
+    - neighboring facets: f1 f2 f3 f4 f53 f36 f47 f50
+- f2
+    - flags: bottom tested seen coplanar keepcentrum
+    - merges: 17
+    - normal:         0        0        0       -1        0
+    - offset:         -1
+    - center: 0.09090909090909091 0.09090909090909091 -0.09090909090909091     -1 -0.09090909090909091 
+    - vertices: p17(v32) p20(v31) p5(v30) p18(v27) p3(v25) p21(v23) p6(v22) p19(v19) p22(v15) p7(v13) p23(v9) p16(v5) p1(v3) p2(v2) p4(v1) p0(v0)
+    - neighboring facets: f1 f3 f4 f5 f36 f47 f53 f35
+- f4
+    - flags: bottom tested seen coplanar keepcentrum
+    - merges: 17
+    - normal:         0       -1        0        0        0
+    - offset:         -1
+    - center: 0.09090909090909091     -1 -0.09090909090909091 0.09090909090909091 -0.09090909090909091 
+    - vertices: p17(v32) p20(v31) p5(v30) p24(v29) p9(v28) p12(v24) p21(v23) p25(v21) p28(v17) p13(v16) p29(v11) p16(v5) p8(v4) p1(v3) p4(v1) p0(v0)
+    - neighboring facets: f1 f2 f3 f5 f50 f47 f35 f53
+- f47
+    - flags: bottom tested seen coplanar keepcentrum
+    - merges: 23
+    - normal:         0       -0        1       -0       -0
+    - offset:         -1
+    - center:    0.2    0.4      1    0.2      0 
+    - vertices: p17(v32) p5(v30) p9(v28) p3(v25) p21(v23) p25(v21) p19(v19) p11(v18) p13(v16) p7(v13) p27(v12) p29(v11) p23(v9) p15(v8) p31(v7) p1(v3)
+    - neighboring facets: f36 f50 f53 f35 f1 f2 f5 f4
+- f53
+    - flags: bottom tested seen coplanar keepcentrum
+    - merges: 23
+    - normal:        -0        0       -0        0        1
+    - offset:         -1
+    - center: 0.09090909090909091 0.2727272727272727 0.09090909090909091 0.2727272727272727      1 
+    - vertices: p17(v32) p20(v31) p24(v29) p18(v27) p21(v23) p25(v21) p26(v20) p19(v19) p28(v17) p22(v15) p27(v12) p29(v11) p30(v10) p23(v9) p31(v7) p16(v5)
+    - neighboring facets: f36 f47 f50 f3 f35 f2 f4 f5
+exitcode: 0
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+to merge
+array id: 7
+array id: 22
+x.id: 23
+x.id: 30
+nvertices: 6
+31
+1.000000
+to merge
+x.id: 7
+x.id: 15
+x.id: 23
+x.id: 30
+nvertices: 6
+31
+1.000000
+to merge
+x.id: 7
+array id: 14
+x.id: 15
+x.id: 30
+nvertices: 7
+31
+1.000000
+to merge
+x.id: 7
+x.id: 14
+x.id: 22
+x.id: 30
+nvertices: 7
+31
+1.000000
+to merge
+array id: 6
+x.id: 7
+x.id: 14
+x.id: 22
+nvertices: 8
+31
+1.000000
+to merge
+array id: 22
+x.id: 23
+x.id: 27
+x.id: 30
+nvertices: 5
+31
+1.000000
+to merge
+x.id: 22
+array id: 26
+x.id: 27
+x.id: 30
+nvertices: 6
+31
+1.000000
+to merge
+array id: 19
+x.id: 22
+x.id: 23
+x.id: 27
+nvertices: 7
+31
+1.000000
+to merge
+x.id: 19
+x.id: 22
+x.id: 26
+x.id: 27
+nvertices: 7
+31
+1.000000
+to merge
+array id: 18
+x.id: 19
+x.id: 22
+x.id: 26
+nvertices: 8
+31
+1.000000
+to merge
+array id: 7
+x.id: 15
+x.id: 23
+x.id: 27
+nvertices: 5
+31
+1.000000
+to merge
+x.id: 7
+array id: 11
+x.id: 15
+x.id: 27
+nvertices: 6
+31
+1.000000
+to merge
+x.id: 7
+array id: 19
+x.id: 23
+x.id: 27
+nvertices: 7
+31
+1.000000
+to merge
+x.id: 7
+x.id: 11
+x.id: 19
+x.id: 27
+nvertices: 7
+31
+1.000000
+to merge
+array id: 3
+x.id: 7
+x.id: 11
+x.id: 19
+nvertices: 8
+31
+1.000000
+to merge
+array id: 14
+x.id: 15
+x.id: 27
+x.id: 30
+nvertices: 5
+31
+1.000000
+to merge
+array id: 11
+x.id: 14
+x.id: 15
+x.id: 27
+nvertices: 6
+31
+1.000000
+to merge
+x.id: 11
+x.id: 14
+array id: 26
+x.id: 27
+nvertices: 7
+31
+1.000000
+to merge
+x.id: 14
+x.id: 26
+x.id: 27
+x.id: 30
+nvertices: 7
+31
+1.000000
+to merge
+array id: 10
+x.id: 11
+x.id: 14
+x.id: 26
+nvertices: 8
+31
+1.000000
+to merge
+x.id: 2
+x.id: 7
+array id: 11
+x.id: 15
+nvertices: 5
+15
+1.000000
+to merge
+x.id: 2
+x.id: 11
+x.id: 14
+x.id: 15
+nvertices: 5
+15
+1.000000
+to merge
+x.id: 2
+array id: 6
+x.id: 7
+x.id: 14
+nvertices: 6
+15
+1.000000
+to merge
+x.id: 2
+array id: 3
+x.id: 7
+x.id: 11
+nvertices: 7
+15
+1.000000
+to merge
+x.id: 2
+array id: 10
+x.id: 11
+x.id: 14
+nvertices: 8
+15
+1.000000
+to merge
+x.id: 2
+x.id: 14
+array id: 26
+x.id: 30
+nvertices: 5
+30
+1.000000
+to merge
+x.id: 2
+x.id: 22
+x.id: 26
+x.id: 30
+nvertices: 5
+30
+1.000000
+to merge
+x.id: 2
+array id: 6
+x.id: 14
+x.id: 22
+nvertices: 6
+30
+1.000000
+to merge
+x.id: 2
+array id: 10
+x.id: 14
+x.id: 26
+nvertices: 7
+30
+1.000000
+to merge
+x.id: 2
+array id: 18
+x.id: 22
+x.id: 26
+nvertices: 8
+30
+1.000000
+to merge
+x.id: 2
+x.id: 7
+array id: 19
+x.id: 23
+nvertices: 5
+23
+1.000000
+to merge
+x.id: 2
+x.id: 19
+x.id: 22
+x.id: 23
+nvertices: 5
+23
+1.000000
+to merge
+x.id: 2
+array id: 6
+x.id: 7
+x.id: 22
+nvertices: 6
+23
+1.000000
+to merge
+x.id: 2
+array id: 3
+x.id: 7
+x.id: 19
+nvertices: 7
+23
+1.000000
+to merge
+x.id: 2
+array id: 18
+x.id: 19
+x.id: 22
+nvertices: 8
+23
+1.000000
+to merge
+x.id: 2
+x.id: 11
+array id: 26
+x.id: 27
+nvertices: 5
+27
+-1.000000
+to merge
+x.id: 2
+x.id: 19
+x.id: 26
+x.id: 27
+nvertices: 5
+27
+-1.000000
+to merge
+x.id: 2
+array id: 3
+x.id: 11
+x.id: 19
+nvertices: 6
+27
+-1.000000
+to merge
+x.id: 2
+array id: 10
+x.id: 11
+x.id: 26
+nvertices: 7
+27
+-1.000000
+to merge
+x.id: 2
+array id: 18
+x.id: 19
+x.id: 26
+nvertices: 8
+27
+-1.000000
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+to merge
+array id: 14
+array id: 28
+x.id: 29
+x.id: 30
+nvertices: 6
+31
+1.000000
+to merge
+x.id: 14
+x.id: 15
+x.id: 29
+x.id: 30
+nvertices: 6
+31
+1.000000
+to merge
+array id: 13
+x.id: 14
+x.id: 15
+x.id: 29
+nvertices: 7
+31
+1.000000
+to merge
+x.id: 13
+x.id: 14
+x.id: 28
+x.id: 29
+nvertices: 7
+31
+1.000000
+to merge
+array id: 12
+x.id: 13
+x.id: 14
+x.id: 28
+nvertices: 8
+31
+1.000000
+to merge
+array id: 14
+x.id: 15
+x.id: 27
+x.id: 30
+nvertices: 5
+31
+1.000000
+to merge
+array id: 11
+x.id: 14
+x.id: 15
+x.id: 27
+nvertices: 6
+31
+1.000000
+to merge
+x.id: 11
+x.id: 14
+array id: 26
+x.id: 27
+nvertices: 7
+31
+1.000000
+to merge
+x.id: 14
+x.id: 26
+x.id: 27
+x.id: 30
+nvertices: 7
+31
+1.000000
+to merge
+array id: 10
+x.id: 11
+x.id: 14
+x.id: 26
+nvertices: 8
+31
+1.000000
+to merge
+x.id: 27
+array id: 28
+x.id: 29
+x.id: 30
+nvertices: 5
+31
+1.000000
+to merge
+array id: 25
+x.id: 27
+x.id: 28
+x.id: 29
+nvertices: 6
+31
+1.000000
+to merge
+array id: 26
+x.id: 27
+x.id: 28
+x.id: 30
+nvertices: 7
+31
+1.000000
+to merge
+x.id: 25
+x.id: 26
+x.id: 27
+x.id: 28
+nvertices: 7
+31
+1.000000
+to merge
+array id: 24
+x.id: 25
+x.id: 26
+x.id: 28
+nvertices: 8
+31
+1.000000
+to merge
+array id: 13
+x.id: 15
+x.id: 27
+x.id: 29
+nvertices: 5
+31
+1.000000
+to merge
+array id: 11
+x.id: 13
+x.id: 15
+x.id: 27
+nvertices: 6
+31
+1.000000
+to merge
+x.id: 11
+x.id: 13
+array id: 25
+x.id: 27
+nvertices: 7
+31
+1.000000
+to merge
+x.id: 13
+x.id: 25
+x.id: 27
+x.id: 29
+nvertices: 7
+31
+1.000000
+to merge
+array id: 9
+x.id: 11
+x.id: 13
+x.id: 25
+nvertices: 8
+31
+1.000000
+to merge
+x.id: 8
+array id: 11
+x.id: 14
+x.id: 15
+nvertices: 5
+15
+1.000000
+to merge
+x.id: 8
+x.id: 11
+x.id: 13
+x.id: 15
+nvertices: 5
+15
+1.000000
+to merge
+x.id: 8
+array id: 12
+x.id: 13
+x.id: 14
+nvertices: 6
+15
+1.000000
+to merge
+x.id: 8
+array id: 10
+x.id: 11
+x.id: 14
+nvertices: 7
+15
+1.000000
+to merge
+x.id: 8
+array id: 9
+x.id: 11
+x.id: 13
+nvertices: 8
+15
+1.000000
+to merge
+x.id: 8
+x.id: 13
+array id: 25
+x.id: 29
+nvertices: 5
+29
+1.000000
+to merge
+x.id: 8
+x.id: 25
+x.id: 28
+x.id: 29
+nvertices: 5
+29
+1.000000
+to merge
+x.id: 8
+array id: 12
+x.id: 13
+x.id: 28
+nvertices: 6
+29
+1.000000
+to merge
+x.id: 8
+array id: 9
+x.id: 13
+x.id: 25
+nvertices: 7
+29
+1.000000
+to merge
+x.id: 8
+array id: 24
+x.id: 25
+x.id: 28
+nvertices: 8
+29
+1.000000
+to merge
+x.id: 8
+array id: 26
+x.id: 28
+x.id: 30
+nvertices: 5
+30
+1.000000
+to merge
+x.id: 8
+x.id: 14
+x.id: 26
+x.id: 30
+nvertices: 5
+30
+1.000000
+to merge
+x.id: 8
+array id: 12
+x.id: 14
+x.id: 28
+nvertices: 6
+30
+1.000000
+to merge
+x.id: 8
+array id: 10
+x.id: 14
+x.id: 26
+nvertices: 7
+30
+1.000000
+to merge
+x.id: 8
+array id: 24
+x.id: 26
+x.id: 28
+nvertices: 8
+30
+1.000000
+to merge
+x.id: 8
+x.id: 11
+array id: 25
+x.id: 27
+nvertices: 5
+27
+-1.000000
+to merge
+x.id: 8
+x.id: 25
+x.id: 26
+x.id: 27
+nvertices: 5
+27
+-1.000000
+to merge
+x.id: 8
+array id: 10
+x.id: 11
+x.id: 26
+nvertices: 6
+27
+-1.000000
+to merge
+x.id: 8
+array id: 9
+x.id: 11
+x.id: 25
+nvertices: 7
+27
+-1.000000
+to merge
+x.id: 8
+array id: 24
+x.id: 25
+x.id: 26
+nvertices: 8
+27
+-1.000000
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+to merge
+x.id: 1
+x.id: 2
+x.id: 8
+array id: 11
+nvertices: 5
+11
+-1.000000
+to merge
+x.id: 1
+x.id: 2
+array id: 3
+x.id: 11
+nvertices: 6
+11
+-1.000000
+to merge
+x.id: 2
+x.id: 8
+array id: 10
+x.id: 11
+nvertices: 7
+11
+-1.000000
+to merge
+x.id: 1
+x.id: 8
+array id: 9
+x.id: 11
+nvertices: 8
+11
+-1.000000
+to merge
+x.id: 1
+x.id: 2
+x.id: 4
+array id: 7
+nvertices: 5
+7
+1.000000
+to merge
+x.id: 2
+x.id: 4
+array id: 6
+x.id: 7
+nvertices: 6
+7
+1.000000
+to merge
+x.id: 1
+x.id: 2
+array id: 3
+x.id: 7
+nvertices: 7
+7
+1.000000
+to merge
+x.id: 1
+x.id: 4
+array id: 5
+x.id: 7
+nvertices: 8
+7
+1.000000
+to merge
+x.id: 2
+x.id: 4
+x.id: 8
+array id: 14
+nvertices: 5
+14
+1.000000
+to merge
+x.id: 2
+x.id: 4
+array id: 6
+x.id: 14
+nvertices: 6
+14
+1.000000
+to merge
+x.id: 4
+x.id: 8
+array id: 12
+x.id: 14
+nvertices: 7
+14
+1.000000
+to merge
+x.id: 2
+x.id: 8
+array id: 10
+x.id: 14
+nvertices: 8
+14
+1.000000
+to merge
+x.id: 1
+x.id: 4
+x.id: 8
+array id: 13
+nvertices: 5
+13
+1.000000
+to merge
+x.id: 4
+x.id: 8
+array id: 12
+x.id: 13
+nvertices: 6
+13
+1.000000
+to merge
+x.id: 1
+x.id: 8
+array id: 9
+x.id: 13
+nvertices: 7
+13
+1.000000
+to merge
+x.id: 1
+x.id: 4
+array id: 5
+x.id: 13
+nvertices: 8
+13
+1.000000
+to merge
+x.id: 8
+array id: 11
+x.id: 14
+x.id: 15
+nvertices: 5
+15
+1.000000
+to merge
+x.id: 8
+x.id: 11
+x.id: 13
+x.id: 15
+nvertices: 5
+15
+1.000000
+to merge
+x.id: 8
+array id: 9
+x.id: 11
+x.id: 13
+nvertices: 6
+15
+1.000000
+to merge
+x.id: 8
+array id: 12
+x.id: 13
+x.id: 14
+nvertices: 7
+15
+1.000000
+to merge
+x.id: 8
+array id: 10
+x.id: 11
+x.id: 14
+nvertices: 8
+15
+1.000000
+to merge
+x.id: 2
+array id: 7
+x.id: 14
+x.id: 15
+nvertices: 5
+15
+1.000000
+to merge
+x.id: 2
+array id: 6
+x.id: 7
+x.id: 14
+nvertices: 6
+15
+1.000000
+to merge
+x.id: 2
+x.id: 7
+x.id: 11
+x.id: 15
+nvertices: 6
+15
+1.000000
+to merge
+x.id: 2
+array id: 3
+x.id: 7
+x.id: 11
+nvertices: 7
+15
+1.000000
+to merge
+x.id: 2
+array id: 10
+x.id: 11
+x.id: 14
+nvertices: 8
+15
+1.000000
+to merge
+x.id: 1
+x.id: 7
+array id: 13
+x.id: 15
+nvertices: 5
+15
+1.000000
+to merge
+x.id: 1
+array id: 3
+x.id: 7
+x.id: 11
+nvertices: 6
+15
+1.000000
+to merge
+x.id: 1
+x.id: 11
+x.id: 13
+x.id: 15
+nvertices: 6
+15
+1.000000
+to merge
+x.id: 1
+array id: 9
+x.id: 11
+x.id: 13
+nvertices: 7
+15
+1.000000
+to merge
+x.id: 1
+array id: 5
+x.id: 7
+x.id: 13
+nvertices: 8
+15
+1.000000
+to merge
+x.id: 4
+x.id: 7
+array id: 13
+x.id: 15
+nvertices: 5
+15
+1.000000
+to merge
+x.id: 4
+x.id: 13
+x.id: 14
+x.id: 15
+nvertices: 5
+15
+1.000000
+to merge
+x.id: 4
+array id: 6
+x.id: 7
+x.id: 14
+nvertices: 6
+15
+1.000000
+to merge
+x.id: 4
+array id: 12
+x.id: 13
+x.id: 14
+nvertices: 7
+15
+1.000000
+to merge
+x.id: 4
+array id: 5
+x.id: 7
+x.id: 13
+nvertices: 8
+15
+1.000000
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+to merge
+x.id: 2
+x.id: 4
+x.id: 8
+array id: 14
+nvertices: 5
+14
+1.000000
+to merge
+x.id: 2
+x.id: 4
+array id: 6
+x.id: 14
+nvertices: 6
+14
+1.000000
+to merge
+x.id: 4
+x.id: 8
+array id: 12
+x.id: 14
+nvertices: 7
+14
+1.000000
+to merge
+x.id: 2
+x.id: 8
+array id: 10
+x.id: 14
+nvertices: 8
+14
+1.000000
+to merge
+x.id: 2
+x.id: 4
+x.id: 16
+array id: 22
+nvertices: 5
+22
+1.000000
+to merge
+x.id: 2
+x.id: 4
+array id: 6
+x.id: 22
+nvertices: 6
+22
+1.000000
+to merge
+x.id: 2
+x.id: 16
+array id: 18
+x.id: 22
+nvertices: 7
+22
+1.000000
+to merge
+x.id: 4
+x.id: 16
+array id: 20
+x.id: 22
+nvertices: 8
+22
+1.000000
+to merge
+x.id: 2
+x.id: 8
+x.id: 16
+array id: 26
+nvertices: 5
+26
+-1.000000
+to merge
+x.id: 2
+x.id: 8
+array id: 10
+x.id: 26
+nvertices: 6
+26
+-1.000000
+to merge
+x.id: 2
+x.id: 16
+array id: 18
+x.id: 26
+nvertices: 7
+26
+-1.000000
+to merge
+x.id: 8
+x.id: 16
+array id: 24
+x.id: 26
+nvertices: 8
+26
+-1.000000
+to merge
+x.id: 4
+x.id: 8
+x.id: 16
+array id: 28
+nvertices: 5
+28
+1.000000
+to merge
+x.id: 4
+x.id: 8
+array id: 12
+x.id: 28
+nvertices: 6
+28
+1.000000
+to merge
+x.id: 8
+x.id: 16
+array id: 24
+x.id: 28
+nvertices: 7
+28
+1.000000
+to merge
+x.id: 4
+x.id: 16
+array id: 20
+x.id: 28
+nvertices: 8
+28
+1.000000
+to merge
+x.id: 16
+x.id: 22
+array id: 26
+x.id: 30
+nvertices: 5
+30
+1.000000
+to merge
+x.id: 16
+x.id: 26
+x.id: 28
+x.id: 30
+nvertices: 5
+30
+1.000000
+to merge
+x.id: 16
+array id: 24
+x.id: 26
+x.id: 28
+nvertices: 6
+30
+1.000000
+to merge
+x.id: 16
+array id: 18
+x.id: 22
+x.id: 26
+nvertices: 7
+30
+1.000000
+to merge
+x.id: 16
+array id: 20
+x.id: 22
+x.id: 28
+nvertices: 8
+30
+1.000000
+to merge
+x.id: 2
+array id: 14
+x.id: 22
+x.id: 30
+nvertices: 5
+30
+1.000000
+to merge
+x.id: 2
+array id: 6
+x.id: 14
+x.id: 22
+nvertices: 6
+30
+1.000000
+to merge
+x.id: 2
+x.id: 14
+x.id: 26
+x.id: 30
+nvertices: 6
+30
+1.000000
+to merge
+x.id: 2
+array id: 10
+x.id: 14
+x.id: 26
+nvertices: 7
+30
+1.000000
+to merge
+x.id: 2
+array id: 18
+x.id: 22
+x.id: 26
+nvertices: 8
+30
+1.000000
+to merge
+x.id: 8
+x.id: 14
+array id: 28
+x.id: 30
+nvertices: 5
+30
+1.000000
+to merge
+x.id: 8
+array id: 12
+x.id: 14
+x.id: 28
+nvertices: 6
+30
+1.000000
+to merge
+x.id: 8
+array id: 10
+x.id: 14
+x.id: 26
+nvertices: 7
+30
+1.000000
+to merge
+x.id: 8
+x.id: 26
+x.id: 28
+x.id: 30
+nvertices: 7
+30
+1.000000
+to merge
+x.id: 8
+array id: 24
+x.id: 26
+x.id: 28
+nvertices: 8
+30
+1.000000
+to merge
+x.id: 4
+x.id: 14
+array id: 28
+x.id: 30
+nvertices: 5
+30
+1.000000
+to merge
+x.id: 4
+x.id: 22
+x.id: 28
+x.id: 30
+nvertices: 5
+30
+1.000000
+to merge
+x.id: 4
+array id: 6
+x.id: 14
+x.id: 22
+nvertices: 6
+30
+1.000000
+to merge
+x.id: 4
+array id: 12
+x.id: 14
+x.id: 28
+nvertices: 7
+30
+1.000000
+to merge
+x.id: 4
+array id: 20
+x.id: 22
+x.id: 28
+nvertices: 8
+30
+1.000000
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+to merge
+array id: 7
+x.id: 15
+x.id: 23
+x.id: 30
+nvertices: 5
+31
+1.000000
+to merge
+x.id: 7
+array id: 14
+x.id: 15
+x.id: 30
+nvertices: 6
+31
+1.000000
+to merge
+x.id: 7
+array id: 22
+x.id: 23
+x.id: 30
+nvertices: 7
+31
+1.000000
+to merge
+x.id: 7
+x.id: 14
+x.id: 22
+x.id: 30
+nvertices: 7
+31
+1.000000
+to merge
+array id: 6
+x.id: 7
+x.id: 14
+x.id: 22
+nvertices: 8
+31
+1.000000
+to merge
+array id: 22
+x.id: 23
+x.id: 29
+x.id: 30
+nvertices: 5
+31
+1.000000
+to merge
+x.id: 22
+array id: 28
+x.id: 29
+x.id: 30
+nvertices: 6
+31
+1.000000
+to merge
+array id: 21
+x.id: 22
+x.id: 23
+x.id: 29
+nvertices: 7
+31
+1.000000
+to merge
+x.id: 21
+x.id: 22
+x.id: 28
+x.id: 29
+nvertices: 7
+31
+1.000000
+to merge
+array id: 20
+x.id: 21
+x.id: 22
+x.id: 28
+nvertices: 8
+31
+1.000000
+to merge
+array id: 7
+x.id: 15
+x.id: 23
+x.id: 29
+nvertices: 5
+31
+1.000000
+to merge
+x.id: 7
+array id: 13
+x.id: 15
+x.id: 29
+nvertices: 6
+31
+1.000000
+to merge
+x.id: 7
+x.id: 13
+array id: 21
+x.id: 29
+nvertices: 7
+31
+1.000000
+to merge
+x.id: 7
+x.id: 21
+x.id: 23
+x.id: 29
+nvertices: 7
+31
+1.000000
+to merge
+array id: 5
+x.id: 7
+x.id: 13
+x.id: 21
+nvertices: 8
+31
+1.000000
+to merge
+array id: 14
+x.id: 15
+x.id: 29
+x.id: 30
+nvertices: 5
+31
+1.000000
+to merge
+x.id: 14
+array id: 28
+x.id: 29
+x.id: 30
+nvertices: 6
+31
+1.000000
+to merge
+array id: 13
+x.id: 14
+x.id: 15
+x.id: 29
+nvertices: 7
+31
+1.000000
+to merge
+x.id: 13
+x.id: 14
+x.id: 28
+x.id: 29
+nvertices: 7
+31
+1.000000
+to merge
+array id: 12
+x.id: 13
+x.id: 14
+x.id: 28
+nvertices: 8
+31
+1.000000
+to merge
+x.id: 4
+x.id: 7
+array id: 13
+x.id: 15
+nvertices: 5
+15
+1.000000
+to merge
+x.id: 4
+x.id: 13
+x.id: 14
+x.id: 15
+nvertices: 5
+15
+1.000000
+to merge
+x.id: 4
+array id: 6
+x.id: 7
+x.id: 14
+nvertices: 6
+15
+1.000000
+to merge
+x.id: 4
+array id: 12
+x.id: 13
+x.id: 14
+nvertices: 7
+15
+1.000000
+to merge
+x.id: 4
+array id: 5
+x.id: 7
+x.id: 13
+nvertices: 8
+15
+1.000000
+to merge
+x.id: 4
+x.id: 14
+array id: 28
+x.id: 30
+nvertices: 5
+30
+1.000000
+to merge
+x.id: 4
+x.id: 22
+x.id: 28
+x.id: 30
+nvertices: 5
+30
+1.000000
+to merge
+x.id: 4
+array id: 6
+x.id: 14
+x.id: 22
+nvertices: 6
+30
+1.000000
+to merge
+x.id: 4
+array id: 12
+x.id: 14
+x.id: 28
+nvertices: 7
+30
+1.000000
+to merge
+x.id: 4
+array id: 20
+x.id: 22
+x.id: 28
+nvertices: 8
+30
+1.000000
+to merge
+x.id: 4
+array id: 6
+x.id: 7
+x.id: 22
+nvertices: 5
+23
+1.000000
+to merge
+x.id: 4
+x.id: 7
+array id: 21
+x.id: 23
+nvertices: 6
+23
+1.000000
+to merge
+x.id: 4
+x.id: 21
+x.id: 22
+x.id: 23
+nvertices: 6
+23
+1.000000
+to merge
+x.id: 4
+array id: 5
+x.id: 7
+x.id: 21
+nvertices: 7
+23
+1.000000
+to merge
+x.id: 4
+array id: 20
+x.id: 21
+x.id: 22
+nvertices: 8
+23
+1.000000
+to merge
+x.id: 4
+x.id: 13
+array id: 21
+x.id: 29
+nvertices: 5
+29
+1.000000
+to merge
+x.id: 4
+x.id: 21
+x.id: 28
+x.id: 29
+nvertices: 5
+29
+1.000000
+to merge
+x.id: 4
+array id: 12
+x.id: 13
+x.id: 28
+nvertices: 6
+29
+1.000000
+to merge
+x.id: 4
+array id: 5
+x.id: 13
+x.id: 21
+nvertices: 7
+29
+1.000000
+to merge
+x.id: 4
+array id: 20
+x.id: 21
+x.id: 28
+nvertices: 8
+29
+1.000000
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+to merge
+x.id: 1
+x.id: 2
+x.id: 8
+array id: 11
+nvertices: 5
+11
+-1.000000
+to merge
+x.id: 1
+x.id: 2
+array id: 3
+x.id: 11
+nvertices: 6
+11
+-1.000000
+to merge
+x.id: 2
+x.id: 8
+array id: 10
+x.id: 11
+nvertices: 7
+11
+-1.000000
+to merge
+x.id: 1
+x.id: 8
+array id: 9
+x.id: 11
+nvertices: 8
+11
+-1.000000
+to merge
+x.id: 1
+x.id: 2
+x.id: 16
+array id: 19
+nvertices: 5
+19
+-1.000000
+to merge
+x.id: 1
+x.id: 2
+array id: 3
+x.id: 19
+nvertices: 6
+19
+-1.000000
+to merge
+x.id: 2
+x.id: 16
+array id: 18
+x.id: 19
+nvertices: 7
+19
+-1.000000
+to merge
+x.id: 1
+x.id: 16
+array id: 17
+x.id: 19
+nvertices: 8
+19
+-1.000000
+to merge
+x.id: 2
+x.id: 8
+x.id: 16
+array id: 26
+nvertices: 5
+26
+-1.000000
+to merge
+x.id: 2
+x.id: 8
+array id: 10
+x.id: 26
+nvertices: 6
+26
+-1.000000
+to merge
+x.id: 2
+x.id: 16
+array id: 18
+x.id: 26
+nvertices: 7
+26
+-1.000000
+to merge
+x.id: 8
+x.id: 16
+array id: 24
+x.id: 26
+nvertices: 8
+26
+-1.000000
+to merge
+x.id: 1
+x.id: 8
+x.id: 16
+array id: 25
+nvertices: 5
+25
+-1.000000
+to merge
+x.id: 1
+x.id: 8
+array id: 9
+x.id: 25
+nvertices: 6
+25
+-1.000000
+to merge
+x.id: 8
+x.id: 16
+array id: 24
+x.id: 25
+nvertices: 7
+25
+-1.000000
+to merge
+x.id: 1
+x.id: 16
+array id: 17
+x.id: 25
+nvertices: 8
+25
+-1.000000
+to merge
+x.id: 16
+x.id: 19
+array id: 25
+x.id: 27
+nvertices: 5
+27
+-1.000000
+to merge
+x.id: 16
+x.id: 25
+x.id: 26
+x.id: 27
+nvertices: 5
+27
+-1.000000
+to merge
+x.id: 16
+array id: 18
+x.id: 19
+x.id: 26
+nvertices: 6
+27
+-1.000000
+to merge
+x.id: 16
+array id: 24
+x.id: 25
+x.id: 26
+nvertices: 7
+27
+-1.000000
+to merge
+x.id: 16
+array id: 17
+x.id: 19
+x.id: 25
+nvertices: 8
+27
+-1.000000
+to merge
+x.id: 1
+array id: 11
+x.id: 19
+x.id: 27
+nvertices: 5
+27
+-1.000000
+to merge
+x.id: 1
+array id: 3
+x.id: 11
+x.id: 19
+nvertices: 6
+27
+-1.000000
+to merge
+x.id: 1
+x.id: 11
+x.id: 25
+x.id: 27
+nvertices: 6
+27
+-1.000000
+to merge
+x.id: 1
+array id: 9
+x.id: 11
+x.id: 25
+nvertices: 7
+27
+-1.000000
+to merge
+x.id: 1
+array id: 17
+x.id: 19
+x.id: 25
+nvertices: 8
+27
+-1.000000
+to merge
+x.id: 8
+x.id: 11
+array id: 26
+x.id: 27
+nvertices: 5
+27
+-1.000000
+to merge
+x.id: 8
+array id: 10
+x.id: 11
+x.id: 26
+nvertices: 6
+27
+-1.000000
+to merge
+x.id: 8
+array id: 9
+x.id: 11
+x.id: 25
+nvertices: 7
+27
+-1.000000
+to merge
+x.id: 8
+x.id: 25
+x.id: 26
+x.id: 27
+nvertices: 7
+27
+-1.000000
+to merge
+x.id: 8
+array id: 24
+x.id: 25
+x.id: 26
+nvertices: 8
+27
+-1.000000
+to merge
+x.id: 2
+x.id: 11
+array id: 26
+x.id: 27
+nvertices: 5
+27
+-1.000000
+to merge
+x.id: 2
+x.id: 19
+x.id: 26
+x.id: 27
+nvertices: 5
+27
+-1.000000
+to merge
+x.id: 2
+array id: 3
+x.id: 11
+x.id: 19
+nvertices: 6
+27
+-1.000000
+to merge
+x.id: 2
+array id: 10
+x.id: 11
+x.id: 26
+nvertices: 7
+27
+-1.000000
+to merge
+x.id: 2
+array id: 18
+x.id: 19
+x.id: 26
+nvertices: 8
+27
+-1.000000
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+to merge
+x.id: 1
+x.id: 2
+x.id: 4
+array id: 7
+nvertices: 5
+7
+1.000000
+to merge
+x.id: 2
+x.id: 4
+array id: 6
+x.id: 7
+nvertices: 6
+7
+1.000000
+to merge
+x.id: 1
+x.id: 2
+array id: 3
+x.id: 7
+nvertices: 7
+7
+1.000000
+to merge
+x.id: 1
+x.id: 4
+array id: 5
+x.id: 7
+nvertices: 8
+7
+1.000000
+to merge
+x.id: 1
+x.id: 2
+x.id: 16
+array id: 19
+nvertices: 5
+19
+-1.000000
+to merge
+x.id: 1
+x.id: 2
+array id: 3
+x.id: 19
+nvertices: 6
+19
+-1.000000
+to merge
+x.id: 2
+x.id: 16
+array id: 18
+x.id: 19
+nvertices: 7
+19
+-1.000000
+to merge
+x.id: 1
+x.id: 16
+array id: 17
+x.id: 19
+nvertices: 8
+19
+-1.000000
+to merge
+x.id: 2
+x.id: 4
+x.id: 16
+array id: 22
+nvertices: 5
+22
+1.000000
+to merge
+x.id: 2
+x.id: 4
+array id: 6
+x.id: 22
+nvertices: 6
+22
+1.000000
+to merge
+x.id: 2
+x.id: 16
+array id: 18
+x.id: 22
+nvertices: 7
+22
+1.000000
+to merge
+x.id: 4
+x.id: 16
+array id: 20
+x.id: 22
+nvertices: 8
+22
+1.000000
+to merge
+x.id: 1
+x.id: 4
+x.id: 16
+array id: 21
+nvertices: 5
+21
+1.000000
+to merge
+x.id: 1
+x.id: 4
+array id: 5
+x.id: 21
+nvertices: 6
+21
+1.000000
+to merge
+x.id: 4
+x.id: 16
+array id: 20
+x.id: 21
+nvertices: 7
+21
+1.000000
+to merge
+x.id: 1
+x.id: 16
+array id: 17
+x.id: 21
+nvertices: 8
+21
+1.000000
+to merge
+x.id: 2
+array id: 6
+x.id: 7
+x.id: 22
+nvertices: 5
+23
+1.000000
+to merge
+x.id: 2
+x.id: 7
+array id: 19
+x.id: 23
+nvertices: 6
+23
+1.000000
+to merge
+x.id: 2
+x.id: 19
+x.id: 22
+x.id: 23
+nvertices: 6
+23
+1.000000
+to merge
+x.id: 2
+array id: 3
+x.id: 7
+x.id: 19
+nvertices: 7
+23
+1.000000
+to merge
+x.id: 2
+array id: 18
+x.id: 19
+x.id: 22
+nvertices: 8
+23
+1.000000
+to merge
+x.id: 16
+array id: 19
+x.id: 22
+x.id: 23
+nvertices: 5
+23
+1.000000
+to merge
+x.id: 16
+x.id: 19
+x.id: 21
+x.id: 23
+nvertices: 5
+23
+1.000000
+to merge
+x.id: 16
+array id: 18
+x.id: 19
+x.id: 22
+nvertices: 6
+23
+1.000000
+to merge
+x.id: 16
+array id: 20
+x.id: 21
+x.id: 22
+nvertices: 7
+23
+1.000000
+to merge
+x.id: 16
+array id: 17
+x.id: 19
+x.id: 21
+nvertices: 8
+23
+1.000000
+to merge
+x.id: 1
+x.id: 7
+array id: 19
+x.id: 23
+nvertices: 5
+23
+1.000000
+to merge
+x.id: 1
+array id: 5
+x.id: 7
+x.id: 21
+nvertices: 6
+23
+1.000000
+to merge
+x.id: 1
+array id: 3
+x.id: 7
+x.id: 19
+nvertices: 7
+23
+1.000000
+to merge
+x.id: 1
+x.id: 19
+x.id: 21
+x.id: 23
+nvertices: 7
+23
+1.000000
+to merge
+x.id: 1
+array id: 17
+x.id: 19
+x.id: 21
+nvertices: 8
+23
+1.000000
+to merge
+x.id: 4
+array id: 6
+x.id: 7
+x.id: 22
+nvertices: 5
+23
+1.000000
+to merge
+x.id: 4
+x.id: 7
+array id: 21
+x.id: 23
+nvertices: 6
+23
+1.000000
+to merge
+x.id: 4
+x.id: 21
+x.id: 22
+x.id: 23
+nvertices: 6
+23
+1.000000
+to merge
+x.id: 4
+array id: 5
+x.id: 7
+x.id: 21
+nvertices: 7
+23
+1.000000
+to merge
+x.id: 4
+array id: 20
+x.id: 21
+x.id: 22
+nvertices: 8
+23
+1.000000
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+to merge
+x.id: 1
+x.id: 4
+x.id: 8
+array id: 13
+nvertices: 5
+13
+1.000000
+to merge
+x.id: 4
+x.id: 8
+array id: 12
+x.id: 13
+nvertices: 6
+13
+1.000000
+to merge
+x.id: 1
+x.id: 8
+array id: 9
+x.id: 13
+nvertices: 7
+13
+1.000000
+to merge
+x.id: 1
+x.id: 4
+array id: 5
+x.id: 13
+nvertices: 8
+13
+1.000000
+to merge
+x.id: 1
+x.id: 4
+x.id: 16
+array id: 21
+nvertices: 5
+21
+1.000000
+to merge
+x.id: 1
+x.id: 4
+array id: 5
+x.id: 21
+nvertices: 6
+21
+1.000000
+to merge
+x.id: 4
+x.id: 16
+array id: 20
+x.id: 21
+nvertices: 7
+21
+1.000000
+to merge
+x.id: 1
+x.id: 16
+array id: 17
+x.id: 21
+nvertices: 8
+21
+1.000000
+to merge
+x.id: 4
+x.id: 8
+x.id: 16
+array id: 28
+nvertices: 5
+28
+1.000000
+to merge
+x.id: 4
+x.id: 8
+array id: 12
+x.id: 28
+nvertices: 6
+28
+1.000000
+to merge
+x.id: 8
+x.id: 16
+array id: 24
+x.id: 28
+nvertices: 7
+28
+1.000000
+to merge
+x.id: 4
+x.id: 16
+array id: 20
+x.id: 28
+nvertices: 8
+28
+1.000000
+to merge
+x.id: 1
+x.id: 8
+x.id: 16
+array id: 25
+nvertices: 5
+25
+-1.000000
+to merge
+x.id: 1
+x.id: 8
+array id: 9
+x.id: 25
+nvertices: 6
+25
+-1.000000
+to merge
+x.id: 8
+x.id: 16
+array id: 24
+x.id: 25
+nvertices: 7
+25
+-1.000000
+to merge
+x.id: 1
+x.id: 16
+array id: 17
+x.id: 25
+nvertices: 8
+25
+-1.000000
+to merge
+x.id: 8
+x.id: 13
+array id: 25
+x.id: 29
+nvertices: 5
+29
+1.000000
+to merge
+x.id: 8
+array id: 12
+x.id: 13
+x.id: 28
+nvertices: 6
+29
+1.000000
+to merge
+x.id: 8
+array id: 9
+x.id: 13
+x.id: 25
+nvertices: 7
+29
+1.000000
+to merge
+x.id: 8
+x.id: 25
+x.id: 28
+x.id: 29
+nvertices: 7
+29
+1.000000
+to merge
+x.id: 8
+array id: 24
+x.id: 25
+x.id: 28
+nvertices: 8
+29
+1.000000
+to merge
+x.id: 16
+x.id: 25
+x.id: 28
+array id: 29
+nvertices: 5
+29
+1.000000
+to merge
+x.id: 16
+array id: 21
+x.id: 25
+x.id: 29
+nvertices: 6
+29
+1.000000
+to merge
+x.id: 16
+x.id: 21
+x.id: 28
+x.id: 29
+nvertices: 6
+29
+1.000000
+to merge
+x.id: 16
+array id: 20
+x.id: 21
+x.id: 28
+nvertices: 7
+29
+1.000000
+to merge
+x.id: 16
+array id: 17
+x.id: 21
+x.id: 25
+nvertices: 8
+29
+1.000000
+to merge
+x.id: 1
+x.id: 13
+array id: 21
+x.id: 29
+nvertices: 5
+29
+1.000000
+to merge
+x.id: 1
+array id: 5
+x.id: 13
+x.id: 21
+nvertices: 6
+29
+1.000000
+to merge
+x.id: 1
+x.id: 21
+x.id: 25
+x.id: 29
+nvertices: 6
+29
+1.000000
+to merge
+x.id: 1
+array id: 9
+x.id: 13
+x.id: 25
+nvertices: 7
+29
+1.000000
+to merge
+x.id: 1
+array id: 17
+x.id: 21
+x.id: 25
+nvertices: 8
+29
+1.000000
+to merge
+x.id: 4
+array id: 13
+x.id: 28
+x.id: 29
+nvertices: 5
+29
+1.000000
+to merge
+x.id: 4
+x.id: 13
+x.id: 21
+x.id: 29
+nvertices: 5
+29
+1.000000
+to merge
+x.id: 4
+array id: 12
+x.id: 13
+x.id: 28
+nvertices: 6
+29
+1.000000
+to merge
+x.id: 4
+array id: 5
+x.id: 13
+x.id: 21
+nvertices: 7
+29
+1.000000
+to merge
+x.id: 4
+array id: 20
+x.id: 21
+x.id: 28
+nvertices: 8
+29
+1.000000
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+to merge
+array id: 7
+x.id: 15
+x.id: 23
+x.id: 29
+nvertices: 5
+31
+1.000000
+to merge
+x.id: 7
+array id: 13
+x.id: 15
+x.id: 29
+nvertices: 6
+31
+1.000000
+to merge
+x.id: 7
+x.id: 13
+array id: 21
+x.id: 29
+nvertices: 7
+31
+1.000000
+to merge
+x.id: 7
+x.id: 21
+x.id: 23
+x.id: 29
+nvertices: 7
+31
+1.000000
+to merge
+array id: 5
+x.id: 7
+x.id: 13
+x.id: 21
+nvertices: 8
+31
+1.000000
+to merge
+array id: 7
+x.id: 15
+x.id: 23
+x.id: 27
+nvertices: 5
+31
+1.000000
+to merge
+x.id: 7
+array id: 11
+x.id: 15
+x.id: 27
+nvertices: 6
+31
+1.000000
+to merge
+x.id: 7
+x.id: 11
+array id: 19
+x.id: 27
+nvertices: 7
+31
+1.000000
+to merge
+x.id: 7
+x.id: 19
+x.id: 23
+x.id: 27
+nvertices: 7
+31
+1.000000
+to merge
+array id: 3
+x.id: 7
+x.id: 11
+x.id: 19
+nvertices: 8
+31
+1.000000
+to merge
+array id: 13
+x.id: 15
+x.id: 27
+x.id: 29
+nvertices: 5
+31
+1.000000
+to merge
+array id: 11
+x.id: 13
+x.id: 15
+x.id: 27
+nvertices: 6
+31
+1.000000
+to merge
+x.id: 13
+array id: 25
+x.id: 27
+x.id: 29
+nvertices: 7
+31
+1.000000
+to merge
+x.id: 11
+x.id: 13
+x.id: 25
+x.id: 27
+nvertices: 7
+31
+1.000000
+to merge
+array id: 9
+x.id: 11
+x.id: 13
+x.id: 25
+nvertices: 8
+31
+1.000000
+to merge
+array id: 19
+array id: 21
+x.id: 23
+x.id: 29
+nvertices: 6
+31
+1.000000
+to merge
+x.id: 19
+x.id: 23
+x.id: 27
+x.id: 29
+nvertices: 6
+31
+1.000000
+to merge
+x.id: 19
+array id: 25
+x.id: 27
+x.id: 29
+nvertices: 7
+31
+1.000000
+to merge
+x.id: 19
+x.id: 21
+x.id: 25
+x.id: 29
+nvertices: 7
+31
+1.000000
+to merge
+array id: 17
+x.id: 19
+x.id: 21
+x.id: 25
+nvertices: 8
+31
+1.000000
+to merge
+x.id: 1
+x.id: 7
+array id: 11
+x.id: 15
+nvertices: 5
+15
+1.000000
+to merge
+x.id: 1
+x.id: 11
+x.id: 13
+x.id: 15
+nvertices: 5
+15
+1.000000
+to merge
+x.id: 1
+array id: 3
+x.id: 7
+x.id: 11
+nvertices: 6
+15
+1.000000
+to merge
+x.id: 1
+array id: 9
+x.id: 11
+x.id: 13
+nvertices: 7
+15
+1.000000
+to merge
+x.id: 1
+array id: 5
+x.id: 7
+x.id: 13
+nvertices: 8
+15
+1.000000
+to merge
+x.id: 1
+x.id: 11
+array id: 25
+x.id: 27
+nvertices: 5
+27
+-1.000000
+to merge
+x.id: 1
+x.id: 19
+x.id: 25
+x.id: 27
+nvertices: 5
+27
+-1.000000
+to merge
+x.id: 1
+array id: 3
+x.id: 11
+x.id: 19
+nvertices: 6
+27
+-1.000000
+to merge
+x.id: 1
+array id: 9
+x.id: 11
+x.id: 25
+nvertices: 7
+27
+-1.000000
+to merge
+x.id: 1
+array id: 17
+x.id: 19
+x.id: 25
+nvertices: 8
+27
+-1.000000
+to merge
+x.id: 1
+x.id: 7
+array id: 21
+x.id: 23
+nvertices: 5
+23
+1.000000
+to merge
+x.id: 1
+x.id: 19
+x.id: 21
+x.id: 23
+nvertices: 5
+23
+1.000000
+to merge
+x.id: 1
+array id: 3
+x.id: 7
+x.id: 19
+nvertices: 6
+23
+1.000000
+to merge
+x.id: 1
+array id: 5
+x.id: 7
+x.id: 21
+nvertices: 7
+23
+1.000000
+to merge
+x.id: 1
+array id: 17
+x.id: 19
+x.id: 21
+nvertices: 8
+23
+1.000000
+to merge
+x.id: 1
+x.id: 13
+array id: 21
+x.id: 29
+nvertices: 5
+29
+1.000000
+to merge
+x.id: 1
+x.id: 21
+x.id: 25
+x.id: 29
+nvertices: 5
+29
+1.000000
+to merge
+x.id: 1
+array id: 5
+x.id: 13
+x.id: 21
+nvertices: 6
+29
+1.000000
+to merge
+x.id: 1
+array id: 9
+x.id: 13
+x.id: 25
+nvertices: 7
+29
+1.000000
+to merge
+x.id: 1
+array id: 17
+x.id: 21
+x.id: 25
+nvertices: 8
+29
+1.000000
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+ridge size: 4
+to merge
+array id: 22
+x.id: 23
+x.id: 29
+x.id: 30
+nvertices: 5
+31
+1.000000
+to merge
+x.id: 22
+array id: 28
+x.id: 29
+x.id: 30
+nvertices: 6
+31
+1.000000
+to merge
+array id: 21
+x.id: 22
+x.id: 28
+x.id: 29
+nvertices: 7
+31
+1.000000
+to merge
+x.id: 21
+x.id: 22
+x.id: 23
+x.id: 29
+nvertices: 7
+31
+1.000000
+to merge
+array id: 20
+x.id: 21
+x.id: 22
+x.id: 28
+nvertices: 8
+31
+1.000000
+to merge
+array id: 22
+x.id: 23
+x.id: 27
+x.id: 30
+nvertices: 5
+31
+1.000000
+to merge
+array id: 19
+x.id: 22
+x.id: 23
+x.id: 27
+nvertices: 6
+31
+1.000000
+to merge
+x.id: 19
+x.id: 22
+array id: 26
+x.id: 27
+nvertices: 7
+31
+1.000000
+to merge
+x.id: 22
+x.id: 26
+x.id: 27
+x.id: 30
+nvertices: 7
+31
+1.000000
+to merge
+array id: 18
+x.id: 19
+x.id: 22
+x.id: 26
+nvertices: 8
+31
+1.000000
+to merge
+array id: 19
+x.id: 23
+x.id: 27
+x.id: 29
+nvertices: 5
+31
+1.000000
+to merge
+x.id: 19
+array id: 25
+x.id: 27
+x.id: 29
+nvertices: 6
+31
+1.000000
+to merge
+x.id: 19
+array id: 21
+x.id: 25
+x.id: 29
+nvertices: 7
+31
+1.000000
+to merge
+x.id: 19
+x.id: 21
+x.id: 23
+x.id: 29
+nvertices: 7
+31
+1.000000
+to merge
+array id: 17
+x.id: 19
+x.id: 21
+x.id: 25
+nvertices: 8
+31
+1.000000
+to merge
+x.id: 27
+array id: 28
+x.id: 29
+x.id: 30
+nvertices: 5
+31
+1.000000
+to merge
+array id: 26
+x.id: 27
+x.id: 28
+x.id: 30
+nvertices: 6
+31
+1.000000
+to merge
+array id: 25
+x.id: 26
+x.id: 27
+x.id: 28
+nvertices: 7
+31
+1.000000
+to merge
+x.id: 25
+x.id: 27
+x.id: 28
+x.id: 29
+nvertices: 7
+31
+1.000000
+to merge
+array id: 24
+x.id: 25
+x.id: 26
+x.id: 28
+nvertices: 8
+31
+1.000000
+to merge
+x.id: 16
+x.id: 22
+array id: 26
+x.id: 30
+nvertices: 5
+30
+1.000000
+to merge
+x.id: 16
+x.id: 26
+x.id: 28
+x.id: 30
+nvertices: 5
+30
+1.000000
+to merge
+x.id: 16
+array id: 18
+x.id: 22
+x.id: 26
+nvertices: 6
+30
+1.000000
+to merge
+x.id: 16
+array id: 24
+x.id: 26
+x.id: 28
+nvertices: 7
+30
+1.000000
+to merge
+x.id: 16
+array id: 20
+x.id: 22
+x.id: 28
+nvertices: 8
+30
+1.000000
+to merge
+x.id: 16
+x.id: 19
+array id: 21
+x.id: 23
+nvertices: 5
+23
+1.000000
+to merge
+x.id: 16
+x.id: 21
+x.id: 22
+x.id: 23
+nvertices: 5
+23
+1.000000
+to merge
+x.id: 16
+array id: 18
+x.id: 19
+x.id: 22
+nvertices: 6
+23
+1.000000
+to merge
+x.id: 16
+array id: 20
+x.id: 21
+x.id: 22
+nvertices: 7
+23
+1.000000
+to merge
+x.id: 16
+array id: 17
+x.id: 19
+x.id: 21
+nvertices: 8
+23
+1.000000
+to merge
+x.id: 16
+x.id: 19
+array id: 25
+x.id: 27
+nvertices: 5
+27
+-1.000000
+to merge
+x.id: 16
+x.id: 25
+x.id: 26
+x.id: 27
+nvertices: 5
+27
+-1.000000
+to merge
+x.id: 16
+array id: 18
+x.id: 19
+x.id: 26
+nvertices: 6
+27
+-1.000000
+to merge
+x.id: 16
+array id: 24
+x.id: 25
+x.id: 26
+nvertices: 7
+27
+-1.000000
+to merge
+x.id: 16
+array id: 17
+x.id: 19
+x.id: 25
+nvertices: 8
+27
+-1.000000
+to merge
+x.id: 16
+array id: 21
+x.id: 28
+x.id: 29
+nvertices: 5
+29
+1.000000
+to merge
+x.id: 16
+x.id: 21
+x.id: 25
+x.id: 29
+nvertices: 5
+29
+1.000000
+to merge
+x.id: 16
+array id: 24
+x.id: 25
+x.id: 28
+nvertices: 6
+29
+1.000000
+to merge
+x.id: 16
+array id: 20
+x.id: 21
+x.id: 28
+nvertices: 7
+29
+1.000000
+to merge
+x.id: 16
+array id: 17
+x.id: 21
+x.id: 25
+nvertices: 8
+29
+1.000000
+nallridges0: 40
+nneighfacets: 5
+nneighvertices: 5
+nneighedges: 10
+nneighfacets: 5
+nneighvertices: 5
+nneighedges: 10
+nneighfacets: 5
+nneighvertices: 5
+nneighedges: 10
+nneighfacets: 5
+nneighvertices: 5
+nneighedges: 10
+nneighfacets: 5
+nneighverticesConvexHull
+  { _allvertices =
+      fromList
+        [ ( 0
+          , Vertex
+              { _point = [ -1.0 , -1.0 , -1.0 , -1.0 , -1.0 ]
+              , _neighfaces = fromList [ 2 , 3 , 5 , 6 , 7 ]
+              , _neighvertices = fromList [ 1 , 2 , 4 , 8 , 16 ]
+              , _neighedges =
+                  fromList [ 15 , 16 , 17 , 18 , 21 , 22 , 23 , 30 , 31 , 34 ]
+              }
+          )
+        , ( 1
+          , Vertex
+              { _point = [ -1.0 , -1.0 , 1.0 , -1.0 , -1.0 ]
+              , _neighfaces = fromList [ 2 , 5 , 6 , 7 , 8 ]
+              , _neighvertices = fromList [ 0 , 3 , 5 , 9 , 17 ]
+              , _neighedges =
+                  fromList [ 15 , 16 , 18 , 19 , 30 , 31 , 33 , 34 , 36 , 38 ]
+              }
+          )
+        , ( 2
+          , Vertex
+              { _point = [ -1.0 , 1.0 , -1.0 , -1.0 , -1.0 ]
+              , _neighfaces = fromList [ 0 , 2 , 3 , 5 , 6 ]
+              , _neighvertices = fromList [ 0 , 3 , 6 , 10 , 18 ]
+              , _neighedges =
+                  fromList [ 4 , 5 , 6 , 7 , 15 , 16 , 17 , 21 , 22 , 30 ]
+              }
+          )
+        , ( 3
+          , Vertex
+              { _point = [ -1.0 , 1.0 , 1.0 , -1.0 , -1.0 ]
+              , _neighfaces = fromList [ 0 , 2 , 5 , 6 , 8 ]
+              , _neighvertices = fromList [ 1 , 2 , 7 , 11 , 19 ]
+              , _neighedges =
+                  fromList [ 2 , 4 , 6 , 7 , 15 , 16 , 19 , 30 , 33 , 36 ]
+              }
+          )
+        , ( 4
+          , Vertex
+              { _point = [ 1.0 , -1.0 , -1.0 , -1.0 , -1.0 ]
+              , _neighfaces = fromList [ 2 , 3 , 4 , 6 , 7 ]
+              , _neighvertices = fromList [ 0 , 5 , 6 , 12 , 20 ]
+              , _neighedges =
+                  fromList [ 16 , 17 , 18 , 20 , 21 , 23 , 25 , 28 , 29 , 34 ]
+              }
+          )
+        , ( 5
+          , Vertex
+              { _point = [ 1.0 , -1.0 , 1.0 , -1.0 , -1.0 ]
+              , _neighfaces = fromList [ 2 , 4 , 6 , 7 , 8 ]
+              , _neighvertices = fromList [ 1 , 4 , 7 , 13 , 21 ]
+              , _neighedges =
+                  fromList [ 16 , 18 , 19 , 20 , 27 , 28 , 29 , 34 , 36 , 38 ]
+              }
+          )
+        , ( 6
+          , Vertex
+              { _point = [ 1.0 , 1.0 , -1.0 , -1.0 , -1.0 ]
+              , _neighfaces = fromList [ 0 , 2 , 3 , 4 , 6 ]
+              , _neighvertices = fromList [ 2 , 4 , 7 , 14 , 22 ]
+              , _neighedges =
+                  fromList [ 0 , 4 , 5 , 6 , 16 , 17 , 20 , 21 , 25 , 28 ]
+              }
+          )
+        , ( 7
+          , Vertex
+              { _point = [ 1.0 , 1.0 , 1.0 , -1.0 , -1.0 ]
+              , _neighfaces = fromList [ 0 , 2 , 4 , 6 , 8 ]
+              , _neighvertices = fromList [ 3 , 5 , 6 , 15 , 23 ]
+              , _neighedges =
+                  fromList [ 0 , 2 , 4 , 6 , 16 , 19 , 20 , 27 , 28 , 36 ]
+              }
+          )
+        , ( 8
+          , Vertex
+              { _point = [ -1.0 , -1.0 , -1.0 , 1.0 , -1.0 ]
+              , _neighfaces = fromList [ 1 , 2 , 3 , 5 , 7 ]
+              , _neighvertices = fromList [ 0 , 9 , 10 , 12 , 24 ]
+              , _neighedges =
+                  fromList [ 11 , 12 , 13 , 14 , 15 , 17 , 18 , 22 , 23 , 31 ]
+              }
+          )
+        , ( 9
+          , Vertex
+              { _point = [ -1.0 , -1.0 , 1.0 , 1.0 , -1.0 ]
+              , _neighfaces = fromList [ 1 , 2 , 5 , 7 , 8 ]
+              , _neighvertices = fromList [ 1 , 8 , 11 , 13 , 25 ]
+              , _neighedges =
+                  fromList [ 10 , 11 , 12 , 14 , 15 , 18 , 19 , 31 , 33 , 38 ]
+              }
+          )
+        , ( 10
+          , Vertex
+              { _point = [ -1.0 , 1.0 , -1.0 , 1.0 , -1.0 ]
+              , _neighfaces = fromList [ 0 , 1 , 2 , 3 , 5 ]
+              , _neighvertices = fromList [ 2 , 8 , 11 , 14 , 26 ]
+              , _neighedges =
+                  fromList [ 3 , 4 , 5 , 7 , 11 , 13 , 14 , 15 , 17 , 22 ]
+              }
+          )
+        , ( 11
+          , Vertex
+              { _point = [ -1.0 , 1.0 , 1.0 , 1.0 , -1.0 ]
+              , _neighfaces = fromList [ 0 , 1 , 2 , 5 , 8 ]
+              , _neighvertices = fromList [ 3 , 9 , 10 , 15 , 27 ]
+              , _neighedges =
+                  fromList [ 2 , 3 , 4 , 7 , 10 , 11 , 14 , 15 , 19 , 33 ]
+              }
+          )
+        , ( 12
+          , Vertex
+              { _point = [ 1.0 , -1.0 , -1.0 , 1.0 , -1.0 ]
+              , _neighfaces = fromList [ 1 , 2 , 3 , 4 , 7 ]
+              , _neighvertices = fromList [ 4 , 8 , 13 , 14 , 28 ]
+              , _neighedges =
+                  fromList [ 8 , 11 , 12 , 13 , 17 , 18 , 20 , 23 , 25 , 29 ]
+              }
+          )
+        , ( 13
+          , Vertex
+              { _point = [ 1.0 , -1.0 , 1.0 , 1.0 , -1.0 ]
+              , _neighfaces = fromList [ 1 , 2 , 4 , 7 , 8 ]
+              , _neighvertices = fromList [ 5 , 9 , 12 , 15 , 29 ]
+              , _neighedges =
+                  fromList [ 8 , 10 , 11 , 12 , 18 , 19 , 20 , 27 , 29 , 38 ]
+              }
+          )
+        , ( 14
+          , Vertex
+              { _point = [ 1.0 , 1.0 , -1.0 , 1.0 , -1.0 ]
+              , _neighfaces = fromList [ 0 , 1 , 2 , 3 , 4 ]
+              , _neighvertices = fromList [ 6 , 10 , 12 , 15 , 30 ]
+              , _neighedges =
+                  fromList [ 0 , 3 , 4 , 5 , 8 , 11 , 13 , 17 , 20 , 25 ]
+              }
+          )
+        , ( 15
+          , Vertex
+              { _point = [ 1.0 , 1.0 , 1.0 , 1.0 , -1.0 ]
+              , _neighfaces = fromList [ 0 , 1 , 2 , 4 , 8 ]
+              , _neighvertices = fromList [ 7 , 11 , 13 , 14 , 31 ]
+              , _neighedges =
+                  fromList [ 0 , 2 , 3 , 4 , 8 , 10 , 11 , 19 , 20 , 27 ]
+              }
+          )
+        , ( 16
+          , Vertex
+              { _point = [ -1.0 , -1.0 , -1.0 , -1.0 , 1.0 ]
+              , _neighfaces = fromList [ 3 , 5 , 6 , 7 , 9 ]
+              , _neighvertices = fromList [ 0 , 17 , 18 , 20 , 24 ]
+              , _neighedges =
+                  fromList [ 21 , 22 , 23 , 24 , 30 , 31 , 32 , 34 , 35 , 37 ]
+              }
+          )
+        , ( 17
+          , Vertex
+              { _point = [ -1.0 , -1.0 , 1.0 , -1.0 , 1.0 ]
+              , _neighfaces = fromList [ 5 , 6 , 7 , 8 , 9 ]
+              , _neighvertices = fromList [ 1 , 16 , 19 , 21 , 25 ]
+              , _neighedges =
+                  fromList [ 30 , 31 , 32 , 33 , 34 , 35 , 36 , 37 , 38 , 39 ]
+              }
+          )
+        , ( 18
+          , Vertex
+              { _point = [ -1.0 , 1.0 , -1.0 , -1.0 , 1.0 ]
+              , _neighfaces = fromList [ 0 , 3 , 5 , 6 , 9 ]
+              , _neighvertices = fromList [ 2 , 16 , 19 , 22 , 26 ]
+              , _neighedges =
+                  fromList [ 1 , 5 , 6 , 7 , 21 , 22 , 24 , 30 , 32 , 35 ]
+              }
+          )
+        , ( 19
+          , Vertex
+              { _point = [ -1.0 , 1.0 , 1.0 , -1.0 , 1.0 ]
+              , _neighfaces = fromList [ 0 , 5 , 6 , 8 , 9 ]
+              , _neighvertices = fromList [ 3 , 17 , 18 , 23 , 27 ]
+              , _neighedges =
+                  fromList [ 1 , 2 , 6 , 7 , 30 , 32 , 33 , 35 , 36 , 39 ]
+              }
+          )
+        , ( 20
+          , Vertex
+              { _point = [ 1.0 , -1.0 , -1.0 , -1.0 , 1.0 ]
+              , _neighfaces = fromList [ 3 , 4 , 6 , 7 , 9 ]
+              , _neighvertices = fromList [ 4 , 16 , 21 , 22 , 28 ]
+              , _neighedges =
+                  fromList [ 21 , 23 , 24 , 25 , 26 , 28 , 29 , 34 , 35 , 37 ]
+              }
+          )
+        , ( 21
+          , Vertex
+              { _point = [ 1.0 , -1.0 , 1.0 , -1.0 , 1.0 ]
+              , _neighfaces = fromList [ 4 , 6 , 7 , 8 , 9 ]
+              , _neighvertices = fromList [ 5 , 17 , 20 , 23 , 29 ]
+              , _neighedges =
+                  fromList [ 26 , 27 , 28 , 29 , 34 , 35 , 36 , 37 , 38 , 39 ]
+              }
+          )
+        , ( 22
+          , Vertex
+              { _point = [ 1.0 , 1.0 , -1.0 , -1.0 , 1.0 ]
+              , _neighfaces = fromList [ 0 , 3 , 4 , 6 , 9 ]
+              , _neighvertices = fromList [ 6 , 18 , 20 , 23 , 30 ]
+              , _neighedges =
+                  fromList [ 0 , 1 , 5 , 6 , 21 , 24 , 25 , 26 , 28 , 35 ]
+              }
+          )
+        , ( 23
+          , Vertex
+              { _point = [ 1.0 , 1.0 , 1.0 , -1.0 , 1.0 ]
+              , _neighfaces = fromList [ 0 , 4 , 6 , 8 , 9 ]
+              , _neighvertices = fromList [ 7 , 19 , 21 , 22 , 31 ]
+              , _neighedges =
+                  fromList [ 0 , 1 , 2 , 6 , 26 , 27 , 28 , 35 , 36 , 39 ]
+              }
+          )
+        , ( 24
+          , Vertex
+              { _point = [ -1.0 , -1.0 , -1.0 , 1.0 , 1.0 ]
+              , _neighfaces = fromList [ 1 , 3 , 5 , 7 , 9 ]
+              , _neighvertices = fromList [ 8 , 16 , 25 , 26 , 28 ]
+              , _neighedges =
+                  fromList [ 9 , 12 , 13 , 14 , 22 , 23 , 24 , 31 , 32 , 37 ]
+              }
+          )
+        , ( 25
+          , Vertex
+              { _point = [ -1.0 , -1.0 , 1.0 , 1.0 , 1.0 ]
+              , _neighfaces = fromList [ 1 , 5 , 7 , 8 , 9 ]
+              , _neighvertices = fromList [ 9 , 17 , 24 , 27 , 29 ]
+              , _neighedges =
+                  fromList [ 9 , 10 , 12 , 14 , 31 , 32 , 33 , 37 , 38 , 39 ]
+              }
+          )
+        , ( 26
+          , Vertex
+              { _point = [ -1.0 , 1.0 , -1.0 , 1.0 , 1.0 ]
+              , _neighfaces = fromList [ 0 , 1 , 3 , 5 , 9 ]
+              , _neighvertices = fromList [ 10 , 18 , 24 , 27 , 30 ]
+              , _neighedges =
+                  fromList [ 1 , 3 , 5 , 7 , 9 , 13 , 14 , 22 , 24 , 32 ]
+              }
+          )
+        , ( 27
+          , Vertex
+              { _point = [ -1.0 , 1.0 , 1.0 , 1.0 , 1.0 ]
+              , _neighfaces = fromList [ 0 , 1 , 5 , 8 , 9 ]
+              , _neighvertices = fromList [ 11 , 19 , 25 , 26 , 31 ]
+              , _neighedges =
+                  fromList [ 1 , 2 , 3 , 7 , 9 , 10 , 14 , 32 , 33 , 39 ]
+              }
+          )
+        , ( 28
+          , Vertex
+              { _point = [ 1.0 , -1.0 , -1.0 , 1.0 , 1.0 ]
+              , _neighfaces = fromList [ 1 , 3 , 4 , 7 , 9 ]
+              , _neighvertices = fromList [ 12 , 20 , 24 , 29 , 30 ]
+              , _neighedges =
+                  fromList [ 8 , 9 , 12 , 13 , 23 , 24 , 25 , 26 , 29 , 37 ]
+              }
+          )
+        , ( 29
+          , Vertex
+              { _point = [ 1.0 , -1.0 , 1.0 , 1.0 , 1.0 ]
+              , _neighfaces = fromList [ 1 , 4 , 7 , 8 , 9 ]
+              , _neighvertices = fromList [ 13 , 21 , 25 , 28 , 31 ]
+              , _neighedges =
+                  fromList [ 8 , 9 , 10 , 12 , 26 , 27 , 29 , 37 , 38 , 39 ]
+              }
+          )
+        , ( 30
+          , Vertex
+              { _point = [ 1.0 , 1.0 , -1.0 , 1.0 , 1.0 ]
+              , _neighfaces = fromList [ 0 , 1 , 3 , 4 , 9 ]
+              , _neighvertices = fromList [ 14 , 22 , 26 , 28 , 31 ]
+              , _neighedges =
+                  fromList [ 0 , 1 , 3 , 5 , 8 , 9 , 13 , 24 , 25 , 26 ]
+              }
+          )
+        , ( 31
+          , Vertex
+              { _point = [ 1.0 , 1.0 , 1.0 , 1.0 , 1.0 ]
+              , _neighfaces = fromList [ 0 , 1 , 4 , 8 , 9 ]
+              , _neighvertices = fromList [ 15 , 23 , 27 , 29 , 30 ]
+              , _neighedges =
+                  fromList [ 0 , 1 , 2 , 3 , 8 , 9 , 10 , 26 , 27 , 39 ]
+              }
+          )
+        ]
+  , _faces =
+      fromList
+        [ ( 0
+          , Face
+              { _fvertices =
+                  fromList
+                    [ ( 2 , [ -1.0 , 1.0 , -1.0 , -1.0 , -1.0 ] )
+                    , ( 3 , [ -1.0 , 1.0 , 1.0 , -1.0 , -1.0 ] )
+                    , ( 6 , [ 1.0 , 1.0 , -1.0 , -1.0 , -1.0 ] )
+                    , ( 7 , [ 1.0 , 1.0 , 1.0 , -1.0 , -1.0 ] )
+                    , ( 10 , [ -1.0 , 1.0 , -1.0 , 1.0 , -1.0 ] )
+                    , ( 11 , [ -1.0 , 1.0 , 1.0 , 1.0 , -1.0 ] )
+                    , ( 14 , [ 1.0 , 1.0 , -1.0 , 1.0 , -1.0 ] )
+                    , ( 15 , [ 1.0 , 1.0 , 1.0 , 1.0 , -1.0 ] )
+                    , ( 18 , [ -1.0 , 1.0 , -1.0 , -1.0 , 1.0 ] )
+                    , ( 19 , [ -1.0 , 1.0 , 1.0 , -1.0 , 1.0 ] )
+                    , ( 22 , [ 1.0 , 1.0 , -1.0 , -1.0 , 1.0 ] )
+                    , ( 23 , [ 1.0 , 1.0 , 1.0 , -1.0 , 1.0 ] )
+                    , ( 26 , [ -1.0 , 1.0 , -1.0 , 1.0 , 1.0 ] )
+                    , ( 27 , [ -1.0 , 1.0 , 1.0 , 1.0 , 1.0 ] )
+                    , ( 30 , [ 1.0 , 1.0 , -1.0 , 1.0 , 1.0 ] )
+                    , ( 31 , [ 1.0 , 1.0 , 1.0 , 1.0 , 1.0 ] )
+                    ]
+              , _edges =
+                  [ Ridge
+                      { _rvertices =
+                          fromList
+                            [ ( 6 , [ 1.0 , 1.0 , -1.0 , -1.0 , -1.0 ] )
+                            , ( 7 , [ 1.0 , 1.0 , 1.0 , -1.0 , -1.0 ] )
+                            , ( 14 , [ 1.0 , 1.0 , -1.0 , 1.0 , -1.0 ] )
+                            , ( 15 , [ 1.0 , 1.0 , 1.0 , 1.0 , -1.0 ] )
+                            , ( 22 , [ 1.0 , 1.0 , -1.0 , -1.0 , 1.0 ] )
+                            , ( 23 , [ 1.0 , 1.0 , 1.0 , -1.0 , 1.0 ] )
+                            , ( 30 , [ 1.0 , 1.0 , -1.0 , 1.0 , 1.0 ] )
+                            , ( 31 , [ 1.0 , 1.0 , 1.0 , 1.0 , 1.0 ] )
+                            ]
+                      , _ridgeOf = fromList [ 0 , 4 ]
+                      }
+                  , Ridge
+                      { _rvertices =
+                          fromList
+                            [ ( 18 , [ -1.0 , 1.0 , -1.0 , -1.0 , 1.0 ] )
+                            , ( 19 , [ -1.0 , 1.0 , 1.0 , -1.0 , 1.0 ] )
+                            , ( 22 , [ 1.0 , 1.0 , -1.0 , -1.0 , 1.0 ] )
+                            , ( 23 , [ 1.0 , 1.0 , 1.0 , -1.0 , 1.0 ] )
+                            , ( 26 , [ -1.0 , 1.0 , -1.0 , 1.0 , 1.0 ] )
+                            , ( 27 , [ -1.0 , 1.0 , 1.0 , 1.0 , 1.0 ] )
+                            , ( 30 , [ 1.0 , 1.0 , -1.0 , 1.0 , 1.0 ] )
+                            , ( 31 , [ 1.0 , 1.0 , 1.0 , 1.0 , 1.0 ] )
+                            ]
+                      , _ridgeOf = fromList [ 0 , 9 ]
+                      }
+                  , Ridge
+                      { _rvertices =
+                          fromList
+                            [ ( 3 , [ -1.0 , 1.0 , 1.0 , -1.0 , -1.0 ] )
+                            , ( 7 , [ 1.0 , 1.0 , 1.0 , -1.0 , -1.0 ] )
+                            , ( 11 , [ -1.0 , 1.0 , 1.0 , 1.0 , -1.0 ] )
+                            , ( 15 , [ 1.0 , 1.0 , 1.0 , 1.0 , -1.0 ] )
+                            , ( 19 , [ -1.0 , 1.0 , 1.0 , -1.0 , 1.0 ] )
+                            , ( 23 , [ 1.0 , 1.0 , 1.0 , -1.0 , 1.0 ] )
+                            , ( 27 , [ -1.0 , 1.0 , 1.0 , 1.0 , 1.0 ] )
+                            , ( 31 , [ 1.0 , 1.0 , 1.0 , 1.0 , 1.0 ] )
+                            ]
+                      , _ridgeOf = fromList [ 0 , 8 ]
+                      }
+                  , Ridge
+                      { _rvertices =
+                          fromList
+                            [ ( 10 , [ -1.0 , 1.0 , -1.0 , 1.0 , -1.0 ] )
+                            , ( 11 , [ -1.0 , 1.0 , 1.0 , 1.0 , -1.0 ] )
+                            , ( 14 , [ 1.0 , 1.0 , -1.0 , 1.0 , -1.0 ] )
+                            , ( 15 , [ 1.0 , 1.0 , 1.0 , 1.0 , -1.0 ] )
+                            , ( 26 , [ -1.0 , 1.0 , -1.0 , 1.0 , 1.0 ] )
+                            , ( 27 , [ -1.0 , 1.0 , 1.0 , 1.0 , 1.0 ] )
+                            , ( 30 , [ 1.0 , 1.0 , -1.0 , 1.0 , 1.0 ] )
+                            , ( 31 , [ 1.0 , 1.0 , 1.0 , 1.0 , 1.0 ] )
+                            ]
+                      , _ridgeOf = fromList [ 0 , 1 ]
+                      }
+                  , Ridge
+                      { _rvertices =
+                          fromList
+                            [ ( 2 , [ -1.0 , 1.0 , -1.0 , -1.0 , -1.0 ] )
+                            , ( 3 , [ -1.0 , 1.0 , 1.0 , -1.0 , -1.0 ] )
+                            , ( 6 , [ 1.0 , 1.0 , -1.0 , -1.0 , -1.0 ] )
+                            , ( 7 , [ 1.0 , 1.0 , 1.0 , -1.0 , -1.0 ] )
+                            , ( 10 , [ -1.0 , 1.0 , -1.0 , 1.0 , -1.0 ] )
+                            , ( 11 , [ -1.0 , 1.0 , 1.0 , 1.0 , -1.0 ] )
+                            , ( 14 , [ 1.0 , 1.0 , -1.0 , 1.0 , -1.0 ] )
+                            , ( 15 , [ 1.0 , 1.0 , 1.0 , 1.0 , -1.0 ] )
+                            ]
+                      , _ridgeOf = fromList [ 0 , 2 ]
+                      }
+                  , Ridge
+                      { _rvertices =
+                          fromList
+                            [ ( 2 , [ -1.0 , 1.0 , -1.0 , -1.0 , -1.0 ] )
+                            , ( 6 , [ 1.0 , 1.0 , -1.0 , -1.0 , -1.0 ] )
+                            , ( 10 , [ -1.0 , 1.0 , -1.0 , 1.0 , -1.0 ] )
+                            , ( 14 , [ 1.0 , 1.0 , -1.0 , 1.0 , -1.0 ] )
+                            , ( 18 , [ -1.0 , 1.0 , -1.0 , -1.0 , 1.0 ] )
+                            , ( 22 , [ 1.0 , 1.0 , -1.0 , -1.0 , 1.0 ] )
+                            , ( 26 , [ -1.0 , 1.0 , -1.0 , 1.0 , 1.0 ] )
+                            , ( 30 , [ 1.0 , 1.0 , -1.0 , 1.0 , 1.0 ] )
+                            ]
+                      , _ridgeOf = fromList [ 0 , 3 ]
+                      }
+                  , Ridge
+                      { _rvertices =
+                          fromList
+                            [ ( 2 , [ -1.0 , 1.0 , -1.0 , -1.0 , -1.0 ] )
+                            , ( 3 , [ -1.0 , 1.0 , 1.0 , -1.0 , -1.0 ] )
+                            , ( 6 , [ 1.0 , 1.0 , -1.0 , -1.0 , -1.0 ] )
+                            , ( 7 , [ 1.0 , 1.0 , 1.0 , -1.0 , -1.0 ] )
+                            , ( 18 , [ -1.0 , 1.0 , -1.0 , -1.0 , 1.0 ] )
+                            , ( 19 , [ -1.0 , 1.0 , 1.0 , -1.0 , 1.0 ] )
+                            , ( 22 , [ 1.0 , 1.0 , -1.0 , -1.0 , 1.0 ] )
+                            , ( 23 , [ 1.0 , 1.0 , 1.0 , -1.0 , 1.0 ] )
+                            ]
+                      , _ridgeOf = fromList [ 0 , 6 ]
+                      }
+                  , Ridge
+                      { _rvertices =
+                          fromList
+                            [ ( 2 , [ -1.0 , 1.0 , -1.0 , -1.0 , -1.0 ] )
+                            , ( 3 , [ -1.0 , 1.0 , 1.0 , -1.0 , -1.0 ] )
+                            , ( 10 , [ -1.0 , 1.0 , -1.0 , 1.0 , -1.0 ] )
+                            , ( 11 , [ -1.0 , 1.0 , 1.0 , 1.0 , -1.0 ] )
+                            , ( 18 , [ -1.0 , 1.0 , -1.0 , -1.0 , 1.0 ] )
+                            , ( 19 , [ -1.0 , 1.0 , 1.0 , -1.0 , 1.0 ] )
+                            , ( 26 , [ -1.0 , 1.0 , -1.0 , 1.0 , 1.0 ] )
+                            , ( 27 , [ -1.0 , 1.0 , 1.0 , 1.0 , 1.0 ] )
+                            ]
+                      , _ridgeOf = fromList [ 0 , 5 ]
+                      }
+                  ]
+              , _centroid = [ 0.0 , 1.0 , 0.0 , 0.0 , 0.0 ]
+              , _normal = [ 0.0 , 1.0 , 0.0 , 0.0 , 0.0 ]
+              , _offset = -1.0
+              , _area = 16.000000000000007
+              , _neighbors = fromList [ 1 , 2 , 3 , 4 , 5 , 6 , 8 , 9 ]
+              , _family = Nothing
+              }
+          )
+        , ( 1
+          , Face
+              { _fvertices =
+                  fromList
+                    [ ( 8 , [ -1.0 , -1.0 , -1.0 , 1.0 , -1.0 ] )
+                    , ( 9 , [ -1.0 , -1.0 , 1.0 , 1.0 , -1.0 ] )
+                    , ( 10 , [ -1.0 , 1.0 , -1.0 , 1.0 , -1.0 ] )
+                    , ( 11 , [ -1.0 , 1.0 , 1.0 , 1.0 , -1.0 ] )
+                    , ( 12 , [ 1.0 , -1.0 , -1.0 , 1.0 , -1.0 ] )
+                    , ( 13 , [ 1.0 , -1.0 , 1.0 , 1.0 , -1.0 ] )
+                    , ( 14 , [ 1.0 , 1.0 , -1.0 , 1.0 , -1.0 ] )
+                    , ( 15 , [ 1.0 , 1.0 , 1.0 , 1.0 , -1.0 ] )
+                    , ( 24 , [ -1.0 , -1.0 , -1.0 , 1.0 , 1.0 ] )
+                    , ( 25 , [ -1.0 , -1.0 , 1.0 , 1.0 , 1.0 ] )
+                    , ( 26 , [ -1.0 , 1.0 , -1.0 , 1.0 , 1.0 ] )
+                    , ( 27 , [ -1.0 , 1.0 , 1.0 , 1.0 , 1.0 ] )
+                    , ( 28 , [ 1.0 , -1.0 , -1.0 , 1.0 , 1.0 ] )
+                    , ( 29 , [ 1.0 , -1.0 , 1.0 , 1.0 , 1.0 ] )
+                    , ( 30 , [ 1.0 , 1.0 , -1.0 , 1.0 , 1.0 ] )
+                    , ( 31 , [ 1.0 , 1.0 , 1.0 , 1.0 , 1.0 ] )
+                    ]
+              , _edges =
+                  [ Ridge
+                      { _rvertices =
+                          fromList
+                            [ ( 12 , [ 1.0 , -1.0 , -1.0 , 1.0 , -1.0 ] )
+                            , ( 13 , [ 1.0 , -1.0 , 1.0 , 1.0 , -1.0 ] )
+                            , ( 14 , [ 1.0 , 1.0 , -1.0 , 1.0 , -1.0 ] )
+                            , ( 15 , [ 1.0 , 1.0 , 1.0 , 1.0 , -1.0 ] )
+                            , ( 28 , [ 1.0 , -1.0 , -1.0 , 1.0 , 1.0 ] )
+                            , ( 29 , [ 1.0 , -1.0 , 1.0 , 1.0 , 1.0 ] )
+                            , ( 30 , [ 1.0 , 1.0 , -1.0 , 1.0 , 1.0 ] )
+                            , ( 31 , [ 1.0 , 1.0 , 1.0 , 1.0 , 1.0 ] )
+                            ]
+                      , _ridgeOf = fromList [ 1 , 4 ]
+                      }
+                  , Ridge
+                      { _rvertices =
+                          fromList
+                            [ ( 10 , [ -1.0 , 1.0 , -1.0 , 1.0 , -1.0 ] )
+                            , ( 11 , [ -1.0 , 1.0 , 1.0 , 1.0 , -1.0 ] )
+                            , ( 14 , [ 1.0 , 1.0 , -1.0 , 1.0 , -1.0 ] )
+                            , ( 15 , [ 1.0 , 1.0 , 1.0 , 1.0 , -1.0 ] )
+                            , ( 26 , [ -1.0 , 1.0 , -1.0 , 1.0 , 1.0 ] )
+                            , ( 27 , [ -1.0 , 1.0 , 1.0 , 1.0 , 1.0 ] )
+                            , ( 30 , [ 1.0 , 1.0 , -1.0 , 1.0 , 1.0 ] )
+                            , ( 31 , [ 1.0 , 1.0 , 1.0 , 1.0 , 1.0 ] )
+                            ]
+                      , _ridgeOf = fromList [ 0 , 1 ]
+                      }
+                  , Ridge
+                      { _rvertices =
+                          fromList
+                            [ ( 24 , [ -1.0 , -1.0 , -1.0 , 1.0 , 1.0 ] )
+                            , ( 25 , [ -1.0 , -1.0 , 1.0 , 1.0 , 1.0 ] )
+                            , ( 26 , [ -1.0 , 1.0 , -1.0 , 1.0 , 1.0 ] )
+                            , ( 27 , [ -1.0 , 1.0 , 1.0 , 1.0 , 1.0 ] )
+                            , ( 28 , [ 1.0 , -1.0 , -1.0 , 1.0 , 1.0 ] )
+                            , ( 29 , [ 1.0 , -1.0 , 1.0 , 1.0 , 1.0 ] )
+                            , ( 30 , [ 1.0 , 1.0 , -1.0 , 1.0 , 1.0 ] )
+                            , ( 31 , [ 1.0 , 1.0 , 1.0 , 1.0 , 1.0 ] )
+                            ]
+                      , _ridgeOf = fromList [ 1 , 9 ]
+                      }
+                  , Ridge
+                      { _rvertices =
+                          fromList
+                            [ ( 9 , [ -1.0 , -1.0 , 1.0 , 1.0 , -1.0 ] )
+                            , ( 11 , [ -1.0 , 1.0 , 1.0 , 1.0 , -1.0 ] )
+                            , ( 13 , [ 1.0 , -1.0 , 1.0 , 1.0 , -1.0 ] )
+                            , ( 15 , [ 1.0 , 1.0 , 1.0 , 1.0 , -1.0 ] )
+                            , ( 25 , [ -1.0 , -1.0 , 1.0 , 1.0 , 1.0 ] )
+                            , ( 27 , [ -1.0 , 1.0 , 1.0 , 1.0 , 1.0 ] )
+                            , ( 29 , [ 1.0 , -1.0 , 1.0 , 1.0 , 1.0 ] )
+                            , ( 31 , [ 1.0 , 1.0 , 1.0 , 1.0 , 1.0 ] )
+                            ]
+                      , _ridgeOf = fromList [ 1 , 8 ]
+                      }
+                  , Ridge
+                      { _rvertices =
+                          fromList
+                            [ ( 8 , [ -1.0 , -1.0 , -1.0 , 1.0 , -1.0 ] )
+                            , ( 9 , [ -1.0 , -1.0 , 1.0 , 1.0 , -1.0 ] )
+                            , ( 10 , [ -1.0 , 1.0 , -1.0 , 1.0 , -1.0 ] )
+                            , ( 11 , [ -1.0 , 1.0 , 1.0 , 1.0 , -1.0 ] )
+                            , ( 12 , [ 1.0 , -1.0 , -1.0 , 1.0 , -1.0 ] )
+                            , ( 13 , [ 1.0 , -1.0 , 1.0 , 1.0 , -1.0 ] )
+                            , ( 14 , [ 1.0 , 1.0 , -1.0 , 1.0 , -1.0 ] )
+                            , ( 15 , [ 1.0 , 1.0 , 1.0 , 1.0 , -1.0 ] )
+                            ]
+                      , _ridgeOf = fromList [ 1 , 2 ]
+                      }
+                  , Ridge
+                      { _rvertices =
+                          fromList
+                            [ ( 8 , [ -1.0 , -1.0 , -1.0 , 1.0 , -1.0 ] )
+                            , ( 9 , [ -1.0 , -1.0 , 1.0 , 1.0 , -1.0 ] )
+                            , ( 12 , [ 1.0 , -1.0 , -1.0 , 1.0 , -1.0 ] )
+                            , ( 13 , [ 1.0 , -1.0 , 1.0 , 1.0 , -1.0 ] )
+                            , ( 24 , [ -1.0 , -1.0 , -1.0 , 1.0 , 1.0 ] )
+                            , ( 25 , [ -1.0 , -1.0 , 1.0 , 1.0 , 1.0 ] )
+                            , ( 28 , [ 1.0 , -1.0 , -1.0 , 1.0 , 1.0 ] )
+                            , ( 29 , [ 1.0 , -1.0 , 1.0 , 1.0 , 1.0 ] )
+                            ]
+                      , _ridgeOf = fromList [ 1 , 7 ]
+                      }
+                  , Ridge
+                      { _rvertices =
+                          fromList
+                            [ ( 8 , [ -1.0 , -1.0 , -1.0 , 1.0 , -1.0 ] )
+                            , ( 10 , [ -1.0 , 1.0 , -1.0 , 1.0 , -1.0 ] )
+                            , ( 12 , [ 1.0 , -1.0 , -1.0 , 1.0 , -1.0 ] )
+                            , ( 14 , [ 1.0 , 1.0 , -1.0 , 1.0 , -1.0 ] )
+                            , ( 24 , [ -1.0 , -1.0 , -1.0 , 1.0 , 1.0 ] )
+                            , ( 26 , [ -1.0 , 1.0 , -1.0 , 1.0 , 1.0 ] )
+                            , ( 28 , [ 1.0 , -1.0 , -1.0 , 1.0 , 1.0 ] )
+                            , ( 30 , [ 1.0 , 1.0 , -1.0 , 1.0 , 1.0 ] )
+                            ]
+                      , _ridgeOf = fromList [ 1 , 3 ]
+                      }
+                  , Ridge
+                      { _rvertices =
+                          fromList
+                            [ ( 8 , [ -1.0 , -1.0 , -1.0 , 1.0 , -1.0 ] )
+                            , ( 9 , [ -1.0 , -1.0 , 1.0 , 1.0 , -1.0 ] )
+                            , ( 10 , [ -1.0 , 1.0 , -1.0 , 1.0 , -1.0 ] )
+                            , ( 11 , [ -1.0 , 1.0 , 1.0 , 1.0 , -1.0 ] )
+                            , ( 24 , [ -1.0 , -1.0 , -1.0 , 1.0 , 1.0 ] )
+                            , ( 25 , [ -1.0 , -1.0 , 1.0 , 1.0 , 1.0 ] )
+                            , ( 26 , [ -1.0 , 1.0 , -1.0 , 1.0 , 1.0 ] )
+                            , ( 27 , [ -1.0 , 1.0 , 1.0 , 1.0 , 1.0 ] )
+                            ]
+                      , _ridgeOf = fromList [ 1 , 5 ]
+                      }
+                  ]
+              , _centroid = [ 0.0 , 0.0 , 0.0 , 1.0 , 0.0 ]
+              , _normal = [ 0.0 , 0.0 , 0.0 , 1.0 , 0.0 ]
+              , _offset = -1.0
+              , _area = 16.000000000000007
+              , _neighbors = fromList [ 0 , 2 , 3 , 4 , 5 , 7 , 8 , 9 ]
+              , _family = Nothing
+              }
+          )
+        , ( 2
+          , Face
+              { _fvertices =
+                  fromList
+                    [ ( 0 , [ -1.0 , -1.0 , -1.0 , -1.0 , -1.0 ] )
+                    , ( 1 , [ -1.0 , -1.0 , 1.0 , -1.0 , -1.0 ] )
+                    , ( 2 , [ -1.0 , 1.0 , -1.0 , -1.0 , -1.0 ] )
+                    , ( 3 , [ -1.0 , 1.0 , 1.0 , -1.0 , -1.0 ] )
+                    , ( 4 , [ 1.0 , -1.0 , -1.0 , -1.0 , -1.0 ] )
+                    , ( 5 , [ 1.0 , -1.0 , 1.0 , -1.0 , -1.0 ] )
+                    , ( 6 , [ 1.0 , 1.0 , -1.0 , -1.0 , -1.0 ] )
+                    , ( 7 , [ 1.0 , 1.0 , 1.0 , -1.0 , -1.0 ] )
+                    , ( 8 , [ -1.0 , -1.0 , -1.0 , 1.0 , -1.0 ] )
+                    , ( 9 , [ -1.0 , -1.0 , 1.0 , 1.0 , -1.0 ] )
+                    , ( 10 , [ -1.0 , 1.0 , -1.0 , 1.0 , -1.0 ] )
+                    , ( 11 , [ -1.0 , 1.0 , 1.0 , 1.0 , -1.0 ] )
+                    , ( 12 , [ 1.0 , -1.0 , -1.0 , 1.0 , -1.0 ] )
+                    , ( 13 , [ 1.0 , -1.0 , 1.0 , 1.0 , -1.0 ] )
+                    , ( 14 , [ 1.0 , 1.0 , -1.0 , 1.0 , -1.0 ] )
+                    , ( 15 , [ 1.0 , 1.0 , 1.0 , 1.0 , -1.0 ] )
+                    ]
+              , _edges =
+                  [ Ridge
+                      { _rvertices =
+                          fromList
+                            [ ( 0 , [ -1.0 , -1.0 , -1.0 , -1.0 , -1.0 ] )
+                            , ( 1 , [ -1.0 , -1.0 , 1.0 , -1.0 , -1.0 ] )
+                            , ( 2 , [ -1.0 , 1.0 , -1.0 , -1.0 , -1.0 ] )
+                            , ( 3 , [ -1.0 , 1.0 , 1.0 , -1.0 , -1.0 ] )
+                            , ( 8 , [ -1.0 , -1.0 , -1.0 , 1.0 , -1.0 ] )
+                            , ( 9 , [ -1.0 , -1.0 , 1.0 , 1.0 , -1.0 ] )
+                            , ( 10 , [ -1.0 , 1.0 , -1.0 , 1.0 , -1.0 ] )
+                            , ( 11 , [ -1.0 , 1.0 , 1.0 , 1.0 , -1.0 ] )
+                            ]
+                      , _ridgeOf = fromList [ 2 , 5 ]
+                      }
+                  , Ridge
+                      { _rvertices =
+                          fromList
+                            [ ( 0 , [ -1.0 , -1.0 , -1.0 , -1.0 , -1.0 ] )
+                            , ( 1 , [ -1.0 , -1.0 , 1.0 , -1.0 , -1.0 ] )
+                            , ( 2 , [ -1.0 , 1.0 , -1.0 , -1.0 , -1.0 ] )
+                            , ( 3 , [ -1.0 , 1.0 , 1.0 , -1.0 , -1.0 ] )
+                            , ( 4 , [ 1.0 , -1.0 , -1.0 , -1.0 , -1.0 ] )
+                            , ( 5 , [ 1.0 , -1.0 , 1.0 , -1.0 , -1.0 ] )
+                            , ( 6 , [ 1.0 , 1.0 , -1.0 , -1.0 , -1.0 ] )
+                            , ( 7 , [ 1.0 , 1.0 , 1.0 , -1.0 , -1.0 ] )
+                            ]
+                      , _ridgeOf = fromList [ 2 , 6 ]
+                      }
+                  , Ridge
+                      { _rvertices =
+                          fromList
+                            [ ( 0 , [ -1.0 , -1.0 , -1.0 , -1.0 , -1.0 ] )
+                            , ( 2 , [ -1.0 , 1.0 , -1.0 , -1.0 , -1.0 ] )
+                            , ( 4 , [ 1.0 , -1.0 , -1.0 , -1.0 , -1.0 ] )
+                            , ( 6 , [ 1.0 , 1.0 , -1.0 , -1.0 , -1.0 ] )
+                            , ( 8 , [ -1.0 , -1.0 , -1.0 , 1.0 , -1.0 ] )
+                            , ( 10 , [ -1.0 , 1.0 , -1.0 , 1.0 , -1.0 ] )
+                            , ( 12 , [ 1.0 , -1.0 , -1.0 , 1.0 , -1.0 ] )
+                            , ( 14 , [ 1.0 , 1.0 , -1.0 , 1.0 , -1.0 ] )
+                            ]
+                      , _ridgeOf = fromList [ 2 , 3 ]
+                      }
+                  , Ridge
+                      { _rvertices =
+                          fromList
+                            [ ( 0 , [ -1.0 , -1.0 , -1.0 , -1.0 , -1.0 ] )
+                            , ( 1 , [ -1.0 , -1.0 , 1.0 , -1.0 , -1.0 ] )
+                            , ( 4 , [ 1.0 , -1.0 , -1.0 , -1.0 , -1.0 ] )
+                            , ( 5 , [ 1.0 , -1.0 , 1.0 , -1.0 , -1.0 ] )
+                            , ( 8 , [ -1.0 , -1.0 , -1.0 , 1.0 , -1.0 ] )
+                            , ( 9 , [ -1.0 , -1.0 , 1.0 , 1.0 , -1.0 ] )
+                            , ( 12 , [ 1.0 , -1.0 , -1.0 , 1.0 , -1.0 ] )
+                            , ( 13 , [ 1.0 , -1.0 , 1.0 , 1.0 , -1.0 ] )
+                            ]
+                      , _ridgeOf = fromList [ 2 , 7 ]
+                      }
+                  , Ridge
+                      { _rvertices =
+                          fromList
+                            [ ( 8 , [ -1.0 , -1.0 , -1.0 , 1.0 , -1.0 ] )
+                            , ( 9 , [ -1.0 , -1.0 , 1.0 , 1.0 , -1.0 ] )
+                            , ( 10 , [ -1.0 , 1.0 , -1.0 , 1.0 , -1.0 ] )
+                            , ( 11 , [ -1.0 , 1.0 , 1.0 , 1.0 , -1.0 ] )
+                            , ( 12 , [ 1.0 , -1.0 , -1.0 , 1.0 , -1.0 ] )
+                            , ( 13 , [ 1.0 , -1.0 , 1.0 , 1.0 , -1.0 ] )
+                            , ( 14 , [ 1.0 , 1.0 , -1.0 , 1.0 , -1.0 ] )
+                            , ( 15 , [ 1.0 , 1.0 , 1.0 , 1.0 , -1.0 ] )
+                            ]
+                      , _ridgeOf = fromList [ 1 , 2 ]
+                      }
+                  , Ridge
+                      { _rvertices =
+                          fromList
+                            [ ( 2 , [ -1.0 , 1.0 , -1.0 , -1.0 , -1.0 ] )
+                            , ( 3 , [ -1.0 , 1.0 , 1.0 , -1.0 , -1.0 ] )
+                            , ( 6 , [ 1.0 , 1.0 , -1.0 , -1.0 , -1.0 ] )
+                            , ( 7 , [ 1.0 , 1.0 , 1.0 , -1.0 , -1.0 ] )
+                            , ( 10 , [ -1.0 , 1.0 , -1.0 , 1.0 , -1.0 ] )
+                            , ( 11 , [ -1.0 , 1.0 , 1.0 , 1.0 , -1.0 ] )
+                            , ( 14 , [ 1.0 , 1.0 , -1.0 , 1.0 , -1.0 ] )
+                            , ( 15 , [ 1.0 , 1.0 , 1.0 , 1.0 , -1.0 ] )
+                            ]
+                      , _ridgeOf = fromList [ 0 , 2 ]
+                      }
+                  , Ridge
+                      { _rvertices =
+                          fromList
+                            [ ( 1 , [ -1.0 , -1.0 , 1.0 , -1.0 , -1.0 ] )
+                            , ( 3 , [ -1.0 , 1.0 , 1.0 , -1.0 , -1.0 ] )
+                            , ( 5 , [ 1.0 , -1.0 , 1.0 , -1.0 , -1.0 ] )
+                            , ( 7 , [ 1.0 , 1.0 , 1.0 , -1.0 , -1.0 ] )
+                            , ( 9 , [ -1.0 , -1.0 , 1.0 , 1.0 , -1.0 ] )
+                            , ( 11 , [ -1.0 , 1.0 , 1.0 , 1.0 , -1.0 ] )
+                            , ( 13 , [ 1.0 , -1.0 , 1.0 , 1.0 , -1.0 ] )
+                            , ( 15 , [ 1.0 , 1.0 , 1.0 , 1.0 , -1.0 ] )
+                            ]
+                      , _ridgeOf = fromList [ 2 , 8 ]
+                      }
+                  , Ridge
+                      { _rvertices =
+                          fromList
+                            [ ( 4 , [ 1.0 , -1.0 , -1.0 , -1.0 , -1.0 ] )
+                            , ( 5 , [ 1.0 , -1.0 , 1.0 , -1.0 , -1.0 ] )
+                            , ( 6 , [ 1.0 , 1.0 , -1.0 , -1.0 , -1.0 ] )
+                            , ( 7 , [ 1.0 , 1.0 , 1.0 , -1.0 , -1.0 ] )
+                            , ( 12 , [ 1.0 , -1.0 , -1.0 , 1.0 , -1.0 ] )
+                            , ( 13 , [ 1.0 , -1.0 , 1.0 , 1.0 , -1.0 ] )
+                            , ( 14 , [ 1.0 , 1.0 , -1.0 , 1.0 , -1.0 ] )
+                            , ( 15 , [ 1.0 , 1.0 , 1.0 , 1.0 , -1.0 ] )
+                            ]
+                      , _ridgeOf = fromList [ 2 , 4 ]
+                      }
+                  ]
+              , _centroid = [ 0.0 , 0.0 , 0.0 , 0.0 , -1.0 ]
+              , _normal = [ 0.0 , 0.0 , 0.0 , 0.0 , -1.0 ]
+              , _offset = -1.0
+              , _area = 15.999999999999991
+              , _neighbors = fromList [ 0 , 1 , 3 , 4 , 5 , 6 , 7 , 8 ]
+              , _family = Nothing
+              }
+          )
+        , ( 3
+          , Face
+              { _fvertices =
+                  fromList
+                    [ ( 0 , [ -1.0 , -1.0 , -1.0 , -1.0 , -1.0 ] )
+                    , ( 2 , [ -1.0 , 1.0 , -1.0 , -1.0 , -1.0 ] )
+                    , ( 4 , [ 1.0 , -1.0 , -1.0 , -1.0 , -1.0 ] )
+                    , ( 6 , [ 1.0 , 1.0 , -1.0 , -1.0 , -1.0 ] )
+                    , ( 8 , [ -1.0 , -1.0 , -1.0 , 1.0 , -1.0 ] )
+                    , ( 10 , [ -1.0 , 1.0 , -1.0 , 1.0 , -1.0 ] )
+                    , ( 12 , [ 1.0 , -1.0 , -1.0 , 1.0 , -1.0 ] )
+                    , ( 14 , [ 1.0 , 1.0 , -1.0 , 1.0 , -1.0 ] )
+                    , ( 16 , [ -1.0 , -1.0 , -1.0 , -1.0 , 1.0 ] )
+                    , ( 18 , [ -1.0 , 1.0 , -1.0 , -1.0 , 1.0 ] )
+                    , ( 20 , [ 1.0 , -1.0 , -1.0 , -1.0 , 1.0 ] )
+                    , ( 22 , [ 1.0 , 1.0 , -1.0 , -1.0 , 1.0 ] )
+                    , ( 24 , [ -1.0 , -1.0 , -1.0 , 1.0 , 1.0 ] )
+                    , ( 26 , [ -1.0 , 1.0 , -1.0 , 1.0 , 1.0 ] )
+                    , ( 28 , [ 1.0 , -1.0 , -1.0 , 1.0 , 1.0 ] )
+                    , ( 30 , [ 1.0 , 1.0 , -1.0 , 1.0 , 1.0 ] )
+                    ]
+              , _edges =
+                  [ Ridge
+                      { _rvertices =
+                          fromList
+                            [ ( 0 , [ -1.0 , -1.0 , -1.0 , -1.0 , -1.0 ] )
+                            , ( 2 , [ -1.0 , 1.0 , -1.0 , -1.0 , -1.0 ] )
+                            , ( 4 , [ 1.0 , -1.0 , -1.0 , -1.0 , -1.0 ] )
+                            , ( 6 , [ 1.0 , 1.0 , -1.0 , -1.0 , -1.0 ] )
+                            , ( 8 , [ -1.0 , -1.0 , -1.0 , 1.0 , -1.0 ] )
+                            , ( 10 , [ -1.0 , 1.0 , -1.0 , 1.0 , -1.0 ] )
+                            , ( 12 , [ 1.0 , -1.0 , -1.0 , 1.0 , -1.0 ] )
+                            , ( 14 , [ 1.0 , 1.0 , -1.0 , 1.0 , -1.0 ] )
+                            ]
+                      , _ridgeOf = fromList [ 2 , 3 ]
+                      }
+                  , Ridge
+                      { _rvertices =
+                          fromList
+                            [ ( 0 , [ -1.0 , -1.0 , -1.0 , -1.0 , -1.0 ] )
+                            , ( 2 , [ -1.0 , 1.0 , -1.0 , -1.0 , -1.0 ] )
+                            , ( 4 , [ 1.0 , -1.0 , -1.0 , -1.0 , -1.0 ] )
+                            , ( 6 , [ 1.0 , 1.0 , -1.0 , -1.0 , -1.0 ] )
+                            , ( 16 , [ -1.0 , -1.0 , -1.0 , -1.0 , 1.0 ] )
+                            , ( 18 , [ -1.0 , 1.0 , -1.0 , -1.0 , 1.0 ] )
+                            , ( 20 , [ 1.0 , -1.0 , -1.0 , -1.0 , 1.0 ] )
+                            , ( 22 , [ 1.0 , 1.0 , -1.0 , -1.0 , 1.0 ] )
+                            ]
+                      , _ridgeOf = fromList [ 3 , 6 ]
+                      }
+                  , Ridge
+                      { _rvertices =
+                          fromList
+                            [ ( 0 , [ -1.0 , -1.0 , -1.0 , -1.0 , -1.0 ] )
+                            , ( 2 , [ -1.0 , 1.0 , -1.0 , -1.0 , -1.0 ] )
+                            , ( 8 , [ -1.0 , -1.0 , -1.0 , 1.0 , -1.0 ] )
+                            , ( 10 , [ -1.0 , 1.0 , -1.0 , 1.0 , -1.0 ] )
+                            , ( 16 , [ -1.0 , -1.0 , -1.0 , -1.0 , 1.0 ] )
+                            , ( 18 , [ -1.0 , 1.0 , -1.0 , -1.0 , 1.0 ] )
+                            , ( 24 , [ -1.0 , -1.0 , -1.0 , 1.0 , 1.0 ] )
+                            , ( 26 , [ -1.0 , 1.0 , -1.0 , 1.0 , 1.0 ] )
+                            ]
+                      , _ridgeOf = fromList [ 3 , 5 ]
+                      }
+                  , Ridge
+                      { _rvertices =
+                          fromList
+                            [ ( 0 , [ -1.0 , -1.0 , -1.0 , -1.0 , -1.0 ] )
+                            , ( 4 , [ 1.0 , -1.0 , -1.0 , -1.0 , -1.0 ] )
+                            , ( 8 , [ -1.0 , -1.0 , -1.0 , 1.0 , -1.0 ] )
+                            , ( 12 , [ 1.0 , -1.0 , -1.0 , 1.0 , -1.0 ] )
+                            , ( 16 , [ -1.0 , -1.0 , -1.0 , -1.0 , 1.0 ] )
+                            , ( 20 , [ 1.0 , -1.0 , -1.0 , -1.0 , 1.0 ] )
+                            , ( 24 , [ -1.0 , -1.0 , -1.0 , 1.0 , 1.0 ] )
+                            , ( 28 , [ 1.0 , -1.0 , -1.0 , 1.0 , 1.0 ] )
+                            ]
+                      , _ridgeOf = fromList [ 3 , 7 ]
+                      }
+                  , Ridge
+                      { _rvertices =
+                          fromList
+                            [ ( 16 , [ -1.0 , -1.0 , -1.0 , -1.0 , 1.0 ] )
+                            , ( 18 , [ -1.0 , 1.0 , -1.0 , -1.0 , 1.0 ] )
+                            , ( 20 , [ 1.0 , -1.0 , -1.0 , -1.0 , 1.0 ] )
+                            , ( 22 , [ 1.0 , 1.0 , -1.0 , -1.0 , 1.0 ] )
+                            , ( 24 , [ -1.0 , -1.0 , -1.0 , 1.0 , 1.0 ] )
+                            , ( 26 , [ -1.0 , 1.0 , -1.0 , 1.0 , 1.0 ] )
+                            , ( 28 , [ 1.0 , -1.0 , -1.0 , 1.0 , 1.0 ] )
+                            , ( 30 , [ 1.0 , 1.0 , -1.0 , 1.0 , 1.0 ] )
+                            ]
+                      , _ridgeOf = fromList [ 3 , 9 ]
+                      }
+                  , Ridge
+                      { _rvertices =
+                          fromList
+                            [ ( 2 , [ -1.0 , 1.0 , -1.0 , -1.0 , -1.0 ] )
+                            , ( 6 , [ 1.0 , 1.0 , -1.0 , -1.0 , -1.0 ] )
+                            , ( 10 , [ -1.0 , 1.0 , -1.0 , 1.0 , -1.0 ] )
+                            , ( 14 , [ 1.0 , 1.0 , -1.0 , 1.0 , -1.0 ] )
+                            , ( 18 , [ -1.0 , 1.0 , -1.0 , -1.0 , 1.0 ] )
+                            , ( 22 , [ 1.0 , 1.0 , -1.0 , -1.0 , 1.0 ] )
+                            , ( 26 , [ -1.0 , 1.0 , -1.0 , 1.0 , 1.0 ] )
+                            , ( 30 , [ 1.0 , 1.0 , -1.0 , 1.0 , 1.0 ] )
+                            ]
+                      , _ridgeOf = fromList [ 0 , 3 ]
+                      }
+                  , Ridge
+                      { _rvertices =
+                          fromList
+                            [ ( 8 , [ -1.0 , -1.0 , -1.0 , 1.0 , -1.0 ] )
+                            , ( 10 , [ -1.0 , 1.0 , -1.0 , 1.0 , -1.0 ] )
+                            , ( 12 , [ 1.0 , -1.0 , -1.0 , 1.0 , -1.0 ] )
+                            , ( 14 , [ 1.0 , 1.0 , -1.0 , 1.0 , -1.0 ] )
+                            , ( 24 , [ -1.0 , -1.0 , -1.0 , 1.0 , 1.0 ] )
+                            , ( 26 , [ -1.0 , 1.0 , -1.0 , 1.0 , 1.0 ] )
+                            , ( 28 , [ 1.0 , -1.0 , -1.0 , 1.0 , 1.0 ] )
+                            , ( 30 , [ 1.0 , 1.0 , -1.0 , 1.0 , 1.0 ] )
+                            ]
+                      , _ridgeOf = fromList [ 1 , 3 ]
+                      }
+                  , Ridge
+                      { _rvertices =
+                          fromList
+                            [ ( 4 , [ 1.0 , -1.0 , -1.0 , -1.0 , -1.0 ] )
+                            , ( 6 , [ 1.0 , 1.0 , -1.0 , -1.0 , -1.0 ] )
+                            , ( 12 , [ 1.0 , -1.0 , -1.0 , 1.0 , -1.0 ] )
+                            , ( 14 , [ 1.0 , 1.0 , -1.0 , 1.0 , -1.0 ] )
+                            , ( 20 , [ 1.0 , -1.0 , -1.0 , -1.0 , 1.0 ] )
+                            , ( 22 , [ 1.0 , 1.0 , -1.0 , -1.0 , 1.0 ] )
+                            , ( 28 , [ 1.0 , -1.0 , -1.0 , 1.0 , 1.0 ] )
+                            , ( 30 , [ 1.0 , 1.0 , -1.0 , 1.0 , 1.0 ] )
+                            ]
+                      , _ridgeOf = fromList [ 3 , 4 ]
+                      }
+                  ]
+              , _centroid = [ 0.0 , 0.0 , -1.0 , 0.0 , 0.0 ]
+              , _normal = [ 0.0 , 0.0 , -1.0 , 0.0 , 0.0 ]
+              , _offset = -1.0
+              , _area = 15.999999999999991
+              , _neighbors = fromList [ 0 , 1 , 2 , 4 , 5 , 6 , 7 , 9 ]
+              , _family = Nothing
+              }
+          )
+        , ( 4
+          , Face
+              { _fvertices =
+                  fromList
+                    [ ( 4 , [ 1.0 , -1.0 , -1.0 , -1.0 , -1.0 ] )
+                    , ( 5 , [ 1.0 , -1.0 , 1.0 , -1.0 , -1.0 ] )
+                    , ( 6 , [ 1.0 , 1.0 , -1.0 , -1.0 , -1.0 ] )
+                    , ( 7 , [ 1.0 , 1.0 , 1.0 , -1.0 , -1.0 ] )
+                    , ( 12 , [ 1.0 , -1.0 , -1.0 , 1.0 , -1.0 ] )
+                    , ( 13 , [ 1.0 , -1.0 , 1.0 , 1.0 , -1.0 ] )
+                    , ( 14 , [ 1.0 , 1.0 , -1.0 , 1.0 , -1.0 ] )
+                    , ( 15 , [ 1.0 , 1.0 , 1.0 , 1.0 , -1.0 ] )
+                    , ( 20 , [ 1.0 , -1.0 , -1.0 , -1.0 , 1.0 ] )
+                    , ( 21 , [ 1.0 , -1.0 , 1.0 , -1.0 , 1.0 ] )
+                    , ( 22 , [ 1.0 , 1.0 , -1.0 , -1.0 , 1.0 ] )
+                    , ( 23 , [ 1.0 , 1.0 , 1.0 , -1.0 , 1.0 ] )
+                    , ( 28 , [ 1.0 , -1.0 , -1.0 , 1.0 , 1.0 ] )
+                    , ( 29 , [ 1.0 , -1.0 , 1.0 , 1.0 , 1.0 ] )
+                    , ( 30 , [ 1.0 , 1.0 , -1.0 , 1.0 , 1.0 ] )
+                    , ( 31 , [ 1.0 , 1.0 , 1.0 , 1.0 , 1.0 ] )
+                    ]
+              , _edges =
+                  [ Ridge
+                      { _rvertices =
+                          fromList
+                            [ ( 6 , [ 1.0 , 1.0 , -1.0 , -1.0 , -1.0 ] )
+                            , ( 7 , [ 1.0 , 1.0 , 1.0 , -1.0 , -1.0 ] )
+                            , ( 14 , [ 1.0 , 1.0 , -1.0 , 1.0 , -1.0 ] )
+                            , ( 15 , [ 1.0 , 1.0 , 1.0 , 1.0 , -1.0 ] )
+                            , ( 22 , [ 1.0 , 1.0 , -1.0 , -1.0 , 1.0 ] )
+                            , ( 23 , [ 1.0 , 1.0 , 1.0 , -1.0 , 1.0 ] )
+                            , ( 30 , [ 1.0 , 1.0 , -1.0 , 1.0 , 1.0 ] )
+                            , ( 31 , [ 1.0 , 1.0 , 1.0 , 1.0 , 1.0 ] )
+                            ]
+                      , _ridgeOf = fromList [ 0 , 4 ]
+                      }
+                  , Ridge
+                      { _rvertices =
+                          fromList
+                            [ ( 20 , [ 1.0 , -1.0 , -1.0 , -1.0 , 1.0 ] )
+                            , ( 21 , [ 1.0 , -1.0 , 1.0 , -1.0 , 1.0 ] )
+                            , ( 22 , [ 1.0 , 1.0 , -1.0 , -1.0 , 1.0 ] )
+                            , ( 23 , [ 1.0 , 1.0 , 1.0 , -1.0 , 1.0 ] )
+                            , ( 28 , [ 1.0 , -1.0 , -1.0 , 1.0 , 1.0 ] )
+                            , ( 29 , [ 1.0 , -1.0 , 1.0 , 1.0 , 1.0 ] )
+                            , ( 30 , [ 1.0 , 1.0 , -1.0 , 1.0 , 1.0 ] )
+                            , ( 31 , [ 1.0 , 1.0 , 1.0 , 1.0 , 1.0 ] )
+                            ]
+                      , _ridgeOf = fromList [ 4 , 9 ]
+                      }
+                  , Ridge
+                      { _rvertices =
+                          fromList
+                            [ ( 5 , [ 1.0 , -1.0 , 1.0 , -1.0 , -1.0 ] )
+                            , ( 7 , [ 1.0 , 1.0 , 1.0 , -1.0 , -1.0 ] )
+                            , ( 13 , [ 1.0 , -1.0 , 1.0 , 1.0 , -1.0 ] )
+                            , ( 15 , [ 1.0 , 1.0 , 1.0 , 1.0 , -1.0 ] )
+                            , ( 21 , [ 1.0 , -1.0 , 1.0 , -1.0 , 1.0 ] )
+                            , ( 23 , [ 1.0 , 1.0 , 1.0 , -1.0 , 1.0 ] )
+                            , ( 29 , [ 1.0 , -1.0 , 1.0 , 1.0 , 1.0 ] )
+                            , ( 31 , [ 1.0 , 1.0 , 1.0 , 1.0 , 1.0 ] )
+                            ]
+                      , _ridgeOf = fromList [ 4 , 8 ]
+                      }
+                  , Ridge
+                      { _rvertices =
+                          fromList
+                            [ ( 12 , [ 1.0 , -1.0 , -1.0 , 1.0 , -1.0 ] )
+                            , ( 13 , [ 1.0 , -1.0 , 1.0 , 1.0 , -1.0 ] )
+                            , ( 14 , [ 1.0 , 1.0 , -1.0 , 1.0 , -1.0 ] )
+                            , ( 15 , [ 1.0 , 1.0 , 1.0 , 1.0 , -1.0 ] )
+                            , ( 28 , [ 1.0 , -1.0 , -1.0 , 1.0 , 1.0 ] )
+                            , ( 29 , [ 1.0 , -1.0 , 1.0 , 1.0 , 1.0 ] )
+                            , ( 30 , [ 1.0 , 1.0 , -1.0 , 1.0 , 1.0 ] )
+                            , ( 31 , [ 1.0 , 1.0 , 1.0 , 1.0 , 1.0 ] )
+                            ]
+                      , _ridgeOf = fromList [ 1 , 4 ]
+                      }
+                  , Ridge
+                      { _rvertices =
+                          fromList
+                            [ ( 4 , [ 1.0 , -1.0 , -1.0 , -1.0 , -1.0 ] )
+                            , ( 5 , [ 1.0 , -1.0 , 1.0 , -1.0 , -1.0 ] )
+                            , ( 6 , [ 1.0 , 1.0 , -1.0 , -1.0 , -1.0 ] )
+                            , ( 7 , [ 1.0 , 1.0 , 1.0 , -1.0 , -1.0 ] )
+                            , ( 12 , [ 1.0 , -1.0 , -1.0 , 1.0 , -1.0 ] )
+                            , ( 13 , [ 1.0 , -1.0 , 1.0 , 1.0 , -1.0 ] )
+                            , ( 14 , [ 1.0 , 1.0 , -1.0 , 1.0 , -1.0 ] )
+                            , ( 15 , [ 1.0 , 1.0 , 1.0 , 1.0 , -1.0 ] )
+                            ]
+                      , _ridgeOf = fromList [ 2 , 4 ]
+                      }
+                  , Ridge
+                      { _rvertices =
+                          fromList
+                            [ ( 4 , [ 1.0 , -1.0 , -1.0 , -1.0 , -1.0 ] )
+                            , ( 6 , [ 1.0 , 1.0 , -1.0 , -1.0 , -1.0 ] )
+                            , ( 12 , [ 1.0 , -1.0 , -1.0 , 1.0 , -1.0 ] )
+                            , ( 14 , [ 1.0 , 1.0 , -1.0 , 1.0 , -1.0 ] )
+                            , ( 20 , [ 1.0 , -1.0 , -1.0 , -1.0 , 1.0 ] )
+                            , ( 22 , [ 1.0 , 1.0 , -1.0 , -1.0 , 1.0 ] )
+                            , ( 28 , [ 1.0 , -1.0 , -1.0 , 1.0 , 1.0 ] )
+                            , ( 30 , [ 1.0 , 1.0 , -1.0 , 1.0 , 1.0 ] )
+                            ]
+                      , _ridgeOf = fromList [ 3 , 4 ]
+                      }
+                  , Ridge
+                      { _rvertices =
+                          fromList
+                            [ ( 4 , [ 1.0 , -1.0 , -1.0 , -1.0 , -1.0 ] )
+                            , ( 5 , [ 1.0 , -1.0 , 1.0 , -1.0 , -1.0 ] )
+                            , ( 6 , [ 1.0 , 1.0 , -1.0 , -1.0 , -1.0 ] )
+                            , ( 7 , [ 1.0 , 1.0 , 1.0 , -1.0 , -1.0 ] )
+                            , ( 20 , [ 1.0 , -1.0 , -1.0 , -1.0 , 1.0 ] )
+                            , ( 21 , [ 1.0 , -1.0 , 1.0 , -1.0 , 1.0 ] )
+                            , ( 22 , [ 1.0 , 1.0 , -1.0 , -1.0 , 1.0 ] )
+                            , ( 23 , [ 1.0 , 1.0 , 1.0 , -1.0 , 1.0 ] )
+                            ]
+                      , _ridgeOf = fromList [ 4 , 6 ]
+                      }
+                  , Ridge
+                      { _rvertices =
+                          fromList
+                            [ ( 4 , [ 1.0 , -1.0 , -1.0 , -1.0 , -1.0 ] )
+                            , ( 5 , [ 1.0 , -1.0 , 1.0 , -1.0 , -1.0 ] )
+                            , ( 12 , [ 1.0 , -1.0 , -1.0 , 1.0 , -1.0 ] )
+                            , ( 13 , [ 1.0 , -1.0 , 1.0 , 1.0 , -1.0 ] )
+                            , ( 20 , [ 1.0 , -1.0 , -1.0 , -1.0 , 1.0 ] )
+                            , ( 21 , [ 1.0 , -1.0 , 1.0 , -1.0 , 1.0 ] )
+                            , ( 28 , [ 1.0 , -1.0 , -1.0 , 1.0 , 1.0 ] )
+                            , ( 29 , [ 1.0 , -1.0 , 1.0 , 1.0 , 1.0 ] )
+                            ]
+                      , _ridgeOf = fromList [ 4 , 7 ]
+                      }
+                  ]
+              , _centroid = [ 1.0 , 0.0 , 0.0 , 0.0 , 0.0 ]
+              , _normal = [ 1.0 , 0.0 , 0.0 , 0.0 , 0.0 ]
+              , _offset = -1.0
+              , _area = 16.000000000000007
+              , _neighbors = fromList [ 0 , 1 , 2 , 3 , 6 , 7 , 8 , 9 ]
+              , _family = Nothing
+              }
+          )
+        , ( 5
+          , Face
+              { _fvertices =
+                  fromList
+                    [ ( 0 , [ -1.0 , -1.0 , -1.0 , -1.0 , -1.0 ] )
+                    , ( 1 , [ -1.0 , -1.0 , 1.0 , -1.0 , -1.0 ] )
+                    , ( 2 , [ -1.0 , 1.0 , -1.0 , -1.0 , -1.0 ] )
+                    , ( 3 , [ -1.0 , 1.0 , 1.0 , -1.0 , -1.0 ] )
+                    , ( 8 , [ -1.0 , -1.0 , -1.0 , 1.0 , -1.0 ] )
+                    , ( 9 , [ -1.0 , -1.0 , 1.0 , 1.0 , -1.0 ] )
+                    , ( 10 , [ -1.0 , 1.0 , -1.0 , 1.0 , -1.0 ] )
+                    , ( 11 , [ -1.0 , 1.0 , 1.0 , 1.0 , -1.0 ] )
+                    , ( 16 , [ -1.0 , -1.0 , -1.0 , -1.0 , 1.0 ] )
+                    , ( 17 , [ -1.0 , -1.0 , 1.0 , -1.0 , 1.0 ] )
+                    , ( 18 , [ -1.0 , 1.0 , -1.0 , -1.0 , 1.0 ] )
+                    , ( 19 , [ -1.0 , 1.0 , 1.0 , -1.0 , 1.0 ] )
+                    , ( 24 , [ -1.0 , -1.0 , -1.0 , 1.0 , 1.0 ] )
+                    , ( 25 , [ -1.0 , -1.0 , 1.0 , 1.0 , 1.0 ] )
+                    , ( 26 , [ -1.0 , 1.0 , -1.0 , 1.0 , 1.0 ] )
+                    , ( 27 , [ -1.0 , 1.0 , 1.0 , 1.0 , 1.0 ] )
+                    ]
+              , _edges =
+                  [ Ridge
+                      { _rvertices =
+                          fromList
+                            [ ( 0 , [ -1.0 , -1.0 , -1.0 , -1.0 , -1.0 ] )
+                            , ( 1 , [ -1.0 , -1.0 , 1.0 , -1.0 , -1.0 ] )
+                            , ( 2 , [ -1.0 , 1.0 , -1.0 , -1.0 , -1.0 ] )
+                            , ( 3 , [ -1.0 , 1.0 , 1.0 , -1.0 , -1.0 ] )
+                            , ( 8 , [ -1.0 , -1.0 , -1.0 , 1.0 , -1.0 ] )
+                            , ( 9 , [ -1.0 , -1.0 , 1.0 , 1.0 , -1.0 ] )
+                            , ( 10 , [ -1.0 , 1.0 , -1.0 , 1.0 , -1.0 ] )
+                            , ( 11 , [ -1.0 , 1.0 , 1.0 , 1.0 , -1.0 ] )
+                            ]
+                      , _ridgeOf = fromList [ 2 , 5 ]
+                      }
+                  , Ridge
+                      { _rvertices =
+                          fromList
+                            [ ( 0 , [ -1.0 , -1.0 , -1.0 , -1.0 , -1.0 ] )
+                            , ( 1 , [ -1.0 , -1.0 , 1.0 , -1.0 , -1.0 ] )
+                            , ( 2 , [ -1.0 , 1.0 , -1.0 , -1.0 , -1.0 ] )
+                            , ( 3 , [ -1.0 , 1.0 , 1.0 , -1.0 , -1.0 ] )
+                            , ( 16 , [ -1.0 , -1.0 , -1.0 , -1.0 , 1.0 ] )
+                            , ( 17 , [ -1.0 , -1.0 , 1.0 , -1.0 , 1.0 ] )
+                            , ( 18 , [ -1.0 , 1.0 , -1.0 , -1.0 , 1.0 ] )
+                            , ( 19 , [ -1.0 , 1.0 , 1.0 , -1.0 , 1.0 ] )
+                            ]
+                      , _ridgeOf = fromList [ 5 , 6 ]
+                      }
+                  , Ridge
+                      { _rvertices =
+                          fromList
+                            [ ( 0 , [ -1.0 , -1.0 , -1.0 , -1.0 , -1.0 ] )
+                            , ( 2 , [ -1.0 , 1.0 , -1.0 , -1.0 , -1.0 ] )
+                            , ( 8 , [ -1.0 , -1.0 , -1.0 , 1.0 , -1.0 ] )
+                            , ( 10 , [ -1.0 , 1.0 , -1.0 , 1.0 , -1.0 ] )
+                            , ( 16 , [ -1.0 , -1.0 , -1.0 , -1.0 , 1.0 ] )
+                            , ( 18 , [ -1.0 , 1.0 , -1.0 , -1.0 , 1.0 ] )
+                            , ( 24 , [ -1.0 , -1.0 , -1.0 , 1.0 , 1.0 ] )
+                            , ( 26 , [ -1.0 , 1.0 , -1.0 , 1.0 , 1.0 ] )
+                            ]
+                      , _ridgeOf = fromList [ 3 , 5 ]
+                      }
+                  , Ridge
+                      { _rvertices =
+                          fromList
+                            [ ( 0 , [ -1.0 , -1.0 , -1.0 , -1.0 , -1.0 ] )
+                            , ( 1 , [ -1.0 , -1.0 , 1.0 , -1.0 , -1.0 ] )
+                            , ( 8 , [ -1.0 , -1.0 , -1.0 , 1.0 , -1.0 ] )
+                            , ( 9 , [ -1.0 , -1.0 , 1.0 , 1.0 , -1.0 ] )
+                            , ( 16 , [ -1.0 , -1.0 , -1.0 , -1.0 , 1.0 ] )
+                            , ( 17 , [ -1.0 , -1.0 , 1.0 , -1.0 , 1.0 ] )
+                            , ( 24 , [ -1.0 , -1.0 , -1.0 , 1.0 , 1.0 ] )
+                            , ( 25 , [ -1.0 , -1.0 , 1.0 , 1.0 , 1.0 ] )
+                            ]
+                      , _ridgeOf = fromList [ 5 , 7 ]
+                      }
+                  , Ridge
+                      { _rvertices =
+                          fromList
+                            [ ( 16 , [ -1.0 , -1.0 , -1.0 , -1.0 , 1.0 ] )
+                            , ( 17 , [ -1.0 , -1.0 , 1.0 , -1.0 , 1.0 ] )
+                            , ( 18 , [ -1.0 , 1.0 , -1.0 , -1.0 , 1.0 ] )
+                            , ( 19 , [ -1.0 , 1.0 , 1.0 , -1.0 , 1.0 ] )
+                            , ( 24 , [ -1.0 , -1.0 , -1.0 , 1.0 , 1.0 ] )
+                            , ( 25 , [ -1.0 , -1.0 , 1.0 , 1.0 , 1.0 ] )
+                            , ( 26 , [ -1.0 , 1.0 , -1.0 , 1.0 , 1.0 ] )
+                            , ( 27 , [ -1.0 , 1.0 , 1.0 , 1.0 , 1.0 ] )
+                            ]
+                      , _ridgeOf = fromList [ 5 , 9 ]
+                      }
+                  , Ridge
+                      { _rvertices =
+                          fromList
+                            [ ( 1 , [ -1.0 , -1.0 , 1.0 , -1.0 , -1.0 ] )
+                            , ( 3 , [ -1.0 , 1.0 , 1.0 , -1.0 , -1.0 ] )
+                            , ( 9 , [ -1.0 , -1.0 , 1.0 , 1.0 , -1.0 ] )
+                            , ( 11 , [ -1.0 , 1.0 , 1.0 , 1.0 , -1.0 ] )
+                            , ( 17 , [ -1.0 , -1.0 , 1.0 , -1.0 , 1.0 ] )
+                            , ( 19 , [ -1.0 , 1.0 , 1.0 , -1.0 , 1.0 ] )
+                            , ( 25 , [ -1.0 , -1.0 , 1.0 , 1.0 , 1.0 ] )
+                            , ( 27 , [ -1.0 , 1.0 , 1.0 , 1.0 , 1.0 ] )
+                            ]
+                      , _ridgeOf = fromList [ 5 , 8 ]
+                      }
+                  , Ridge
+                      { _rvertices =
+                          fromList
+                            [ ( 8 , [ -1.0 , -1.0 , -1.0 , 1.0 , -1.0 ] )
+                            , ( 9 , [ -1.0 , -1.0 , 1.0 , 1.0 , -1.0 ] )
+                            , ( 10 , [ -1.0 , 1.0 , -1.0 , 1.0 , -1.0 ] )
+                            , ( 11 , [ -1.0 , 1.0 , 1.0 , 1.0 , -1.0 ] )
+                            , ( 24 , [ -1.0 , -1.0 , -1.0 , 1.0 , 1.0 ] )
+                            , ( 25 , [ -1.0 , -1.0 , 1.0 , 1.0 , 1.0 ] )
+                            , ( 26 , [ -1.0 , 1.0 , -1.0 , 1.0 , 1.0 ] )
+                            , ( 27 , [ -1.0 , 1.0 , 1.0 , 1.0 , 1.0 ] )
+                            ]
+                      , _ridgeOf = fromList [ 1 , 5 ]
+                      }
+                  , Ridge
+                      { _rvertices =
+                          fromList
+                            [ ( 2 , [ -1.0 , 1.0 , -1.0 , -1.0 , -1.0 ] )
+                            , ( 3 , [ -1.0 , 1.0 , 1.0 , -1.0 , -1.0 ] )
+                            , ( 10 , [ -1.0 , 1.0 , -1.0 , 1.0 , -1.0 ] )
+                            , ( 11 , [ -1.0 , 1.0 , 1.0 , 1.0 , -1.0 ] )
+                            , ( 18 , [ -1.0 , 1.0 , -1.0 , -1.0 , 1.0 ] )
+                            , ( 19 , [ -1.0 , 1.0 , 1.0 , -1.0 , 1.0 ] )
+                            , ( 26 , [ -1.0 , 1.0 , -1.0 , 1.0 , 1.0 ] )
+                            , ( 27 , [ -1.0 , 1.0 , 1.0 , 1.0 , 1.0 ] )
+                            ]
+                      , _ridgeOf = fromList [ 0 , 5 ]
+                      }
+                  ]
+              , _centroid = [ -1.0 , 0.0 , 0.0 , 0.0 , 0.0 ]
+              , _normal = [ -1.0 , 0.0 , 0.0 , 0.0 , 0.0 ]
+              , _offset = -1.0
+              , _area = 15.99999999999999
+              , _neighbors = fromList [ 0 , 1 , 2 , 3 , 6 , 7 , 8 , 9 ]
+              , _family = Nothing
+              }
+          )
+        , ( 6
+          , Face
+              { _fvertices =
+                  fromList
+                    [ ( 0 , [ -1.0 , -1.0 , -1.0 , -1.0 , -1.0 ] )
+                    , ( 1 , [ -1.0 , -1.0 , 1.0 , -1.0 , -1.0 ] )
+                    , ( 2 , [ -1.0 , 1.0 , -1.0 , -1.0 , -1.0 ] )
+                    , ( 3 , [ -1.0 , 1.0 , 1.0 , -1.0 , -1.0 ] )
+                    , ( 4 , [ 1.0 , -1.0 , -1.0 , -1.0 , -1.0 ] )
+                    , ( 5 , [ 1.0 , -1.0 , 1.0 , -1.0 , -1.0 ] )
+                    , ( 6 , [ 1.0 , 1.0 , -1.0 , -1.0 , -1.0 ] )
+                    , ( 7 , [ 1.0 , 1.0 , 1.0 , -1.0 , -1.0 ] )
+                    , ( 16 , [ -1.0 , -1.0 , -1.0 , -1.0 , 1.0 ] )
+                    , ( 17 , [ -1.0 , -1.0 , 1.0 , -1.0 , 1.0 ] )
+                    , ( 18 , [ -1.0 , 1.0 , -1.0 , -1.0 , 1.0 ] )
+                    , ( 19 , [ -1.0 , 1.0 , 1.0 , -1.0 , 1.0 ] )
+                    , ( 20 , [ 1.0 , -1.0 , -1.0 , -1.0 , 1.0 ] )
+                    , ( 21 , [ 1.0 , -1.0 , 1.0 , -1.0 , 1.0 ] )
+                    , ( 22 , [ 1.0 , 1.0 , -1.0 , -1.0 , 1.0 ] )
+                    , ( 23 , [ 1.0 , 1.0 , 1.0 , -1.0 , 1.0 ] )
+                    ]
+              , _edges =
+                  [ Ridge
+                      { _rvertices =
+                          fromList
+                            [ ( 0 , [ -1.0 , -1.0 , -1.0 , -1.0 , -1.0 ] )
+                            , ( 1 , [ -1.0 , -1.0 , 1.0 , -1.0 , -1.0 ] )
+                            , ( 2 , [ -1.0 , 1.0 , -1.0 , -1.0 , -1.0 ] )
+                            , ( 3 , [ -1.0 , 1.0 , 1.0 , -1.0 , -1.0 ] )
+                            , ( 4 , [ 1.0 , -1.0 , -1.0 , -1.0 , -1.0 ] )
+                            , ( 5 , [ 1.0 , -1.0 , 1.0 , -1.0 , -1.0 ] )
+                            , ( 6 , [ 1.0 , 1.0 , -1.0 , -1.0 , -1.0 ] )
+                            , ( 7 , [ 1.0 , 1.0 , 1.0 , -1.0 , -1.0 ] )
+                            ]
+                      , _ridgeOf = fromList [ 2 , 6 ]
+                      }
+                  , Ridge
+                      { _rvertices =
+                          fromList
+                            [ ( 0 , [ -1.0 , -1.0 , -1.0 , -1.0 , -1.0 ] )
+                            , ( 1 , [ -1.0 , -1.0 , 1.0 , -1.0 , -1.0 ] )
+                            , ( 2 , [ -1.0 , 1.0 , -1.0 , -1.0 , -1.0 ] )
+                            , ( 3 , [ -1.0 , 1.0 , 1.0 , -1.0 , -1.0 ] )
+                            , ( 16 , [ -1.0 , -1.0 , -1.0 , -1.0 , 1.0 ] )
+                            , ( 17 , [ -1.0 , -1.0 , 1.0 , -1.0 , 1.0 ] )
+                            , ( 18 , [ -1.0 , 1.0 , -1.0 , -1.0 , 1.0 ] )
+                            , ( 19 , [ -1.0 , 1.0 , 1.0 , -1.0 , 1.0 ] )
+                            ]
+                      , _ridgeOf = fromList [ 5 , 6 ]
+                      }
+                  , Ridge
+                      { _rvertices =
+                          fromList
+                            [ ( 0 , [ -1.0 , -1.0 , -1.0 , -1.0 , -1.0 ] )
+                            , ( 2 , [ -1.0 , 1.0 , -1.0 , -1.0 , -1.0 ] )
+                            , ( 4 , [ 1.0 , -1.0 , -1.0 , -1.0 , -1.0 ] )
+                            , ( 6 , [ 1.0 , 1.0 , -1.0 , -1.0 , -1.0 ] )
+                            , ( 16 , [ -1.0 , -1.0 , -1.0 , -1.0 , 1.0 ] )
+                            , ( 18 , [ -1.0 , 1.0 , -1.0 , -1.0 , 1.0 ] )
+                            , ( 20 , [ 1.0 , -1.0 , -1.0 , -1.0 , 1.0 ] )
+                            , ( 22 , [ 1.0 , 1.0 , -1.0 , -1.0 , 1.0 ] )
+                            ]
+                      , _ridgeOf = fromList [ 3 , 6 ]
+                      }
+                  , Ridge
+                      { _rvertices =
+                          fromList
+                            [ ( 0 , [ -1.0 , -1.0 , -1.0 , -1.0 , -1.0 ] )
+                            , ( 1 , [ -1.0 , -1.0 , 1.0 , -1.0 , -1.0 ] )
+                            , ( 4 , [ 1.0 , -1.0 , -1.0 , -1.0 , -1.0 ] )
+                            , ( 5 , [ 1.0 , -1.0 , 1.0 , -1.0 , -1.0 ] )
+                            , ( 16 , [ -1.0 , -1.0 , -1.0 , -1.0 , 1.0 ] )
+                            , ( 17 , [ -1.0 , -1.0 , 1.0 , -1.0 , 1.0 ] )
+                            , ( 20 , [ 1.0 , -1.0 , -1.0 , -1.0 , 1.0 ] )
+                            , ( 21 , [ 1.0 , -1.0 , 1.0 , -1.0 , 1.0 ] )
+                            ]
+                      , _ridgeOf = fromList [ 6 , 7 ]
+                      }
+                  , Ridge
+                      { _rvertices =
+                          fromList
+                            [ ( 2 , [ -1.0 , 1.0 , -1.0 , -1.0 , -1.0 ] )
+                            , ( 3 , [ -1.0 , 1.0 , 1.0 , -1.0 , -1.0 ] )
+                            , ( 6 , [ 1.0 , 1.0 , -1.0 , -1.0 , -1.0 ] )
+                            , ( 7 , [ 1.0 , 1.0 , 1.0 , -1.0 , -1.0 ] )
+                            , ( 18 , [ -1.0 , 1.0 , -1.0 , -1.0 , 1.0 ] )
+                            , ( 19 , [ -1.0 , 1.0 , 1.0 , -1.0 , 1.0 ] )
+                            , ( 22 , [ 1.0 , 1.0 , -1.0 , -1.0 , 1.0 ] )
+                            , ( 23 , [ 1.0 , 1.0 , 1.0 , -1.0 , 1.0 ] )
+                            ]
+                      , _ridgeOf = fromList [ 0 , 6 ]
+                      }
+                  , Ridge
+                      { _rvertices =
+                          fromList
+                            [ ( 16 , [ -1.0 , -1.0 , -1.0 , -1.0 , 1.0 ] )
+                            , ( 17 , [ -1.0 , -1.0 , 1.0 , -1.0 , 1.0 ] )
+                            , ( 18 , [ -1.0 , 1.0 , -1.0 , -1.0 , 1.0 ] )
+                            , ( 19 , [ -1.0 , 1.0 , 1.0 , -1.0 , 1.0 ] )
+                            , ( 20 , [ 1.0 , -1.0 , -1.0 , -1.0 , 1.0 ] )
+                            , ( 21 , [ 1.0 , -1.0 , 1.0 , -1.0 , 1.0 ] )
+                            , ( 22 , [ 1.0 , 1.0 , -1.0 , -1.0 , 1.0 ] )
+                            , ( 23 , [ 1.0 , 1.0 , 1.0 , -1.0 , 1.0 ] )
+                            ]
+                      , _ridgeOf = fromList [ 6 , 9 ]
+                      }
+                  , Ridge
+                      { _rvertices =
+                          fromList
+                            [ ( 1 , [ -1.0 , -1.0 , 1.0 , -1.0 , -1.0 ] )
+                            , ( 3 , [ -1.0 , 1.0 , 1.0 , -1.0 , -1.0 ] )
+                            , ( 5 , [ 1.0 , -1.0 , 1.0 , -1.0 , -1.0 ] )
+                            , ( 7 , [ 1.0 , 1.0 , 1.0 , -1.0 , -1.0 ] )
+                            , ( 17 , [ -1.0 , -1.0 , 1.0 , -1.0 , 1.0 ] )
+                            , ( 19 , [ -1.0 , 1.0 , 1.0 , -1.0 , 1.0 ] )
+                            , ( 21 , [ 1.0 , -1.0 , 1.0 , -1.0 , 1.0 ] )
+                            , ( 23 , [ 1.0 , 1.0 , 1.0 , -1.0 , 1.0 ] )
+                            ]
+                      , _ridgeOf = fromList [ 6 , 8 ]
+                      }
+                  , Ridge
+                      { _rvertices =
+                          fromList
+                            [ ( 4 , [ 1.0 , -1.0 , -1.0 , -1.0 , -1.0 ] )
+                            , ( 5 , [ 1.0 , -1.0 , 1.0 , -1.0 , -1.0 ] )
+                            , ( 6 , [ 1.0 , 1.0 , -1.0 , -1.0 , -1.0 ] )
+                            , ( 7 , [ 1.0 , 1.0 , 1.0 , -1.0 , -1.0 ] )
+                            , ( 20 , [ 1.0 , -1.0 , -1.0 , -1.0 , 1.0 ] )
+                            , ( 21 , [ 1.0 , -1.0 , 1.0 , -1.0 , 1.0 ] )
+                            , ( 22 , [ 1.0 , 1.0 , -1.0 , -1.0 , 1.0 ] )
+                            , ( 23 , [ 1.0 , 1.0 , 1.0 , -1.0 , 1.0 ] )
+                            ]
+                      , _ridgeOf = fromList [ 4 , 6 ]
+                      }
+                  ]
+              , _centroid = [ 0.0 , 0.0 , 0.0 , -1.0 , 0.0 ]
+              , _normal = [ 0.0 , 0.0 , 0.0 , -1.0 , 0.0 ]
+              , _offset = -1.0
+              , _area = 15.99999999999999
+              , _neighbors = fromList [ 0 , 2 , 3 , 4 , 5 , 7 , 8 , 9 ]
+              , _family = Nothing
+              }
+          )
+        , ( 7
+          , Face
+              { _fvertices =
+                  fromList
+                    [ ( 0 , [ -1.0 , -1.0 , -1.0 , -1.0 , -1.0 ] )
+                    , ( 1 , [ -1.0 , -1.0 , 1.0 , -1.0 , -1.0 ] )
+                    , ( 4 , [ 1.0 , -1.0 , -1.0 , -1.0 , -1.0 ] )
+                    , ( 5 , [ 1.0 , -1.0 , 1.0 , -1.0 , -1.0 ] )
+                    , ( 8 , [ -1.0 , -1.0 , -1.0 , 1.0 , -1.0 ] )
+                    , ( 9 , [ -1.0 , -1.0 , 1.0 , 1.0 , -1.0 ] )
+                    , ( 12 , [ 1.0 , -1.0 , -1.0 , 1.0 , -1.0 ] )
+                    , ( 13 , [ 1.0 , -1.0 , 1.0 , 1.0 , -1.0 ] )
+                    , ( 16 , [ -1.0 , -1.0 , -1.0 , -1.0 , 1.0 ] )
+                    , ( 17 , [ -1.0 , -1.0 , 1.0 , -1.0 , 1.0 ] )
+                    , ( 20 , [ 1.0 , -1.0 , -1.0 , -1.0 , 1.0 ] )
+                    , ( 21 , [ 1.0 , -1.0 , 1.0 , -1.0 , 1.0 ] )
+                    , ( 24 , [ -1.0 , -1.0 , -1.0 , 1.0 , 1.0 ] )
+                    , ( 25 , [ -1.0 , -1.0 , 1.0 , 1.0 , 1.0 ] )
+                    , ( 28 , [ 1.0 , -1.0 , -1.0 , 1.0 , 1.0 ] )
+                    , ( 29 , [ 1.0 , -1.0 , 1.0 , 1.0 , 1.0 ] )
+                    ]
+              , _edges =
+                  [ Ridge
+                      { _rvertices =
+                          fromList
+                            [ ( 0 , [ -1.0 , -1.0 , -1.0 , -1.0 , -1.0 ] )
+                            , ( 1 , [ -1.0 , -1.0 , 1.0 , -1.0 , -1.0 ] )
+                            , ( 4 , [ 1.0 , -1.0 , -1.0 , -1.0 , -1.0 ] )
+                            , ( 5 , [ 1.0 , -1.0 , 1.0 , -1.0 , -1.0 ] )
+                            , ( 8 , [ -1.0 , -1.0 , -1.0 , 1.0 , -1.0 ] )
+                            , ( 9 , [ -1.0 , -1.0 , 1.0 , 1.0 , -1.0 ] )
+                            , ( 12 , [ 1.0 , -1.0 , -1.0 , 1.0 , -1.0 ] )
+                            , ( 13 , [ 1.0 , -1.0 , 1.0 , 1.0 , -1.0 ] )
+                            ]
+                      , _ridgeOf = fromList [ 2 , 7 ]
+                      }
+                  , Ridge
+                      { _rvertices =
+                          fromList
+                            [ ( 0 , [ -1.0 , -1.0 , -1.0 , -1.0 , -1.0 ] )
+                            , ( 1 , [ -1.0 , -1.0 , 1.0 , -1.0 , -1.0 ] )
+                            , ( 4 , [ 1.0 , -1.0 , -1.0 , -1.0 , -1.0 ] )
+                            , ( 5 , [ 1.0 , -1.0 , 1.0 , -1.0 , -1.0 ] )
+                            , ( 16 , [ -1.0 , -1.0 , -1.0 , -1.0 , 1.0 ] )
+                            , ( 17 , [ -1.0 , -1.0 , 1.0 , -1.0 , 1.0 ] )
+                            , ( 20 , [ 1.0 , -1.0 , -1.0 , -1.0 , 1.0 ] )
+                            , ( 21 , [ 1.0 , -1.0 , 1.0 , -1.0 , 1.0 ] )
+                            ]
+                      , _ridgeOf = fromList [ 6 , 7 ]
+                      }
+                  , Ridge
+                      { _rvertices =
+                          fromList
+                            [ ( 0 , [ -1.0 , -1.0 , -1.0 , -1.0 , -1.0 ] )
+                            , ( 4 , [ 1.0 , -1.0 , -1.0 , -1.0 , -1.0 ] )
+                            , ( 8 , [ -1.0 , -1.0 , -1.0 , 1.0 , -1.0 ] )
+                            , ( 12 , [ 1.0 , -1.0 , -1.0 , 1.0 , -1.0 ] )
+                            , ( 16 , [ -1.0 , -1.0 , -1.0 , -1.0 , 1.0 ] )
+                            , ( 20 , [ 1.0 , -1.0 , -1.0 , -1.0 , 1.0 ] )
+                            , ( 24 , [ -1.0 , -1.0 , -1.0 , 1.0 , 1.0 ] )
+                            , ( 28 , [ 1.0 , -1.0 , -1.0 , 1.0 , 1.0 ] )
+                            ]
+                      , _ridgeOf = fromList [ 3 , 7 ]
+                      }
+                  , Ridge
+                      { _rvertices =
+                          fromList
+                            [ ( 0 , [ -1.0 , -1.0 , -1.0 , -1.0 , -1.0 ] )
+                            , ( 1 , [ -1.0 , -1.0 , 1.0 , -1.0 , -1.0 ] )
+                            , ( 8 , [ -1.0 , -1.0 , -1.0 , 1.0 , -1.0 ] )
+                            , ( 9 , [ -1.0 , -1.0 , 1.0 , 1.0 , -1.0 ] )
+                            , ( 16 , [ -1.0 , -1.0 , -1.0 , -1.0 , 1.0 ] )
+                            , ( 17 , [ -1.0 , -1.0 , 1.0 , -1.0 , 1.0 ] )
+                            , ( 24 , [ -1.0 , -1.0 , -1.0 , 1.0 , 1.0 ] )
+                            , ( 25 , [ -1.0 , -1.0 , 1.0 , 1.0 , 1.0 ] )
+                            ]
+                      , _ridgeOf = fromList [ 5 , 7 ]
+                      }
+                  , Ridge
+                      { _rvertices =
+                          fromList
+                            [ ( 8 , [ -1.0 , -1.0 , -1.0 , 1.0 , -1.0 ] )
+                            , ( 9 , [ -1.0 , -1.0 , 1.0 , 1.0 , -1.0 ] )
+                            , ( 12 , [ 1.0 , -1.0 , -1.0 , 1.0 , -1.0 ] )
+                            , ( 13 , [ 1.0 , -1.0 , 1.0 , 1.0 , -1.0 ] )
+                            , ( 24 , [ -1.0 , -1.0 , -1.0 , 1.0 , 1.0 ] )
+                            , ( 25 , [ -1.0 , -1.0 , 1.0 , 1.0 , 1.0 ] )
+                            , ( 28 , [ 1.0 , -1.0 , -1.0 , 1.0 , 1.0 ] )
+                            , ( 29 , [ 1.0 , -1.0 , 1.0 , 1.0 , 1.0 ] )
+                            ]
+                      , _ridgeOf = fromList [ 1 , 7 ]
+                      }
+                  , Ridge
+                      { _rvertices =
+                          fromList
+                            [ ( 16 , [ -1.0 , -1.0 , -1.0 , -1.0 , 1.0 ] )
+                            , ( 17 , [ -1.0 , -1.0 , 1.0 , -1.0 , 1.0 ] )
+                            , ( 20 , [ 1.0 , -1.0 , -1.0 , -1.0 , 1.0 ] )
+                            , ( 21 , [ 1.0 , -1.0 , 1.0 , -1.0 , 1.0 ] )
+                            , ( 24 , [ -1.0 , -1.0 , -1.0 , 1.0 , 1.0 ] )
+                            , ( 25 , [ -1.0 , -1.0 , 1.0 , 1.0 , 1.0 ] )
+                            , ( 28 , [ 1.0 , -1.0 , -1.0 , 1.0 , 1.0 ] )
+                            , ( 29 , [ 1.0 , -1.0 , 1.0 , 1.0 , 1.0 ] )
+                            ]
+                      , _ridgeOf = fromList [ 7 , 9 ]
+                      }
+                  , Ridge
+                      { _rvertices =
+                          fromList
+                            [ ( 1 , [ -1.0 , -1.0 , 1.0 , -1.0 , -1.0 ] )
+                            , ( 5 , [ 1.0 , -1.0 , 1.0 , -1.0 , -1.0 ] )
+                            , ( 9 , [ -1.0 , -1.0 , 1.0 , 1.0 , -1.0 ] )
+                            , ( 13 , [ 1.0 , -1.0 , 1.0 , 1.0 , -1.0 ] )
+                            , ( 17 , [ -1.0 , -1.0 , 1.0 , -1.0 , 1.0 ] )
+                            , ( 21 , [ 1.0 , -1.0 , 1.0 , -1.0 , 1.0 ] )
+                            , ( 25 , [ -1.0 , -1.0 , 1.0 , 1.0 , 1.0 ] )
+                            , ( 29 , [ 1.0 , -1.0 , 1.0 , 1.0 , 1.0 ] )
+                            ]
+                      , _ridgeOf = fromList [ 7 , 8 ]
+                      }
+                  , Ridge
+                      { _rvertices =
+                          fromList
+                            [ ( 4 , [ 1.0 , -1.0 , -1.0 , -1.0 , -1.0 ] )
+                            , ( 5 , [ 1.0 , -1.0 , 1.0 , -1.0 , -1.0 ] )
+                            , ( 12 , [ 1.0 , -1.0 , -1.0 , 1.0 , -1.0 ] )
+                            , ( 13 , [ 1.0 , -1.0 , 1.0 , 1.0 , -1.0 ] )
+                            , ( 20 , [ 1.0 , -1.0 , -1.0 , -1.0 , 1.0 ] )
+                            , ( 21 , [ 1.0 , -1.0 , 1.0 , -1.0 , 1.0 ] )
+                            , ( 28 , [ 1.0 , -1.0 , -1.0 , 1.0 , 1.0 ] )
+                            , ( 29 , [ 1.0 , -1.0 , 1.0 , 1.0 , 1.0 ] )
+                            ]
+                      , _ridgeOf = fromList [ 4 , 7 ]
+                      }
+                  ]
+              , _centroid = [ 0.0 , -1.0 , 0.0 , 0.0 , 0.0 ]
+              , _normal = [ 0.0 , -1.0 , 0.0 , 0.0 , 0.0 ]
+              , _offset = -1.0
+              , _area = 15.999999999999991
+              , _neighbors = fromList [ 1 , 2 , 3 , 4 , 5 , 6 , 8 , 9 ]
+              , _family = Nothing
+              }
+          )
+        , ( 8
+          , Face
+              { _fvertices =
+                  fromList
+                    [ ( 1 , [ -1.0 , -1.0 , 1.0 , -1.0 , -1.0 ] )
+                    , ( 3 , [ -1.0 , 1.0 , 1.0 , -1.0 , -1.0 ] )
+                    , ( 5 , [ 1.0 , -1.0 , 1.0 , -1.0 , -1.0 ] )
+                    , ( 7 , [ 1.0 , 1.0 , 1.0 , -1.0 , -1.0 ] )
+                    , ( 9 , [ -1.0 , -1.0 , 1.0 , 1.0 , -1.0 ] )
+                    , ( 11 , [ -1.0 , 1.0 , 1.0 , 1.0 , -1.0 ] )
+                    , ( 13 , [ 1.0 , -1.0 , 1.0 , 1.0 , -1.0 ] )
+                    , ( 15 , [ 1.0 , 1.0 , 1.0 , 1.0 , -1.0 ] )
+                    , ( 17 , [ -1.0 , -1.0 , 1.0 , -1.0 , 1.0 ] )
+                    , ( 19 , [ -1.0 , 1.0 , 1.0 , -1.0 , 1.0 ] )
+                    , ( 21 , [ 1.0 , -1.0 , 1.0 , -1.0 , 1.0 ] )
+                    , ( 23 , [ 1.0 , 1.0 , 1.0 , -1.0 , 1.0 ] )
+                    , ( 25 , [ -1.0 , -1.0 , 1.0 , 1.0 , 1.0 ] )
+                    , ( 27 , [ -1.0 , 1.0 , 1.0 , 1.0 , 1.0 ] )
+                    , ( 29 , [ 1.0 , -1.0 , 1.0 , 1.0 , 1.0 ] )
+                    , ( 31 , [ 1.0 , 1.0 , 1.0 , 1.0 , 1.0 ] )
+                    ]
+              , _edges =
+                  [ Ridge
+                      { _rvertices =
+                          fromList
+                            [ ( 5 , [ 1.0 , -1.0 , 1.0 , -1.0 , -1.0 ] )
+                            , ( 7 , [ 1.0 , 1.0 , 1.0 , -1.0 , -1.0 ] )
+                            , ( 13 , [ 1.0 , -1.0 , 1.0 , 1.0 , -1.0 ] )
+                            , ( 15 , [ 1.0 , 1.0 , 1.0 , 1.0 , -1.0 ] )
+                            , ( 21 , [ 1.0 , -1.0 , 1.0 , -1.0 , 1.0 ] )
+                            , ( 23 , [ 1.0 , 1.0 , 1.0 , -1.0 , 1.0 ] )
+                            , ( 29 , [ 1.0 , -1.0 , 1.0 , 1.0 , 1.0 ] )
+                            , ( 31 , [ 1.0 , 1.0 , 1.0 , 1.0 , 1.0 ] )
+                            ]
+                      , _ridgeOf = fromList [ 4 , 8 ]
+                      }
+                  , Ridge
+                      { _rvertices =
+                          fromList
+                            [ ( 3 , [ -1.0 , 1.0 , 1.0 , -1.0 , -1.0 ] )
+                            , ( 7 , [ 1.0 , 1.0 , 1.0 , -1.0 , -1.0 ] )
+                            , ( 11 , [ -1.0 , 1.0 , 1.0 , 1.0 , -1.0 ] )
+                            , ( 15 , [ 1.0 , 1.0 , 1.0 , 1.0 , -1.0 ] )
+                            , ( 19 , [ -1.0 , 1.0 , 1.0 , -1.0 , 1.0 ] )
+                            , ( 23 , [ 1.0 , 1.0 , 1.0 , -1.0 , 1.0 ] )
+                            , ( 27 , [ -1.0 , 1.0 , 1.0 , 1.0 , 1.0 ] )
+                            , ( 31 , [ 1.0 , 1.0 , 1.0 , 1.0 , 1.0 ] )
+                            ]
+                      , _ridgeOf = fromList [ 0 , 8 ]
+                      }
+                  , Ridge
+                      { _rvertices =
+                          fromList
+                            [ ( 9 , [ -1.0 , -1.0 , 1.0 , 1.0 , -1.0 ] )
+                            , ( 11 , [ -1.0 , 1.0 , 1.0 , 1.0 , -1.0 ] )
+                            , ( 13 , [ 1.0 , -1.0 , 1.0 , 1.0 , -1.0 ] )
+                            , ( 15 , [ 1.0 , 1.0 , 1.0 , 1.0 , -1.0 ] )
+                            , ( 25 , [ -1.0 , -1.0 , 1.0 , 1.0 , 1.0 ] )
+                            , ( 27 , [ -1.0 , 1.0 , 1.0 , 1.0 , 1.0 ] )
+                            , ( 29 , [ 1.0 , -1.0 , 1.0 , 1.0 , 1.0 ] )
+                            , ( 31 , [ 1.0 , 1.0 , 1.0 , 1.0 , 1.0 ] )
+                            ]
+                      , _ridgeOf = fromList [ 1 , 8 ]
+                      }
+                  , Ridge
+                      { _rvertices =
+                          fromList
+                            [ ( 17 , [ -1.0 , -1.0 , 1.0 , -1.0 , 1.0 ] )
+                            , ( 19 , [ -1.0 , 1.0 , 1.0 , -1.0 , 1.0 ] )
+                            , ( 21 , [ 1.0 , -1.0 , 1.0 , -1.0 , 1.0 ] )
+                            , ( 23 , [ 1.0 , 1.0 , 1.0 , -1.0 , 1.0 ] )
+                            , ( 25 , [ -1.0 , -1.0 , 1.0 , 1.0 , 1.0 ] )
+                            , ( 27 , [ -1.0 , 1.0 , 1.0 , 1.0 , 1.0 ] )
+                            , ( 29 , [ 1.0 , -1.0 , 1.0 , 1.0 , 1.0 ] )
+                            , ( 31 , [ 1.0 , 1.0 , 1.0 , 1.0 , 1.0 ] )
+                            ]
+                      , _ridgeOf = fromList [ 8 , 9 ]
+                      }
+                  , Ridge
+                      { _rvertices =
+                          fromList
+                            [ ( 1 , [ -1.0 , -1.0 , 1.0 , -1.0 , -1.0 ] )
+                            , ( 3 , [ -1.0 , 1.0 , 1.0 , -1.0 , -1.0 ] )
+                            , ( 5 , [ 1.0 , -1.0 , 1.0 , -1.0 , -1.0 ] )
+                            , ( 7 , [ 1.0 , 1.0 , 1.0 , -1.0 , -1.0 ] )
+                            , ( 9 , [ -1.0 , -1.0 , 1.0 , 1.0 , -1.0 ] )
+                            , ( 11 , [ -1.0 , 1.0 , 1.0 , 1.0 , -1.0 ] )
+                            , ( 13 , [ 1.0 , -1.0 , 1.0 , 1.0 , -1.0 ] )
+                            , ( 15 , [ 1.0 , 1.0 , 1.0 , 1.0 , -1.0 ] )
+                            ]
+                      , _ridgeOf = fromList [ 2 , 8 ]
+                      }
+                  , Ridge
+                      { _rvertices =
+                          fromList
+                            [ ( 1 , [ -1.0 , -1.0 , 1.0 , -1.0 , -1.0 ] )
+                            , ( 3 , [ -1.0 , 1.0 , 1.0 , -1.0 , -1.0 ] )
+                            , ( 9 , [ -1.0 , -1.0 , 1.0 , 1.0 , -1.0 ] )
+                            , ( 11 , [ -1.0 , 1.0 , 1.0 , 1.0 , -1.0 ] )
+                            , ( 17 , [ -1.0 , -1.0 , 1.0 , -1.0 , 1.0 ] )
+                            , ( 19 , [ -1.0 , 1.0 , 1.0 , -1.0 , 1.0 ] )
+                            , ( 25 , [ -1.0 , -1.0 , 1.0 , 1.0 , 1.0 ] )
+                            , ( 27 , [ -1.0 , 1.0 , 1.0 , 1.0 , 1.0 ] )
+                            ]
+                      , _ridgeOf = fromList [ 5 , 8 ]
+                      }
+                  , Ridge
+                      { _rvertices =
+                          fromList
+                            [ ( 1 , [ -1.0 , -1.0 , 1.0 , -1.0 , -1.0 ] )
+                            , ( 3 , [ -1.0 , 1.0 , 1.0 , -1.0 , -1.0 ] )
+                            , ( 5 , [ 1.0 , -1.0 , 1.0 , -1.0 , -1.0 ] )
+                            , ( 7 , [ 1.0 , 1.0 , 1.0 , -1.0 , -1.0 ] )
+                            , ( 17 , [ -1.0 , -1.0 , 1.0 , -1.0 , 1.0 ] )
+                            , ( 19 , [ -1.0 , 1.0 , 1.0 , -1.0 , 1.0 ] )
+                            , ( 21 , [ 1.0 , -1.0 , 1.0 , -1.0 , 1.0 ] )
+                            , ( 23 , [ 1.0 , 1.0 , 1.0 , -1.0 , 1.0 ] )
+                            ]
+                      , _ridgeOf = fromList [ 6 , 8 ]
+                      }
+                  , Ridge
+                      { _rvertices =
+                          fromList
+                            [ ( 1 , [ -1.0 , -1.0 , 1.0 , -1.0 , -1.0 ] )
+                            , ( 5 , [ 1.0 , -1.0 , 1.0 , -1.0 , -1.0 ] )
+                            , ( 9 , [ -1.0 , -1.0 , 1.0 , 1.0 , -1.0 ] )
+                            , ( 13 , [ 1.0 , -1.0 , 1.0 , 1.0 , -1.0 ] )
+                            , ( 17 , [ -1.0 , -1.0 , 1.0 , -1.0 , 1.0 ] )
+                            , ( 21 , [ 1.0 , -1.0 , 1.0 , -1.0 , 1.0 ] )
+                            , ( 25 , [ -1.0 , -1.0 , 1.0 , 1.0 , 1.0 ] )
+                            , ( 29 , [ 1.0 , -1.0 , 1.0 , 1.0 , 1.0 ] )
+                            ]
+                      , _ridgeOf = fromList [ 7 , 8 ]
+                      }
+                  ]
+              , _centroid = [ 0.0 , 0.0 , 1.0 , 0.0 , 0.0 ]
+              , _normal = [ 0.0 , 0.0 , 1.0 , 0.0 , 0.0 ]
+              , _offset = -1.0
+              , _area = 16.000000000000007
+              , _neighbors = fromList [ 0 , 1 , 2 , 4 , 5 , 6 , 7 , 9 ]
+              , _family = Nothing
+              }
+          )
+        , ( 9
+          , Face
+              { _fvertices =
+                  fromList
+                    [ ( 16 , [ -1.0 , -1.0 , -1.0 , -1.0 , 1.0 ] )
+                    , ( 17 , [ -1.0 , -1.0 , 1.0 , -1.0 , 1.0 ] )
+                    , ( 18 , [ -1.0 , 1.0 , -1.0 , -1.0 , 1.0 ] )
+                    , ( 19 , [ -1.0 , 1.0 , 1.0 , -1.0 , 1.0 ] )
+                    , ( 20 , [ 1.0 , -1.0 , -1.0 , -1.0 , 1.0 ] )
+                    , ( 21 , [ 1.0 , -1.0 , 1.0 , -1.0 , 1.0 ] )
+                    , ( 22 , [ 1.0 , 1.0 , -1.0 , -1.0 , 1.0 ] )
+                    , ( 23 , [ 1.0 , 1.0 , 1.0 , -1.0 , 1.0 ] )
+                    , ( 24 , [ -1.0 , -1.0 , -1.0 , 1.0 , 1.0 ] )
+                    , ( 25 , [ -1.0 , -1.0 , 1.0 , 1.0 , 1.0 ] )
+                    , ( 26 , [ -1.0 , 1.0 , -1.0 , 1.0 , 1.0 ] )
+                    , ( 27 , [ -1.0 , 1.0 , 1.0 , 1.0 , 1.0 ] )
+                    , ( 28 , [ 1.0 , -1.0 , -1.0 , 1.0 , 1.0 ] )
+                    , ( 29 , [ 1.0 , -1.0 , 1.0 , 1.0 , 1.0 ] )
+                    , ( 30 , [ 1.0 , 1.0 , -1.0 , 1.0 , 1.0 ] )
+                    , ( 31 , [ 1.0 , 1.0 , 1.0 , 1.0 , 1.0 ] )
+                    ]
+              , _edges =
+                  [ Ridge
+                      { _rvertices =
+                          fromList
+                            [ ( 20 , [ 1.0 , -1.0 , -1.0 , -1.0 , 1.0 ] )
+                            , ( 21 , [ 1.0 , -1.0 , 1.0 , -1.0 , 1.0 ] )
+                            , ( 22 , [ 1.0 , 1.0 , -1.0 , -1.0 , 1.0 ] )
+                            , ( 23 , [ 1.0 , 1.0 , 1.0 , -1.0 , 1.0 ] )
+                            , ( 28 , [ 1.0 , -1.0 , -1.0 , 1.0 , 1.0 ] )
+                            , ( 29 , [ 1.0 , -1.0 , 1.0 , 1.0 , 1.0 ] )
+                            , ( 30 , [ 1.0 , 1.0 , -1.0 , 1.0 , 1.0 ] )
+                            , ( 31 , [ 1.0 , 1.0 , 1.0 , 1.0 , 1.0 ] )
+                            ]
+                      , _ridgeOf = fromList [ 4 , 9 ]
+                      }
+                  , Ridge
+                      { _rvertices =
+                          fromList
+                            [ ( 18 , [ -1.0 , 1.0 , -1.0 , -1.0 , 1.0 ] )
+                            , ( 19 , [ -1.0 , 1.0 , 1.0 , -1.0 , 1.0 ] )
+                            , ( 22 , [ 1.0 , 1.0 , -1.0 , -1.0 , 1.0 ] )
+                            , ( 23 , [ 1.0 , 1.0 , 1.0 , -1.0 , 1.0 ] )
+                            , ( 26 , [ -1.0 , 1.0 , -1.0 , 1.0 , 1.0 ] )
+                            , ( 27 , [ -1.0 , 1.0 , 1.0 , 1.0 , 1.0 ] )
+                            , ( 30 , [ 1.0 , 1.0 , -1.0 , 1.0 , 1.0 ] )
+                            , ( 31 , [ 1.0 , 1.0 , 1.0 , 1.0 , 1.0 ] )
+                            ]
+                      , _ridgeOf = fromList [ 0 , 9 ]
+                      }
+                  , Ridge
+                      { _rvertices =
+                          fromList
+                            [ ( 17 , [ -1.0 , -1.0 , 1.0 , -1.0 , 1.0 ] )
+                            , ( 19 , [ -1.0 , 1.0 , 1.0 , -1.0 , 1.0 ] )
+                            , ( 21 , [ 1.0 , -1.0 , 1.0 , -1.0 , 1.0 ] )
+                            , ( 23 , [ 1.0 , 1.0 , 1.0 , -1.0 , 1.0 ] )
+                            , ( 25 , [ -1.0 , -1.0 , 1.0 , 1.0 , 1.0 ] )
+                            , ( 27 , [ -1.0 , 1.0 , 1.0 , 1.0 , 1.0 ] )
+                            , ( 29 , [ 1.0 , -1.0 , 1.0 , 1.0 , 1.0 ] )
+                            , ( 31 , [ 1.0 , 1.0 , 1.0 , 1.0 , 1.0 ] )
+                            ]
+                      , _ridgeOf = fromList [ 8 , 9 ]
+                      }
+                  , Ridge
+                      { _rvertices =
+                          fromList
+                            [ ( 24 , [ -1.0 , -1.0 , -1.0 , 1.0 , 1.0 ] )
+                            , ( 25 , [ -1.0 , -1.0 , 1.0 , 1.0 , 1.0 ] )
+                            , ( 26 , [ -1.0 , 1.0 , -1.0 , 1.0 , 1.0 ] )
+                            , ( 27 , [ -1.0 , 1.0 , 1.0 , 1.0 , 1.0 ] )
+                            , ( 28 , [ 1.0 , -1.0 , -1.0 , 1.0 , 1.0 ] )
+                            , ( 29 , [ 1.0 , -1.0 , 1.0 , 1.0 , 1.0 ] )
+                            , ( 30 , [ 1.0 , 1.0 , -1.0 , 1.0 , 1.0 ] )
+                            , ( 31 , [ 1.0 , 1.0 , 1.0 , 1.0 , 1.0 ] )
+                            ]
+                      , _ridgeOf = fromList [ 1 , 9 ]
+                      }
+                  , Ridge
+                      { _rvertices =
+                          fromList
+                            [ ( 16 , [ -1.0 , -1.0 , -1.0 , -1.0 , 1.0 ] )
+                            , ( 18 , [ -1.0 , 1.0 , -1.0 , -1.0 , 1.0 ] )
+                            , ( 20 , [ 1.0 , -1.0 , -1.0 , -1.0 , 1.0 ] )
+                            , ( 22 , [ 1.0 , 1.0 , -1.0 , -1.0 , 1.0 ] )
+                            , ( 24 , [ -1.0 , -1.0 , -1.0 , 1.0 , 1.0 ] )
+                            , ( 26 , [ -1.0 , 1.0 , -1.0 , 1.0 , 1.0 ] )
+                            , ( 28 , [ 1.0 , -1.0 , -1.0 , 1.0 , 1.0 ] )
+                            , ( 30 , [ 1.0 , 1.0 , -1.0 , 1.0 , 1.0 ] )
+                            ]
+                      , _ridgeOf = fromList [ 3 , 9 ]
+                      }
+                  , Ridge
+                      { _rvertices =
+                          fromList
+                            [ ( 16 , [ -1.0 , -1.0 , -1.0 , -1.0 , 1.0 ] )
+                            , ( 17 , [ -1.0 , -1.0 , 1.0 , -1.0 , 1.0 ] )
+                            , ( 18 , [ -1.0 , 1.0 , -1.0 , -1.0 , 1.0 ] )
+                            , ( 19 , [ -1.0 , 1.0 , 1.0 , -1.0 , 1.0 ] )
+                            , ( 20 , [ 1.0 , -1.0 , -1.0 , -1.0 , 1.0 ] )
+                            , ( 21 , [ 1.0 , -1.0 , 1.0 , -1.0 , 1.0 ] )
+                            , ( 22 , [ 1.0 , 1.0 , -1.0 , -1.0 , 1.0 ] )
+                            , ( 23 , [ 1.0 , 1.0 , 1.0 , -1.0 , 1.0 ] )
+                            ]
+                      , _ridgeOf = fromList [ 6 , 9 ]
+                      }
+                  , Ridge
+                      { _rvertices =
+                          fromList
+                            [ ( 16 , [ -1.0 , -1.0 , -1.0 , -1.0 , 1.0 ] )
+                            , ( 17 , [ -1.0 , -1.0 , 1.0 , -1.0 , 1.0 ] )
+                            , ( 18 , [ -1.0 , 1.0 , -1.0 , -1.0 , 1.0 ] )
+                            , ( 19 , [ -1.0 , 1.0 , 1.0 , -1.0 , 1.0 ] )
+                            , ( 24 , [ -1.0 , -1.0 , -1.0 , 1.0 , 1.0 ] )
+                            , ( 25 , [ -1.0 , -1.0 , 1.0 , 1.0 , 1.0 ] )
+                            , ( 26 , [ -1.0 , 1.0 , -1.0 , 1.0 , 1.0 ] )
+                            , ( 27 , [ -1.0 , 1.0 , 1.0 , 1.0 , 1.0 ] )
+                            ]
+                      , _ridgeOf = fromList [ 5 , 9 ]
+                      }
+                  , Ridge
+                      { _rvertices =
+                          fromList
+                            [ ( 16 , [ -1.0 , -1.0 , -1.0 , -1.0 , 1.0 ] )
+                            , ( 17 , [ -1.0 , -1.0 , 1.0 , -1.0 , 1.0 ] )
+                            , ( 20 , [ 1.0 , -1.0 , -1.0 , -1.0 , 1.0 ] )
+                            , ( 21 , [ 1.0 , -1.0 , 1.0 , -1.0 , 1.0 ] )
+                            , ( 24 , [ -1.0 , -1.0 , -1.0 , 1.0 , 1.0 ] )
+                            , ( 25 , [ -1.0 , -1.0 , 1.0 , 1.0 , 1.0 ] )
+                            , ( 28 , [ 1.0 , -1.0 , -1.0 , 1.0 , 1.0 ] )
+                            , ( 29 , [ 1.0 , -1.0 , 1.0 , 1.0 , 1.0 ] )
+                            ]
+                      , _ridgeOf = fromList [ 7 , 9 ]
+                      }
+                  ]
+              , _centroid = [ 0.0 , 0.0 , 0.0 , 0.0 , 1.0 ]
+              , _normal = [ 0.0 , 0.0 , 0.0 , 0.0 , 1.0 ]
+              , _offset = -1.0
+              , _area = 15.99999999999999
+              , _neighbors = fromList [ 0 , 1 , 3 , 4 , 5 , 6 , 7 , 8 ]
+              , _family = Nothing
+              }
+          )
+        ]
+  , _alledges =
+      fromList
+        [ ( 0
+          , Ridge
+              { _rvertices =
+                  fromList
+                    [ ( 6 , [ 1.0 , 1.0 , -1.0 , -1.0 , -1.0 ] )
+                    , ( 7 , [ 1.0 , 1.0 , 1.0 , -1.0 , -1.0 ] )
+                    , ( 14 , [ 1.0 , 1.0 , -1.0 , 1.0 , -1.0 ] )
+                    , ( 15 , [ 1.0 , 1.0 , 1.0 , 1.0 , -1.0 ] )
+                    , ( 22 , [ 1.0 , 1.0 , -1.0 , -1.0 , 1.0 ] )
+                    , ( 23 , [ 1.0 , 1.0 , 1.0 , -1.0 , 1.0 ] )
+                    , ( 30 , [ 1.0 , 1.0 , -1.0 , 1.0 , 1.0 ] )
+                    , ( 31 , [ 1.0 , 1.0 , 1.0 , 1.0 , 1.0 ] )
+                    ]
+              , _ridgeOf = fromList [ 0 , 4 ]
+              }
+          )
+        , ( 1
+          , Ridge
+              { _rvertices =
+                  fromList
+                    [ ( 18 , [ -1.0 , 1.0 , -1.0 , -1.0 , 1.0 ] )
+                    , ( 19 , [ -1.0 , 1.0 , 1.0 , -1.0 , 1.0 ] )
+                    , ( 22 , [ 1.0 , 1.0 , -1.0 , -1.0 , 1.0 ] )
+                    , ( 23 , [ 1.0 , 1.0 , 1.0 , -1.0 , 1.0 ] )
+                    , ( 26 , [ -1.0 , 1.0 , -1.0 , 1.0 , 1.0 ] )
+                    , ( 27 , [ -1.0 , 1.0 , 1.0 , 1.0 , 1.0 ] )
+                    , ( 30 , [ 1.0 , 1.0 , -1.0 , 1.0 , 1.0 ] )
+                    , ( 31 , [ 1.0 , 1.0 , 1.0 , 1.0 , 1.0 ] )
+                    ]
+              , _ridgeOf = fromList [ 0 , 9 ]
+              }
+          )
+        , ( 2
+          , Ridge
+              { _rvertices =
+                  fromList
+                    [ ( 3 , [ -1.0 , 1.0 , 1.0 , -1.0 , -1.0 ] )
+                    , ( 7 , [ 1.0 , 1.0 , 1.0 , -1.0 , -1.0 ] )
+                    , ( 11 , [ -1.0 , 1.0 , 1.0 , 1.0 , -1.0 ] )
+                    , ( 15 , [ 1.0 , 1.0 , 1.0 , 1.0 , -1.0 ] )
+                    , ( 19 , [ -1.0 , 1.0 , 1.0 , -1.0 , 1.0 ] )
+                    , ( 23 , [ 1.0 , 1.0 , 1.0 , -1.0 , 1.0 ] )
+                    , ( 27 , [ -1.0 , 1.0 , 1.0 , 1.0 , 1.0 ] )
+                    , ( 31 , [ 1.0 , 1.0 , 1.0 , 1.0 , 1.0 ] )
+                    ]
+              , _ridgeOf = fromList [ 0 , 8 ]
+              }
+          )
+        , ( 3
+          , Ridge
+              { _rvertices =
+                  fromList
+                    [ ( 10 , [ -1.0 , 1.0 , -1.0 , 1.0 , -1.0 ] )
+                    , ( 11 , [ -1.0 , 1.0 , 1.0 , 1.0 , -1.0 ] )
+                    , ( 14 , [ 1.0 , 1.0 , -1.0 , 1.0 , -1.0 ] )
+                    , ( 15 , [ 1.0 , 1.0 , 1.0 , 1.0 , -1.0 ] )
+                    , ( 26 , [ -1.0 , 1.0 , -1.0 , 1.0 , 1.0 ] )
+                    , ( 27 , [ -1.0 , 1.0 , 1.0 , 1.0 , 1.0 ] )
+                    , ( 30 , [ 1.0 , 1.0 , -1.0 , 1.0 , 1.0 ] )
+                    , ( 31 , [ 1.0 , 1.0 , 1.0 , 1.0 , 1.0 ] )
+                    ]
+              , _ridgeOf = fromList [ 0 , 1 ]
+              }
+          )
+        , ( 4
+          , Ridge
+              { _rvertices =
+                  fromList
+                    [ ( 2 , [ -1.0 , 1.0 , -1.0 , -1.0 , -1.0 ] )
+                    , ( 3 , [ -1.0 , 1.0 , 1.0 , -1.0 , -1.0 ] )
+                    , ( 6 , [ 1.0 , 1.0 , -1.0 , -1.0 , -1.0 ] )
+                    , ( 7 , [ 1.0 , 1.0 , 1.0 , -1.0 , -1.0 ] )
+                    , ( 10 , [ -1.0 , 1.0 , -1.0 , 1.0 , -1.0 ] )
+                    , ( 11 , [ -1.0 , 1.0 , 1.0 , 1.0 , -1.0 ] )
+                    , ( 14 , [ 1.0 , 1.0 , -1.0 , 1.0 , -1.0 ] )
+                    , ( 15 , [ 1.0 , 1.0 , 1.0 , 1.0 , -1.0 ] )
+                    ]
+              , _ridgeOf = fromList [ 0 , 2 ]
+              }
+          )
+        , ( 5
+          , Ridge
+              { _rvertices =
+                  fromList
+                    [ ( 2 , [ -1.0 , 1.0 , -1.0 , -1.0 , -1.0 ] )
+                    , ( 6 , [ 1.0 , 1.0 , -1.0 , -1.0 , -1.0 ] )
+                    , ( 10 , [ -1.0 , 1.0 , -1.0 , 1.0 , -1.0 ] )
+                    , ( 14 , [ 1.0 , 1.0 , -1.0 , 1.0 , -1.0 ] )
+                    , ( 18 , [ -1.0 , 1.0 , -1.0 , -1.0 , 1.0 ] )
+                    , ( 22 , [ 1.0 , 1.0 , -1.0 , -1.0 , 1.0 ] )
+                    , ( 26 , [ -1.0 , 1.0 , -1.0 , 1.0 , 1.0 ] )
+                    , ( 30 , [ 1.0 , 1.0 , -1.0 , 1.0 , 1.0 ] )
+                    ]
+              , _ridgeOf = fromList [ 0 , 3 ]
+              }
+          )
+        , ( 6
+          , Ridge
+              { _rvertices =
+                  fromList
+                    [ ( 2 , [ -1.0 , 1.0 , -1.0 , -1.0 , -1.0 ] )
+                    , ( 3 , [ -1.0 , 1.0 , 1.0 , -1.0 , -1.0 ] )
+                    , ( 6 , [ 1.0 , 1.0 , -1.0 , -1.0 , -1.0 ] )
+                    , ( 7 , [ 1.0 , 1.0 , 1.0 , -1.0 , -1.0 ] )
+                    , ( 18 , [ -1.0 , 1.0 , -1.0 , -1.0 , 1.0 ] )
+                    , ( 19 , [ -1.0 , 1.0 , 1.0 , -1.0 , 1.0 ] )
+                    , ( 22 , [ 1.0 , 1.0 , -1.0 , -1.0 , 1.0 ] )
+                    , ( 23 , [ 1.0 , 1.0 , 1.0 , -1.0 , 1.0 ] )
+                    ]
+              , _ridgeOf = fromList [ 0 , 6 ]
+              }
+          )
+        , ( 7
+          , Ridge
+              { _rvertices =
+                  fromList
+                    [ ( 2 , [ -1.0 , 1.0 , -1.0 , -1.0 , -1.0 ] )
+                    , ( 3 , [ -1.0 , 1.0 , 1.0 , -1.0 , -1.0 ] )
+                    , ( 10 , [ -1.0 , 1.0 , -1.0 , 1.0 , -1.0 ] )
+                    , ( 11 , [ -1.0 , 1.0 , 1.0 , 1.0 , -1.0 ] )
+                    , ( 18 , [ -1.0 , 1.0 , -1.0 , -1.0 , 1.0 ] )
+                    , ( 19 , [ -1.0 , 1.0 , 1.0 , -1.0 , 1.0 ] )
+                    , ( 26 , [ -1.0 , 1.0 , -1.0 , 1.0 , 1.0 ] )
+                    , ( 27 , [ -1.0 , 1.0 , 1.0 , 1.0 , 1.0 ] )
+                    ]
+              , _ridgeOf = fromList [ 0 , 5 ]
+              }
+          )
+        , ( 8
+          , Ridge
+              { _rvertices =
+                  fromList
+                    [ ( 12 , [ 1.0 , -1.0 , -1.0 , 1.0 , -1.0 ] )
+                    , ( 13 , [ 1.0 , -1.0 , 1.0 , 1.0 , -1.0 ] )
+                    , ( 14 , [ 1.0 , 1.0 , -1.0 , 1.0 , -1.0 ] )
+                    , ( 15 , [ 1.0 , 1.0 , 1.0 , 1.0 , -1.0 ] )
+                    , ( 28 , [ 1.0 , -1.0 , -1.0 , 1.0 , 1.0 ] )
+                    , ( 29 , [ 1.0 , -1.0 , 1.0 , 1.0 , 1.0 ] )
+                    , ( 30 , [ 1.0 , 1.0 , -1.0 , 1.0 , 1.0 ] )
+                    , ( 31 , [ 1.0 , 1.0 , 1.0 , 1.0 , 1.0 ] )
+                    ]
+              , _ridgeOf = fromList [ 1 , 4 ]
+              }
+          )
+        , ( 9
+          , Ridge
+              { _rvertices =
+                  fromList
+                    [ ( 24 , [ -1.0 , -1.0 , -1.0 , 1.0 , 1.0 ] )
+                    , ( 25 , [ -1.0 , -1.0 , 1.0 , 1.0 , 1.0 ] )
+                    , ( 26 , [ -1.0 , 1.0 , -1.0 , 1.0 , 1.0 ] )
+                    , ( 27 , [ -1.0 , 1.0 , 1.0 , 1.0 , 1.0 ] )
+                    , ( 28 , [ 1.0 , -1.0 , -1.0 , 1.0 , 1.0 ] )
+                    , ( 29 , [ 1.0 , -1.0 , 1.0 , 1.0 , 1.0 ] )
+                    , ( 30 , [ 1.0 , 1.0 , -1.0 , 1.0 , 1.0 ] )
+                    , ( 31 , [ 1.0 , 1.0 , 1.0 , 1.0 , 1.0 ] )
+                    ]
+              , _ridgeOf = fromList [ 1 , 9 ]
+              }
+          )
+        , ( 10
+          , Ridge
+              { _rvertices =
+                  fromList
+                    [ ( 9 , [ -1.0 , -1.0 , 1.0 , 1.0 , -1.0 ] )
+                    , ( 11 , [ -1.0 , 1.0 , 1.0 , 1.0 , -1.0 ] )
+                    , ( 13 , [ 1.0 , -1.0 , 1.0 , 1.0 , -1.0 ] )
+                    , ( 15 , [ 1.0 , 1.0 , 1.0 , 1.0 , -1.0 ] )
+                    , ( 25 , [ -1.0 , -1.0 , 1.0 , 1.0 , 1.0 ] )
+                    , ( 27 , [ -1.0 , 1.0 , 1.0 , 1.0 , 1.0 ] )
+                    , ( 29 , [ 1.0 , -1.0 , 1.0 , 1.0 , 1.0 ] )
+                    , ( 31 , [ 1.0 , 1.0 , 1.0 , 1.0 , 1.0 ] )
+                    ]
+              , _ridgeOf = fromList [ 1 , 8 ]
+              }
+          )
+        , ( 11
+          , Ridge
+              { _rvertices =
+                  fromList
+                    [ ( 8 , [ -1.0 , -1.0 , -1.0 , 1.0 , -1.0 ] )
+                    , ( 9 , [ -1.0 , -1.0 , 1.0 , 1.0 , -1.0 ] )
+                    , ( 10 , [ -1.0 , 1.0 , -1.0 , 1.0 , -1.0 ] )
+                    , ( 11 , [ -1.0 , 1.0 , 1.0 , 1.0 , -1.0 ] )
+                    , ( 12 , [ 1.0 , -1.0 , -1.0 , 1.0 , -1.0 ] )
+                    , ( 13 , [ 1.0 , -1.0 , 1.0 , 1.0 , -1.0 ] )
+                    , ( 14 , [ 1.0 , 1.0 , -1.0 , 1.0 , -1.0 ] )
+                    , ( 15 , [ 1.0 , 1.0 , 1.0 , 1.0 , -1.0 ] )
+                    ]
+              , _ridgeOf = fromList [ 1 , 2 ]
+              }
+          )
+        , ( 12
+          , Ridge
+              { _rvertices =
+                  fromList
+                    [ ( 8 , [ -1.0 , -1.0 , -1.0 , 1.0 , -1.0 ] )
+                    , ( 9 , [ -1.0 , -1.0 , 1.0 , 1.0 , -1.0 ] )
+                    , ( 12 , [ 1.0 , -1.0 , -1.0 , 1.0 , -1.0 ] )
+                    , ( 13 , [ 1.0 , -1.0 , 1.0 , 1.0 , -1.0 ] )
+                    , ( 24 , [ -1.0 , -1.0 , -1.0 , 1.0 , 1.0 ] )
+                    , ( 25 , [ -1.0 , -1.0 , 1.0 , 1.0 , 1.0 ] )
+                    , ( 28 , [ 1.0 , -1.0 , -1.0 , 1.0 , 1.0 ] )
+                    , ( 29 , [ 1.0 , -1.0 , 1.0 , 1.0 , 1.0 ] )
+                    ]
+              , _ridgeOf = fromList [ 1 , 7 ]
+              }
+          )
+        , ( 13
+          , Ridge
+              { _rvertices =
+                  fromList
+                    [ ( 8 , [ -1.0 , -1.0 , -1.0 , 1.0 , -1.0 ] )
+                    , ( 10 , [ -1.0 , 1.0 , -1.0 , 1.0 , -1.0 ] )
+                    , ( 12 , [ 1.0 , -1.0 , -1.0 , 1.0 , -1.0 ] )
+                    , ( 14 , [ 1.0 , 1.0 , -1.0 , 1.0 , -1.0 ] )
+                    , ( 24 , [ -1.0 , -1.0 , -1.0 , 1.0 , 1.0 ] )
+                    , ( 26 , [ -1.0 , 1.0 , -1.0 , 1.0 , 1.0 ] )
+                    , ( 28 , [ 1.0 , -1.0 , -1.0 , 1.0 , 1.0 ] )
+                    , ( 30 , [ 1.0 , 1.0 , -1.0 , 1.0 , 1.0 ] )
+                    ]
+              , _ridgeOf = fromList [ 1 , 3 ]
+              }
+          )
+        , ( 14
+          , Ridge
+              { _rvertices =
+                  fromList
+                    [ ( 8 , [ -1.0 , -1.0 , -1.0 , 1.0 , -1.0 ] )
+                    , ( 9 , [ -1.0 , -1.0 , 1.0 , 1.0 , -1.0 ] )
+                    , ( 10 , [ -1.0 , 1.0 , -1.0 , 1.0 , -1.0 ] )
+                    , ( 11 , [ -1.0 , 1.0 , 1.0 , 1.0 , -1.0 ] )
+                    , ( 24 , [ -1.0 , -1.0 , -1.0 , 1.0 , 1.0 ] )
+                    , ( 25 , [ -1.0 , -1.0 , 1.0 , 1.0 , 1.0 ] )
+                    , ( 26 , [ -1.0 , 1.0 , -1.0 , 1.0 , 1.0 ] )
+                    , ( 27 , [ -1.0 , 1.0 , 1.0 , 1.0 , 1.0 ] )
+                    ]
+              , _ridgeOf = fromList [ 1 , 5 ]
+              }
+          )
+        , ( 15
+          , Ridge
+              { _rvertices =
+                  fromList
+                    [ ( 0 , [ -1.0 , -1.0 , -1.0 , -1.0 , -1.0 ] )
+                    , ( 1 , [ -1.0 , -1.0 , 1.0 , -1.0 , -1.0 ] )
+                    , ( 2 , [ -1.0 , 1.0 , -1.0 , -1.0 , -1.0 ] )
+                    , ( 3 , [ -1.0 , 1.0 , 1.0 , -1.0 , -1.0 ] )
+                    , ( 8 , [ -1.0 , -1.0 , -1.0 , 1.0 , -1.0 ] )
+                    , ( 9 , [ -1.0 , -1.0 , 1.0 , 1.0 , -1.0 ] )
+                    , ( 10 , [ -1.0 , 1.0 , -1.0 , 1.0 , -1.0 ] )
+                    , ( 11 , [ -1.0 , 1.0 , 1.0 , 1.0 , -1.0 ] )
+                    ]
+              , _ridgeOf = fromList [ 2 , 5 ]
+              }
+          )
+        , ( 16
+          , Ridge
+              { _rvertices =
+                  fromList
+                    [ ( 0 , [ -1.0 , -1.0 , -1.0 , -1.0 , -1.0 ] )
+                    , ( 1 , [ -1.0 , -1.0 , 1.0 , -1.0 , -1.0 ] )
+                    , ( 2 , [ -1.0 , 1.0 , -1.0 , -1.0 , -1.0 ] )
+                    , ( 3 , [ -1.0 , 1.0 , 1.0 , -1.0 , -1.0 ] )
+                    , ( 4 , [ 1.0 , -1.0 , -1.0 , -1.0 , -1.0 ] )
+                    , ( 5 , [ 1.0 , -1.0 , 1.0 , -1.0 , -1.0 ] )
+                    , ( 6 , [ 1.0 , 1.0 , -1.0 , -1.0 , -1.0 ] )
+                    , ( 7 , [ 1.0 , 1.0 , 1.0 , -1.0 , -1.0 ] )
+                    ]
+              , _ridgeOf = fromList [ 2 , 6 ]
+              }
+          )
+        , ( 17
+          , Ridge
+              { _rvertices =
+                  fromList
+                    [ ( 0 , [ -1.0 , -1.0 , -1.0 , -1.0 , -1.0 ] )
+                    , ( 2 , [ -1.0 , 1.0 , -1.0 , -1.0 , -1.0 ] )
+                    , ( 4 , [ 1.0 , -1.0 , -1.0 , -1.0 , -1.0 ] )
+                    , ( 6 , [ 1.0 , 1.0 , -1.0 , -1.0 , -1.0 ] )
+                    , ( 8 , [ -1.0 , -1.0 , -1.0 , 1.0 , -1.0 ] )
+                    , ( 10 , [ -1.0 , 1.0 , -1.0 , 1.0 , -1.0 ] )
+                    , ( 12 , [ 1.0 , -1.0 , -1.0 , 1.0 , -1.0 ] )
+                    , ( 14 , [ 1.0 , 1.0 , -1.0 , 1.0 , -1.0 ] )
+                    ]
+              , _ridgeOf = fromList [ 2 , 3 ]
+              }
+          )
+        , ( 18
+          , Ridge
+              { _rvertices =
+                  fromList
+                    [ ( 0 , [ -1.0 , -1.0 , -1.0 , -1.0 , -1.0 ] )
+                    , ( 1 , [ -1.0 , -1.0 , 1.0 , -1.0 , -1.0 ] )
+                    , ( 4 , [ 1.0 , -1.0 , -1.0 , -1.0 , -1.0 ] )
+                    , ( 5 , [ 1.0 , -1.0 , 1.0 , -1.0 , -1.0 ] )
+                    , ( 8 , [ -1.0 , -1.0 , -1.0 , 1.0 , -1.0 ] )
+                    , ( 9 , [ -1.0 , -1.0 , 1.0 , 1.0 , -1.0 ] )
+                    , ( 12 , [ 1.0 , -1.0 , -1.0 , 1.0 , -1.0 ] )
+                    , ( 13 , [ 1.0 , -1.0 , 1.0 , 1.0 , -1.0 ] )
+                    ]
+              , _ridgeOf = fromList [ 2 , 7 ]
+              }
+          )
+        , ( 19
+          , Ridge
+              { _rvertices =
+                  fromList
+                    [ ( 1 , [ -1.0 , -1.0 , 1.0 , -1.0 , -1.0 ] )
+                    , ( 3 , [ -1.0 , 1.0 , 1.0 , -1.0 , -1.0 ] )
+                    , ( 5 , [ 1.0 , -1.0 , 1.0 , -1.0 , -1.0 ] )
+                    , ( 7 , [ 1.0 , 1.0 , 1.0 , -1.0 , -1.0 ] )
+                    , ( 9 , [ -1.0 , -1.0 , 1.0 , 1.0 , -1.0 ] )
+                    , ( 11 , [ -1.0 , 1.0 , 1.0 , 1.0 , -1.0 ] )
+                    , ( 13 , [ 1.0 , -1.0 , 1.0 , 1.0 , -1.0 ] )
+                    , ( 15 , [ 1.0 , 1.0 , 1.0 , 1.0 , -1.0 ] )
+                    ]
+              , _ridgeOf = fromList [ 2 , 8 ]
+              }
+          )
+        , ( 20
+          , Ridge
+              { _rvertices =
+                  fromList
+                    [ ( 4 , [ 1.0 , -1.0 , -1.0 , -1.0 , -1.0 ] )
+                    , ( 5 , [ 1.0 , -1.0 , 1.0 , -1.0 , -1.0 ] )
+                    , ( 6 , [ 1.0 , 1.0 , -1.0 , -1.0 , -1.0 ] )
+                    , ( 7 , [ 1.0 , 1.0 , 1.0 , -1.0 , -1.0 ] )
+                    , ( 12 , [ 1.0 , -1.0 , -1.0 , 1.0 , -1.0 ] )
+                    , ( 13 , [ 1.0 , -1.0 , 1.0 , 1.0 , -1.0 ] )
+                    , ( 14 , [ 1.0 , 1.0 , -1.0 , 1.0 , -1.0 ] )
+                    , ( 15 , [ 1.0 , 1.0 , 1.0 , 1.0 , -1.0 ] )
+                    ]
+              , _ridgeOf = fromList [ 2 , 4 ]
+              }
+          )
+        , ( 21
+          , Ridge
+              { _rvertices =
+                  fromList
+                    [ ( 0 , [ -1.0 , -1.0 , -1.0 , -1.0 , -1.0 ] )
+                    , ( 2 , [ -1.0 , 1.0 , -1.0 , -1.0 , -1.0 ] )
+                    , ( 4 , [ 1.0 , -1.0 , -1.0 , -1.0 , -1.0 ] )
+                    , ( 6 , [ 1.0 , 1.0 , -1.0 , -1.0 , -1.0 ] )
+                    , ( 16 , [ -1.0 , -1.0 , -1.0 , -1.0 , 1.0 ] )
+                    , ( 18 , [ -1.0 , 1.0 , -1.0 , -1.0 , 1.0 ] )
+                    , ( 20 , [ 1.0 , -1.0 , -1.0 , -1.0 , 1.0 ] )
+                    , ( 22 , [ 1.0 , 1.0 , -1.0 , -1.0 , 1.0 ] )
+                    ]
+              , _ridgeOf = fromList [ 3 , 6 ]
+              }
+          )
+        , ( 22
+          , Ridge
+              { _rvertices =
+                  fromList
+                    [ ( 0 , [ -1.0 , -1.0 , -1.0 , -1.0 , -1.0 ] )
+                    , ( 2 , [ -1.0 , 1.0 , -1.0 , -1.0 , -1.0 ] )
+                    , ( 8 , [ -1.0 , -1.0 , -1.0 , 1.0 , -1.0 ] )
+                    , ( 10 , [ -1.0 , 1.0 , -1.0 , 1.0 , -1.0 ] )
+                    , ( 16 , [ -1.0 , -1.0 , -1.0 , -1.0 , 1.0 ] )
+                    , ( 18 , [ -1.0 , 1.0 , -1.0 , -1.0 , 1.0 ] )
+                    , ( 24 , [ -1.0 , -1.0 , -1.0 , 1.0 , 1.0 ] )
+                    , ( 26 , [ -1.0 , 1.0 , -1.0 , 1.0 , 1.0 ] )
+                    ]
+              , _ridgeOf = fromList [ 3 , 5 ]
+              }
+          )
+        , ( 23
+          , Ridge
+              { _rvertices =
+                  fromList
+                    [ ( 0 , [ -1.0 , -1.0 , -1.0 , -1.0 , -1.0 ] )
+                    , ( 4 , [ 1.0 , -1.0 , -1.0 , -1.0 , -1.0 ] )
+                    , ( 8 , [ -1.0 , -1.0 , -1.0 , 1.0 , -1.0 ] )
+                    , ( 12 , [ 1.0 , -1.0 , -1.0 , 1.0 , -1.0 ] )
+                    , ( 16 , [ -1.0 , -1.0 , -1.0 , -1.0 , 1.0 ] )
+                    , ( 20 , [ 1.0 , -1.0 , -1.0 , -1.0 , 1.0 ] )
+                    , ( 24 , [ -1.0 , -1.0 , -1.0 , 1.0 , 1.0 ] )
+                    , ( 28 , [ 1.0 , -1.0 , -1.0 , 1.0 , 1.0 ] )
+                    ]
+              , _ridgeOf = fromList [ 3 , 7 ]
+              }
+          )
+        , ( 24
+          , Ridge
+              { _rvertices =
+                  fromList
+                    [ ( 16 , [ -1.0 , -1.0 , -1.0 , -1.0 , 1.0 ] )
+                    , ( 18 , [ -1.0 , 1.0 , -1.0 , -1.0 , 1.0 ] )
+                    , ( 20 , [ 1.0 , -1.0 , -1.0 , -1.0 , 1.0 ] )
+                    , ( 22 , [ 1.0 , 1.0 , -1.0 , -1.0 , 1.0 ] )
+                    , ( 24 , [ -1.0 , -1.0 , -1.0 , 1.0 , 1.0 ] )
+                    , ( 26 , [ -1.0 , 1.0 , -1.0 , 1.0 , 1.0 ] )
+                    , ( 28 , [ 1.0 , -1.0 , -1.0 , 1.0 , 1.0 ] )
+                    , ( 30 , [ 1.0 , 1.0 , -1.0 , 1.0 , 1.0 ] )
+                    ]
+              , _ridgeOf = fromList [ 3 , 9 ]
+              }
+          )
+        , ( 25
+          , Ridge
+              { _rvertices =
+                  fromList
+                    [ ( 4 , [ 1.0 , -1.0 , -1.0 , -1.0 , -1.0 ] )
+                    , ( 6 , [ 1.0 , 1.0 , -1.0 , -1.0 , -1.0 ] )
+                    , ( 12 , [ 1.0 , -1.0 , -1.0 , 1.0 , -1.0 ] )
+                    , ( 14 , [ 1.0 , 1.0 , -1.0 , 1.0 , -1.0 ] )
+                    , ( 20 , [ 1.0 , -1.0 , -1.0 , -1.0 , 1.0 ] )
+                    , ( 22 , [ 1.0 , 1.0 , -1.0 , -1.0 , 1.0 ] )
+                    , ( 28 , [ 1.0 , -1.0 , -1.0 , 1.0 , 1.0 ] )
+                    , ( 30 , [ 1.0 , 1.0 , -1.0 , 1.0 , 1.0 ] )
+                    ]
+              , _ridgeOf = fromList [ 3 , 4 ]
+              }
+          )
+        , ( 26
+          , Ridge
+              { _rvertices =
+                  fromList
+                    [ ( 20 , [ 1.0 , -1.0 , -1.0 , -1.0 , 1.0 ] )
+                    , ( 21 , [ 1.0 , -1.0 , 1.0 , -1.0 , 1.0 ] )
+                    , ( 22 , [ 1.0 , 1.0 , -1.0 , -1.0 , 1.0 ] )
+                    , ( 23 , [ 1.0 , 1.0 , 1.0 , -1.0 , 1.0 ] )
+                    , ( 28 , [ 1.0 , -1.0 , -1.0 , 1.0 , 1.0 ] )
+                    , ( 29 , [ 1.0 , -1.0 , 1.0 , 1.0 , 1.0 ] )
+                    , ( 30 , [ 1.0 , 1.0 , -1.0 , 1.0 , 1.0 ] )
+                    , ( 31 , [ 1.0 , 1.0 , 1.0 , 1.0 , 1.0 ] )
+                    ]
+              , _ridgeOf = fromList [ 4 , 9 ]
+              }
+          )
+        , ( 27
+          , Ridge
+              { _rvertices =
+                  fromList
+                    [ ( 5 , [ 1.0 , -1.0 , 1.0 , -1.0 , -1.0 ] )
+                    , ( 7 , [ 1.0 , 1.0 , 1.0 , -1.0 , -1.0 ] )
+                    , ( 13 , [ 1.0 , -1.0 , 1.0 , 1.0 , -1.0 ] )
+                    , ( 15 , [ 1.0 , 1.0 , 1.0 , 1.0 , -1.0 ] )
+                    , ( 21 , [ 1.0 , -1.0 , 1.0 , -1.0 , 1.0 ] )
+                    , ( 23 , [ 1.0 , 1.0 , 1.0 , -1.0 , 1.0 ] )
+                    , ( 29 , [ 1.0 , -1.0 , 1.0 , 1.0 , 1.0 ] )
+                    , ( 31 , [ 1.0 , 1.0 , 1.0 , 1.0 , 1.0 ] )
+                    ]
+              , _ridgeOf = fromList [ 4 , 8 ]
+              }
+          )
+        , ( 28
+          , Ridge
+              { _rvertices =
+                  fromList
+                    [ ( 4 , [ 1.0 , -1.0 , -1.0 , -1.0 , -1.0 ] )
+                    , ( 5 , [ 1.0 , -1.0 , 1.0 , -1.0 , -1.0 ] )
+                    , ( 6 , [ 1.0 , 1.0 , -1.0 , -1.0 , -1.0 ] )
+                    , ( 7 , [ 1.0 , 1.0 , 1.0 , -1.0 , -1.0 ] )
+                    , ( 20 , [ 1.0 , -1.0 , -1.0 , -1.0 , 1.0 ] )
+                    , ( 21 , [ 1.0 , -1.0 , 1.0 , -1.0 , 1.0 ] )
+                    , ( 22 , [ 1.0 , 1.0 , -1.0 , -1.0 , 1.0 ] )
+                    , ( 23 , [ 1.0 , 1.0 , 1.0 , -1.0 , 1.0 ] )
+                    ]
+              , _ridgeOf = fromList [ 4 , 6 ]
+              }
+          )
+        , ( 29
+          , Ridge
+              { _rvertices =
+                  fromList
+                    [ ( 4 , [ 1.0 , -1.0 , -1.0 , -1.0 , -1.0 ] )
+                    , ( 5 , [ 1.0 , -1.0 , 1.0 , -1.0 , -1.0 ] )
+                    , ( 12 , [ 1.0 , -1.0 , -1.0 , 1.0 , -1.0 ] )
+                    , ( 13 , [ 1.0 , -1.0 , 1.0 , 1.0 , -1.0 ] )
+                    , ( 20 , [ 1.0 , -1.0 , -1.0 , -1.0 , 1.0 ] )
+                    , ( 21 , [ 1.0 , -1.0 , 1.0 , -1.0 , 1.0 ] )
+                    , ( 28 , [ 1.0 , -1.0 , -1.0 , 1.0 , 1.0 ] )
+                    , ( 29 , [ 1.0 , -1.0 , 1.0 , 1.0 , 1.0 ] )
+                    ]
+              , _ridgeOf = fromList [ 4 , 7 ]
+              }
+          )
+        , ( 30
+          , Ridge
+              { _rvertices =
+                  fromList
+                    [ ( 0 , [ -1.0 , -1.0 , -1.0 , -1.0 , -1.0 ] )
+                    , ( 1 , [ -1.0 , -1.0 , 1.0 , -1.0 , -1.0 ] )
+                    , ( 2 , [ -1.0 , 1.0 , -1.0 , -1.0 , -1.0 ] )
+                    , ( 3 , [ -1.0 , 1.0 , 1.0 , -1.0 , -1.0 ] )
+                    , ( 16 , [ -1.0 , -1.0 , -1.0 , -1.0 , 1.0 ] )
+                    , ( 17 , [ -1.0 , -1.0 , 1.0 , -1.0 , 1.0 ] )
+                    , ( 18 , [ -1.0 , 1.0 , -1.0 , -1.0 , 1.0 ] )
+                    , ( 19 , [ -1.0 , 1.0 , 1.0 , -1.0 , 1.0 ] )
+                    ]
+              , _ridgeOf = fromList [ 5 , 6 ]
+              }
+          )
+        , ( 31
+          , Ridge
+              { _rvertices =
+                  fromList
+                    [ ( 0 , [ -1.0 , -1.0 , -1.0 , -1.0 , -1.0 ] )
+                    , ( 1 , [ -1.0 , -1.0 , 1.0 , -1.0 , -1.0 ] )
+                    , ( 8 , [ -1.0 , -1.0 , -1.0 , 1.0 , -1.0 ] )
+                    , ( 9 , [ -1.0 , -1.0 , 1.0 , 1.0 , -1.0 ] )
+                    , ( 16 , [ -1.0 , -1.0 , -1.0 , -1.0 , 1.0 ] )
+                    , ( 17 , [ -1.0 , -1.0 , 1.0 , -1.0 , 1.0 ] )
+                    , ( 24 , [ -1.0 , -1.0 , -1.0 , 1.0 , 1.0 ] )
+                    , ( 25 , [ -1.0 , -1.0 , 1.0 , 1.0 , 1.0 ] )
+                    ]
+              , _ridgeOf = fromList [ 5 , 7 ]
+              }
+          )
+        , ( 32
+          , Ridge
+              { _rvertices =
+                  fromList
+                    [ ( 16 , [ -1.0 , -1.0 , -1.0 , -1.0 , 1.0 ] )
+                    , ( 17 , [ -1.0 , -1.0 , 1.0 , -1.0 , 1.0 ] )
+                    , ( 18 , [ -1.0 , 1.0 , -1.0 , -1.0 , 1.0 ] )
+                    , ( 19 , [ -1.0 , 1.0 , 1.0 , -1.0 , 1.0 ] )
+                    , ( 24 , [ -1.0 , -1.0 , -1.0 , 1.0 , 1.0 ] )
+                    , ( 25 , [ -1.0 , -1.0 , 1.0 , 1.0 , 1.0 ] )
+                    , ( 26 , [ -1.0 , 1.0 , -1.0 , 1.0 , 1.0 ] )
+                    , ( 27 , [ -1.0 , 1.0 , 1.0 , 1.0 , 1.0 ] )
+                    ]
+              , _ridgeOf = fromList [ 5 , 9 ]
+              }
+          )
+        , ( 33
+          , Ridge
+              { _rvertices =
+                  fromList
+                    [ ( 1 , [ -1.0 , -1.0 , 1.0 , -1.0 , -1.0 ] )
+                    , ( 3 , [ -1.0 , 1.0 , 1.0 , -1.0 , -1.0 ] )
+                    , ( 9 , [ -1.0 , -1.0 , 1.0 , 1.0 , -1.0 ] )
+                    , ( 11 , [ -1.0 , 1.0 , 1.0 , 1.0 , -1.0 ] )
+                    , ( 17 , [ -1.0 , -1.0 , 1.0 , -1.0 , 1.0 ] )
+                    , ( 19 , [ -1.0 , 1.0 , 1.0 , -1.0 , 1.0 ] )
+                    , ( 25 , [ -1.0 , -1.0 , 1.0 , 1.0 , 1.0 ] )
+                    , ( 27 , [ -1.0 , 1.0 , 1.0 , 1.0 , 1.0 ] )
+                    ]
+              , _ridgeOf = fromList [ 5 , 8 ]
+              }
+          )
+        , ( 34
+          , Ridge
+              { _rvertices =
+                  fromList
+                    [ ( 0 , [ -1.0 , -1.0 , -1.0 , -1.0 , -1.0 ] )
+                    , ( 1 , [ -1.0 , -1.0 , 1.0 , -1.0 , -1.0 ] )
+                    , ( 4 , [ 1.0 , -1.0 , -1.0 , -1.0 , -1.0 ] )
+                    , ( 5 , [ 1.0 , -1.0 , 1.0 , -1.0 , -1.0 ] )
+                    , ( 16 , [ -1.0 , -1.0 , -1.0 , -1.0 , 1.0 ] )
+                    , ( 17 , [ -1.0 , -1.0 , 1.0 , -1.0 , 1.0 ] )
+                    , ( 20 , [ 1.0 , -1.0 , -1.0 , -1.0 , 1.0 ] )
+                    , ( 21 , [ 1.0 , -1.0 , 1.0 , -1.0 , 1.0 ] )
+                    ]
+              , _ridgeOf = fromList [ 6 , 7 ]
+              }
+          )
+        , ( 35
+          , Ridge
+              { _rvertices =
+                  fromList
+                    [ ( 16 , [ -1.0 , -1.0 , -1.0 , -1.0 , 1.0 ] )
+                    , ( 17 , [ -1.0 , -1.0 , 1.0 , -1.0 , 1.0 ] )
+                    , ( 18 , [ -1.0 , 1.0 , -1.0 , -1.0 , 1.0 ] )
+                    , ( 19 , [ -1.0 , 1.0 , 1.0 , -1.0 , 1.0 ] )
+                    , ( 20 , [ 1.0 , -1.0 , -1.0 , -1.0 , 1.0 ] )
+                    , ( 21 , [ 1.0 , -1.0 , 1.0 , -1.0 , 1.0 ] )
+                    , ( 22 , [ 1.0 , 1.0 , -1.0 , -1.0 , 1.0 ] )
+                    , ( 23 , [ 1.0 , 1.0 , 1.0 , -1.0 , 1.0 ] )
+                    ]
+              , _ridgeOf = fromList [ 6 , 9 ]
+              }
+          )
+        , ( 36
+          , Ridge
+              { _rvertices =
+                  fromList
+                    [ ( 1 , [ -1.0 , -1.0 , 1.0 , -1.0 , -1.0 ] )
+                    , ( 3 , [ -1.0 , 1.0 , 1.0 , -1.0 , -1.0 ] )
+                    , ( 5 , [ 1.0 , -1.0 , 1.0 , -1.0 , -1.0 ] )
+                    , ( 7 , [ 1.0 , 1.0 , 1.0 , -1.0 , -1.0 ] )
+                    , ( 17 , [ -1.0 , -1.0 , 1.0 , -1.0 , 1.0 ] )
+                    , ( 19 , [ -1.0 , 1.0 , 1.0 , -1.0 , 1.0 ] )
+                    , ( 21 , [ 1.0 , -1.0 , 1.0 , -1.0 , 1.0 ] )
+                    , ( 23 , [ 1.0 , 1.0 , 1.0 , -1.0 , 1.0 ] )
+                    ]
+              , _ridgeOf = fromList [ 6 , 8 ]
+              }
+          )
+        , ( 37
+          , Ridge
+              { _rvertices =
+                  fromList
+                    [ ( 16 , [ -1.0 , -1.0 , -1.0 , -1.0 , 1.0 ] )
+                    , ( 17 , [ -1.0 , -1.0 , 1.0 , -1.0 , 1.0 ] )
+                    , ( 20 , [ 1.0 , -1.0 , -1.0 , -1.0 , 1.0 ] )
+                    , ( 21 , [ 1.0 , -1.0 , 1.0 , -1.0 , 1.0 ] )
+                    , ( 24 , [ -1.0 , -1.0 , -1.0 , 1.0 , 1.0 ] )
+                    , ( 25 , [ -1.0 , -1.0 , 1.0 , 1.0 , 1.0 ] )
+                    , ( 28 , [ 1.0 , -1.0 , -1.0 , 1.0 , 1.0 ] )
+                    , ( 29 , [ 1.0 , -1.0 , 1.0 , 1.0 , 1.0 ] )
+                    ]
+              , _ridgeOf = fromList [ 7 , 9 ]
+              }
+          )
+        , ( 38
+          , Ridge
+              { _rvertices =
+                  fromList
+                    [ ( 1 , [ -1.0 , -1.0 , 1.0 , -1.0 , -1.0 ] )
+                    , ( 5 , [ 1.0 , -1.0 , 1.0 , -1.0 , -1.0 ] )
+                    , ( 9 , [ -1.0 , -1.0 , 1.0 , 1.0 , -1.0 ] )
+                    , ( 13 , [ 1.0 , -1.0 , 1.0 , 1.0 , -1.0 ] )
+                    , ( 17 , [ -1.0 , -1.0 , 1.0 , -1.0 , 1.0 ] )
+                    , ( 21 , [ 1.0 , -1.0 , 1.0 , -1.0 , 1.0 ] )
+                    , ( 25 , [ -1.0 , -1.0 , 1.0 , 1.0 , 1.0 ] )
+                    , ( 29 , [ 1.0 , -1.0 , 1.0 , 1.0 , 1.0 ] )
+                    ]
+              , _ridgeOf = fromList [ 7 , 8 ]
+              }
+          )
+        , ( 39
+          , Ridge
+              { _rvertices =
+                  fromList
+                    [ ( 17 , [ -1.0 , -1.0 , 1.0 , -1.0 , 1.0 ] )
+                    , ( 19 , [ -1.0 , 1.0 , 1.0 , -1.0 , 1.0 ] )
+                    , ( 21 , [ 1.0 , -1.0 , 1.0 , -1.0 , 1.0 ] )
+                    , ( 23 , [ 1.0 , 1.0 , 1.0 , -1.0 , 1.0 ] )
+                    , ( 25 , [ -1.0 , -1.0 , 1.0 , 1.0 , 1.0 ] )
+                    , ( 27 , [ -1.0 , 1.0 , 1.0 , 1.0 , 1.0 ] )
+                    , ( 29 , [ 1.0 , -1.0 , 1.0 , 1.0 , 1.0 ] )
+                    , ( 31 , [ 1.0 , 1.0 , 1.0 , 1.0 , 1.0 ] )
+                    ]
+              , _ridgeOf = fromList [ 8 , 9 ]
+              }
+          )
+        ]
+  }
+[ [ 6 , 7 , 14 , 15 , 22 , 23 , 30 , 31 ]
+, [ 18 , 19 , 22 , 23 , 26 , 27 , 30 , 31 ]
+, [ 3 , 7 , 11 , 15 , 19 , 23 , 27 , 31 ]
+, [ 10 , 11 , 14 , 15 , 26 , 27 , 30 , 31 ]
+, [ 2 , 3 , 6 , 7 , 10 , 11 , 14 , 15 ]
+, [ 2 , 6 , 10 , 14 , 18 , 22 , 26 , 30 ]
+, [ 2 , 3 , 6 , 7 , 18 , 19 , 22 , 23 ]
+, [ 2 , 3 , 10 , 11 , 18 , 19 , 26 , 27 ]
+, [ 12 , 13 , 14 , 15 , 28 , 29 , 30 , 31 ]
+, [ 24 , 25 , 26 , 27 , 28 , 29 , 30 , 31 ]
+, [ 9 , 11 , 13 , 15 , 25 , 27 , 29 , 31 ]
+, [ 8 , 9 , 10 , 11 , 12 , 13 , 14 , 15 ]
+, [ 8 , 9 , 12 , 13 , 24 , 25 , 28 , 29 ]
+, [ 8 , 10 , 12 , 14 , 24 , 26 , 28 , 30 ]
+, [ 8 , 9 , 10 , 11 , 24 , 25 , 26 , 27 ]
+, [ 0 , 1 , 2 , 3 , 8 , 9 , 10 , 11 ]
+, [ 0 , 1 , 2 , 3 , 4 , 5 , 6 , 7 ]
+, [ 0 , 2 , 4 , 6 , 8 , 10 , 12 , 14 ]
+, [ 0 , 1 , 4 , 5 , 8 , 9 , 12 , 13 ]
+, [ 1 , 3 , 5 , 7 , 9 , 11 , 13 , 15 ]
+, [ 4 , 5 , 6 , 7 , 12 , 13 , 14 , 15 ]
+, [ 0 , 2 , 4 , 6 , 16 , 18 , 20 , 22 ]
+, [ 0 , 2 , 8 , 10 , 16 , 18 , 24 , 26 ]
+, [ 0 , 4 , 8 , 12 , 16 , 20 , 24 , 28 ]
+, [ 16 , 18 , 20 , 22 , 24 , 26 , 28 , 30 ]
+, [ 4 , 6 , 12 , 14 , 20 , 22 , 28 , 30 ]
+, [ 20 , 21 , 22 , 23 , 28 , 29 , 30 , 31 ]
+, [ 5 , 7 , 13 , 15 , 21 , 23 , 29 , 31 ]
+, [ 4 , 5 , 6 , 7 , 20 , 21 , 22 , 23 ]
+, [ 4 , 5 , 12 , 13 , 20 , 21 , 28 , 29 ]
+, [ 0 , 1 , 2 , 3 , 16 , 17 , 18 , 19 ]
+, [ 0 , 1 , 8 , 9 , 16 , 17 , 24 , 25 ]
+, [ 16 , 17 , 18 , 19 , 24 , 25 , 26 , 27 ]
+, [ 1 , 3 , 9 , 11 , 17 , 19 , 25 , 27 ]
+, [ 0 , 1 , 4 , 5 , 16 , 17 , 20 , 21 ]
+, [ 16 , 17 , 18 , 19 , 20 , 21 , 22 , 23 ]
+, [ 1 , 3 , 5 , 7 , 17 , 19 , 21 , 23 ]
+, [ 16 , 17 , 20 , 21 , 24 , 25 , 28 , 29 ]
+, [ 1 , 5 , 9 , 13 , 17 , 21 , 25 , 29 ]
+, [ 17 , 19 , 21 , 23 , 25 , 27 , 29 , 31 ]
+]
+40
+: 5
+nneighedges: 10
+nneighfacets: 5
+nneighvertices: 5
+nneighedges: 10
+nneighfacets: 5
+nneighvertices: 5
+nneighedges: 10
+nneighfacets: 5
+nneighvertices: 5
+nneighedges: 10
+nneighfacets: 5
+nneighvertices: 5
+nneighedges: 10
+nneighfacets: 5
+nneighvertices: 5
+nneighedges: 10
+nneighfacets: 5
+nneighvertices: 5
+nneighedges: 10
+nneighfacets: 5
+nneighvertices: 5
+nneighedges: 10
+nneighfacets: 5
+nneighvertices: 5
+nneighedges: 10
+nneighfacets: 5
+nneighvertices: 5
+nneighedges: 10
+nneighfacets: 5
+nneighvertices: 5
+nneighedges: 10
+nneighfacets: 5
+nneighvertices: 5
+nneighedges: 10
+nneighfacets: 5
+nneighvertices: 5
+nneighedges: 10
+nneighfacets: 5
+nneighvertices: 5
+nneighedges: 10
+nneighfacets: 5
+nneighvertices: 5
+nneighedges: 10
+nneighfacets: 5
+nneighvertices: 5
+nneighedges: 10
+nneighfacets: 5
+nneighvertices: 5
+nneighedges: 10
+nneighfacets: 5
+nneighvertices: 5
+nneighedges: 10
+nneighfacets: 5
+nneighvertices: 5
+nneighedges: 10
+nneighfacets: 5
+nneighvertices: 5
+nneighedges: 10
+nneighfacets: 5
+nneighvertices: 5
+nneighedges: 10
+nneighfacets: 5
+nneighvertices: 5
+nneighedges: 10
+nneighfacets: 5
+nneighvertices: 5
+nneighedges: 10
+nneighfacets: 5
+nneighvertices: 5
+nneighedges: 10
+nneighfacets: 5
+nneighvertices: 5
+nneighedges: 10
+nneighfacets: 5
+nneighvertices: 5
+nneighedges: 10
+nneighfacets: 5
+nneighvertices: 5
+nneighedges: 10
+nneighfacets: 5
+nneighvertices: 5
+nneighedges: 10
+RETURN

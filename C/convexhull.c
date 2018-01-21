@@ -84,6 +84,7 @@ void unionv(VertexT** vs1, VertexT* vs2, unsigned l1, unsigned l2, unsigned* l){
       (*l)++;
     }
   }
+  qsort(*vs1, *l, sizeof(VertexT), cmpvertices); // du coup pas besoin d'ordonner avant ?
 }
 
 RidgeT* mergeRidges(RidgeT* ridges, unsigned nridges, unsigned* newlength){
@@ -95,37 +96,37 @@ RidgeT* mergeRidges(RidgeT* ridges, unsigned nridges, unsigned* newlength){
          ridges[i].ridgeOf2 == ridges[j].ridgeOf2)
       {
         printf("to merge\n");
-//         unsigned l;
-// //        ridges[i].vertices =
-//         unionv(&(ridges[i].vertices), ridges[j].vertices,
-//                  ridges[i].nvertices, ridges[j].nvertices, &l);
-//         ridges[i].nvertices = l;
-        for(unsigned v=0; v<ridges[j].nvertices; v++){
-          // unsigned pushed;
-          // appendv(ridges[j].vertices[v], &(ridges[i].vertices), ridges[i].nvertices, &pushed);
-          // if(pushed){
-          //   ridges[i].nvertices++;
-          // }
-          unsigned flag = 1;
-          for(unsigned r=0; r<ridges[i].nvertices; r++){
-            if(ridges[j].vertices[v].id == ridges[i].vertices[r].id){
-              flag = 0;
-              break;
-            }
-          }
-          if(flag==1){
-            ridges[i].vertices = realloc(ridges[i].vertices, (ridges[i].nvertices+1)*sizeof(VertexT));
-            ridges[i].vertices[ridges[i].nvertices].id = ridges[j].vertices[v].id;
-            ridges[i].vertices[ridges[i].nvertices].point = ridges[j].vertices[v].point;
-            // ridges[i].vertices[ridges[i].nvertices].point = malloc(4*sizeof(double));//ridges[j].vertices[v].point;
-            // //ridges[i].vertices[ridges[i].nvertices].point = ridges[j].vertices[v].point;
-            // ridges[i].vertices[ridges[i].nvertices].point[0] = 0;//ridges[j].vertices[v].point[0];
-            // ridges[i].vertices[ridges[i].nvertices].point[1] = 1;//ridges[j].vertices[v].point[1];
-            // ridges[i].vertices[ridges[i].nvertices].point[2] = 2;//ridges[j].vertices[v].point[2];
-            // ridges[i].vertices[ridges[i].nvertices].point[3] = 3;//ridges[j].vertices[v].point[3];
-            ridges[i].nvertices++;
-          }
-        }
+        unsigned l;
+//        ridges[i].vertices =
+        unionv(&(ridges[i].vertices), ridges[j].vertices,
+                 ridges[i].nvertices, ridges[j].nvertices, &l);
+        ridges[i].nvertices = l;
+        // for(unsigned v=0; v<ridges[j].nvertices; v++){
+        //   // unsigned pushed;
+        //   // appendv(ridges[j].vertices[v], &(ridges[i].vertices), ridges[i].nvertices, &pushed);
+        //   // if(pushed){
+        //   //   ridges[i].nvertices++;
+        //   // }
+        //   unsigned flag = 1;
+        //   for(unsigned r=0; r<ridges[i].nvertices; r++){
+        //     if(ridges[j].vertices[v].id == ridges[i].vertices[r].id){
+        //       flag = 0;
+        //       break;
+        //     }
+        //   }
+        //   if(flag==1){
+        //     ridges[i].vertices = realloc(ridges[i].vertices, (ridges[i].nvertices+1)*sizeof(VertexT));
+        //     ridges[i].vertices[ridges[i].nvertices].id = ridges[j].vertices[v].id;
+        //     ridges[i].vertices[ridges[i].nvertices].point = ridges[j].vertices[v].point;
+        //     // ridges[i].vertices[ridges[i].nvertices].point = malloc(4*sizeof(double));//ridges[j].vertices[v].point;
+        //     // //ridges[i].vertices[ridges[i].nvertices].point = ridges[j].vertices[v].point;
+        //     // ridges[i].vertices[ridges[i].nvertices].point[0] = 0;//ridges[j].vertices[v].point[0];
+        //     // ridges[i].vertices[ridges[i].nvertices].point[1] = 1;//ridges[j].vertices[v].point[1];
+        //     // ridges[i].vertices[ridges[i].nvertices].point[2] = 2;//ridges[j].vertices[v].point[2];
+        //     // ridges[i].vertices[ridges[i].nvertices].point[3] = 3;//ridges[j].vertices[v].point[3];
+        //     ridges[i].nvertices++;
+        //   }
+        // }
         printf("nvertices: %d\n", ridges[i].nvertices);
         printf("%d\n", ridges[i].vertices[ridges[i].nvertices-1].id);
         printf("%f\n", ridges[i].vertices[ridges[i].nvertices-1].point[0]);
@@ -249,15 +250,6 @@ double squaredDistance(double* p1, double* p2, unsigned dim){
 // }
 
 double ridgeMaxDistance(RidgeT ridge, unsigned v, unsigned dim){
-  // double dists[(dim-1)*(dim-2)/2]; // 0 for dim2
-  // unsigned count=0;
-  // for(unsigned v1=0; v1<dim-2; v1++){
-  //   for(unsigned v2=v1+1; v2<dim-1; v2++){
-  //     dists[count] = squaredDistance(ridge.vertices[v1].point, ridge.vertices[v2].point, dim);
-  //   }
-  // }
-  // qsort(dists, (dim-1)*(dim-2)/2, sizeof(double), cmpfuncdbl);
-  // return dists[dim-2];
   double dists[ridge.nvertices-1];
   unsigned count = 0;
   for(unsigned vv=0; vv<ridge.nvertices; vv++){
@@ -267,14 +259,14 @@ double ridgeMaxDistance(RidgeT ridge, unsigned v, unsigned dim){
     }
   }
   qsort(dists, ridge.nvertices-1, sizeof(double), cmpfuncdbl);
-  printf("dists[0]: %f\n", dists[0]);
-  return dists[0];
+  return dists[1];
 }
 
 unsigned* neighVertices(unsigned id, RidgeT* alledges, unsigned nedges,
                         unsigned dim, unsigned* length)
 { // does not work for dim 2: ridges are singletons !
   // wrong in dim4 : two points in a ridge are not necessarily connected
+  //    ok with merged ridges
   unsigned* neighs = malloc(0);
   *length = 0;
   for(unsigned e=0; e<nedges; e++){
