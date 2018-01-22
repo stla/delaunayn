@@ -1,9 +1,14 @@
 module ConvexHull.ConvexHull
   where
+import           Control.Arrow          ((***))
 import           Control.Monad          (unless, when)
 import           ConvexHull.CConvexHull
 import           ConvexHull.Types
 import qualified Data.IntMap.Strict     as IM
+import           Data.List
+import qualified Data.HashMap.Strict    as H
+import           Data.Set               (Set)
+import qualified Data.Set               as S
 import           Data.Tuple             (swap)
 import           Foreign.C.Types
 import           Foreign.Marshal.Alloc  (free, mallocBytes)
@@ -39,9 +44,21 @@ convexHull points triangulate = do
       free resultPtr
       return result
 
+-- | whether a pair of vertices form an edge
+isEdge :: ConvexHull -> (Index, Index) -> Bool
+isEdge hull (i,j) = Pair i j `H.member` _alledges hull
+
+-- | edge as pair of points
+toPoints :: ConvexHull -> (Index, Index) -> Maybe ([Double], [Double])
+toPoints hull (i,j) = H.lookup (Pair i j) (_alledges hull)
+
+-- | edge as pair of points, no check
+toPoints' :: ConvexHull -> (Index, Index) -> ([Double], [Double])
+toPoints' hull (i,j) = (H.!) (_alledges hull) (Pair i j)
+
 -- | get vertices of a convex hull
 hullVertices :: ConvexHull -> [[Double]]
-hullVertices chull = map _point (IM.elems (_allvertices chull))
+hullVertices hull = map _point (IM.elems (_allvertices hull))
 
 -- -- | get ridges of a convex hull
 -- hullEdges :: ConvexHull -> [([Double], [Double])]
@@ -54,24 +71,23 @@ xxx chull = map (IM.keys . _rvertices) (IM.elems (_allridges chull))
 faceVertices :: Face -> [[Double]]
 faceVertices = IM.elems . _fvertices
 
--- -- | get ridges of a face
--- faceEdges :: Face -> [([Double], [Double])]
--- faceEdges face = map ((\x -> (x!!0, x!!1)) . IM.elems) (_ridges face)
---
--- -- | whether a pair of vertices form an ridge
--- isEdge :: ConvexHull -> (Index, Index) -> Bool
--- isEdge hull ridge = (ridge `elem` ridges) || (swap ridge `elem` ridges)
---   where
---     ridges = map ((\x -> (x!!0, x!!1)) . IM.keys) (IM.elems (_allridges hull))
---
--- -- | get faces ids an ridge belongs to
--- ridgeOf :: ConvexHull -> (Index, Index) -> Maybe [Int] -- c'est dans ridge->top et ridge->bottom
--- ridgeOf hull v1v2@(v1, v2) =
---   if not (isEdge hull v1v2)
---     then Nothing
---     else Just $ IM.keys (IM.filter (elem v1v2') facesEdges)
---   where
---     ridgeIds :: Edge -> (Index, Index)
---     ridgeIds ridge = (\x -> (x!!0, x!!1)) (IM.keys ridge)
---     facesEdges = IM.map (map ridgeIds . _ridges) (_faces hull)
---     v1v2' = if v1<v2 then v1v2 else (v2,v1)
+-- | get edges of a face as a map
+faceEdges :: ConvexHull -> Face -> EdgeMap
+faceEdges hull face = H.filterWithKey (\x _ -> x `elem` pairs) (_alledges hull)
+  where
+    pairs = [Pair i j | i <- faceVerticesIndices,
+                        j <- faceVerticesIndices, j > i]
+    faceVerticesIndices = IM.keys (_fvertices face)
+
+
+-- | get faces ids an edge belongs to
+edgeOf :: ConvexHull -> (Index, Index) -> Maybe [Int]
+edgeOf hull v1v2@(v1, v2) =
+  if not (isEdge hull v1v2)
+    then Nothing
+    else Just $ IM.keys (IM.filter (elem v1v2') facesEdges)
+  where
+    facesEdges = IM.map (H.keys . faceEdges hull) (_faces hull)
+    v1v2' = if v1<v2 then Pair v1 v2 else Pair v2 v1
+
+-- | group faces of the same family : résultat ? edges et vertices ?

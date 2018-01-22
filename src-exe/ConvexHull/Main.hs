@@ -3,6 +3,7 @@ module Main
 import ConvexHull
 import Text.Show.Pretty
 import Data.List
+import qualified Data.Set as S
 
 main :: IO ()
 main = do
@@ -10,7 +11,7 @@ main = do
   -- pPrint chull
 
   let squareLattice = [[0,0],[0,1],[0,2],[1,0],[1,1],[1,2],[2,0],[2,1],[2,2]]
-  chull <- convexHull squareLattice False
+  chull <- convexHull squareLattice True
   putStrLn "\n--- SQUARE LATTICE ---"
   pPrint chull
 
@@ -22,7 +23,7 @@ main = do
              ,[ 1,-1, 1]
              ,[ 1, 1,-1]
              ,[ 1, 1, 1]]
-  chull2 <- convexHull cube False
+  chull2 <- convexHull cube True
   putStrLn "\n--- CUBE ---"
   pPrint chull2
 
@@ -81,8 +82,9 @@ main = do
   --             ,[ 1, 1, 1, 1, 1]]
   -- chull <- convexHull cube5 False
   -- pPrint chull
-  -- pPrint $ xxx chull
+  -- pPrint $ length $ xxx chull
   -- pPrint $ length $ nub $ xxx chull
+  -- pPrint $ S.size (_alledges chull)
 
   -- let square = [[0,0],[0,1],[1,0],[1,1]]
   -- chull <- convexHull square False

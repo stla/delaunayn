@@ -7,6 +7,7 @@ import           Data.Map.Strict       (Map)
 import qualified Data.Map.Strict       as M
 import           Data.Maybe
 import           Delaunay.CDelaunay
+import           Delaunay.Types
 import           Foreign.C.String
 import           Foreign.C.Types
 import           Foreign.Marshal.Alloc (free, mallocBytes)
