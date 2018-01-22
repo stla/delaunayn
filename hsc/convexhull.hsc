@@ -15,6 +15,8 @@ import qualified Data.HashMap.Strict as H
 import           Data.Tuple.Extra    (both)
 import           Foreign
 import           Foreign.C.Types
+import Foreign.C.String
+
 
 #include "convexhull.h"
 
@@ -312,6 +314,8 @@ foreign import ccall unsafe "convexHull" c_convexhull
   -> CUInt -- dim
   -> CUInt -- npoints
   -> CUInt -- triangulate
+  -> CUInt -- print to stdout
+  -> CString -- summary file
   -> Ptr CUInt -- exitcode
   -> IO (Ptr CConvexHull)
 

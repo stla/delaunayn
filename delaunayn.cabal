@@ -31,6 +31,7 @@ library
                      , ConvexHull.ConvexHull
                      , ConvexHull.CConvexHull
                      , ConvexHull.Types
+                     , ConvexHull.Examples
   build-depends:       base >= 4.7 && < 5
                      , directory
                      , split
@@ -41,6 +42,7 @@ library
                      , ilist
                      , hashable
                      , unordered-containers
+                     , random
   other-extensions:    ForeignFunctionInterface
                     --  , DuplicateRecordFields
   default-language:    Haskell2010

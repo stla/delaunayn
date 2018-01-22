@@ -1,13 +1,13 @@
 module ConvexHull.Types
   where
-import           Data.IntMap.Strict (IntMap)
-import           Data.Map.Strict    (Map)
-import           Data.IntSet        (IntSet)
-import           Data.Set           (Set)
-import Data.Hashable
-import Data.HashMap.Strict (HashMap)
+import           Data.Hashable
+import           Data.HashMap.Strict (HashMap)
+import           Data.IntMap.Strict  (IntMap)
+import           Data.IntSet         (IntSet)
+import           Data.Map.Strict     (Map)
+-- import           Data.Set            (Set)
 
-type Index = Int -- not used here but used in ConvexHull.ConvexHull
+type Index = Int
 type IndexMap = IntMap
 type IndexSet = IntSet
 
