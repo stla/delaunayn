@@ -35,7 +35,7 @@ data Ridge = Ridge {
 
 data Face = Face {
     _fvertices :: IndexMap [Double]
-  , _ridges    :: [Ridge]
+  , _ridges    :: IntMap Ridge
   , _centroid  :: [Double]
   , _normal    :: [Double]
   , _offset    :: Double

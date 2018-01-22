@@ -1,16 +1,12 @@
 module ConvexHull.ConvexHull
   where
-import           Control.Arrow          ((***))
 import           Control.Monad          (unless, when)
 import           ConvexHull.CConvexHull
 import           ConvexHull.Types
+import qualified Data.HashMap.Strict    as H
 import qualified Data.IntMap.Strict     as IM
 import           Data.List
-import qualified Data.HashMap.Strict    as H
-import Data.Maybe
-import           Data.Set               (Set)
-import qualified Data.Set               as S
-import           Data.Tuple             (swap)
+import           Data.Maybe
 import           Foreign.C.Types
 import           Foreign.Marshal.Alloc  (free, mallocBytes)
 import           Foreign.Marshal.Array  (pokeArray)
@@ -94,10 +90,12 @@ edgeOf hull v1v2@(v1, v2) =
 -- | group faces of the same family
 groupedFaces :: ConvexHull -> [(Maybe Int, IndexMap [Double], EdgeMap)]
 groupedFaces hull =
-  zip3 (map head families) (map (foldr IM.union IM.empty) verticesGroups) (map (foldr delta H.empty) edgesGroups)
+  zip3 (map head families) (map (foldr IM.union IM.empty) verticesGroups)
+       (map (foldr delta H.empty) edgesGroups)
   where
     faces          = IM.elems (_faces hull)
-    facesGroups    = groupBy (\f1 f2 -> isJust (_family f1) && (_family f1 == _family f2)) faces
+    facesGroups    = groupBy (\f1 f2 -> isJust (_family f1) &&
+                                        (_family f1 == _family f2)) faces
     edgesGroups    = map (map _edges) facesGroups
     verticesGroups = map (map _fvertices) facesGroups
     families       = map (map _family) facesGroups

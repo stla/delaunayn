@@ -19,6 +19,26 @@ double* getpoint(double* points, unsigned dim, unsigned id){
   return out;
 }
 
+/* test equality of two sorted arrays */
+unsigned equalarraysu(unsigned* array1, unsigned* array2, unsigned length){
+  unsigned i;
+  for(i=0; i < length; i++){
+    if(array1[i] != array2[i]){
+      break;
+    }
+  }
+  return i == length;
+}
+
+/* return ids of a vector of VertexT */
+unsigned* map_vertexid(VertexT* vertices, unsigned nvertices){
+  unsigned* ids = malloc(nvertices * sizeof(unsigned));
+  for(unsigned v=0; v < nvertices; v++){
+    ids[v] = vertices[v].id;
+  }
+  return ids;
+}
+
 // void deepCopyRidge(RidgeT* src, RidgeT* dest) { et dim !
 //     dest = malloc(sizeof(RidgeT));
 //     *dest = *src;
@@ -29,6 +49,7 @@ double* getpoint(double* points, unsigned dim, unsigned id){
 //     }
 // }
 
+/* deep copy of a ridge */
 RidgeT copyRidge(RidgeT ridge, unsigned dim){
   RidgeT out;
   out.ridgeOf1  = ridge.ridgeOf1;
@@ -45,6 +66,7 @@ RidgeT copyRidge(RidgeT ridge, unsigned dim){
   return out;
 }
 
+/* append to a vector of unsigned */
 void appendu(unsigned x, unsigned** array, unsigned length, unsigned* flag){
   *flag = 1;
   for(unsigned i=0; i<length; i++){
@@ -59,6 +81,7 @@ void appendu(unsigned x, unsigned** array, unsigned length, unsigned* flag){
   }
 }
 
+/* append to a vector of VertexT */
 void appendv(VertexT x, VertexT** array, unsigned length, unsigned* flag){
   *flag = 1;
   for(unsigned i=0; i<length; i++){
@@ -73,6 +96,7 @@ void appendv(VertexT x, VertexT** array, unsigned length, unsigned* flag){
   }
 }
 
+/* union of two vectors of VertexT */
 void unionv(VertexT** vs1, VertexT* vs2, unsigned l1, unsigned l2, unsigned* l){
   *l = l1;
   for(unsigned v=0; v<l2; v++){
@@ -86,8 +110,7 @@ void unionv(VertexT** vs1, VertexT* vs2, unsigned l1, unsigned l2, unsigned* l){
                                                 // si au cas où il n'y a pas de merge
 }
 
-// TODO: simplifier pour dim 2, 3 (et 4?)
-
+/* merge ridges with same ridgeOf's */
 RidgeT* mergeRidges(RidgeT* ridges, unsigned nridges, unsigned* newlength){
   // http://www.c4learn.com/c-programs/to-delete-duplicate-elements-in-array.html
   *newlength = nridges;
@@ -172,10 +195,12 @@ RidgeT* mergeRidges(RidgeT* ridges, unsigned nridges, unsigned* newlength){
   return out;
 }
 
+/* all ridges from the ridges stored in the faces */
 RidgeT* allRidges(FaceT *faces, unsigned nfaces, unsigned dim, unsigned* length){
   RidgeT* out = malloc(faces[0].nridges * sizeof(RidgeT));
   for(unsigned i=0; i < faces[0].nridges; i++){
     out[i] = copyRidge(faces[0].ridges[i], dim);
+    out[i].id = i;
     // RidgeT out[i];
     // deepCopyRidge(&(faces[0].ridges[i]), &(out[i]));
   }
@@ -201,6 +226,7 @@ RidgeT* allRidges(FaceT *faces, unsigned nfaces, unsigned dim, unsigned* length)
       if(count == n){
         out          = realloc(out, (*length+1) * sizeof(RidgeT));
         out[*length] = copyRidge(faces[f].ridges[j], dim);
+        out[*length].id = *length;
         // RidgeT out[*length];
         // deepCopyRidge(&(faces[f].ridges[j]), &(out[*length]));
         (*length)++;
@@ -211,9 +237,32 @@ RidgeT* allRidges(FaceT *faces, unsigned nfaces, unsigned dim, unsigned* length)
   return out;
 }
 
+/* assign ids to the ridges stored in the faces */
+void assignRidgesIds(FaceT** faces, unsigned nfaces, RidgeT* allridges,
+                     unsigned nallridges)
+{
+  for(unsigned f=0; f < nfaces; f++){
+    for(unsigned fr=0; fr < (*(*faces + f)).nridges; fr++){
+      for(unsigned r=0; r < nallridges; r++){
+        if((allridges[r].nvertices == (*(*faces + f)).ridges[fr].nvertices) &&
+            equalarraysu(map_vertexid(allridges[r].vertices,
+                                      allridges[r].nvertices),
+                         map_vertexid((*(*faces + f)).ridges[fr].vertices,
+                                      allridges[r].nvertices),
+                         allridges[r].nvertices))
+        {
+          (*(*faces + f)).ridges[fr].id = allridges[r].id;
+          break;
+        }
+      }
+    }
+  }
+}
+
+/* squared distance between two points */
 double squaredDistance(double* p1, double* p2, unsigned dim){
   double out = 0;
-  for(unsigned i=0; i<dim; i++){
+  for(unsigned i=0; i < dim; i++){
     out += square(p1[i] - p2[i]);
   }
   return out;
@@ -239,13 +288,14 @@ double squaredDistance(double* p1, double* p2, unsigned dim){
 //   return out;
 // }
 
+/* the threshold distance to detect neighbor vertices */
 double ridgeMaxDistance(RidgeT ridge, unsigned v, unsigned dim){
   double dists[ridge.nvertices-1];
   unsigned count = 0;
-  for(unsigned vv=0; vv<ridge.nvertices; vv++){
-    if(vv != v){
+  for(unsigned w=0; w < ridge.nvertices; w++){
+    if(w != v){
       dists[count] = squaredDistance(ridge.vertices[v].point,
-                                     ridge.vertices[vv].point, dim);
+                                     ridge.vertices[w].point, dim);
       count++;
     }
   }
@@ -253,26 +303,27 @@ double ridgeMaxDistance(RidgeT ridge, unsigned v, unsigned dim){
   return dists[1];
 }
 
+/* neighbor vertices of a vertex from all ridges*/
 unsigned* neighVertices(unsigned id, RidgeT* allridges, unsigned nridges,
-                        unsigned dim, unsigned* length)
+                        unsigned dim, unsigned* lengthout)
 { // does not work for dim 2: ridges are singletons ! => les neighs avec les faces - fonction à part
   // wrong in dim4 : two points in a ridge are not necessarily connected
   //    ok with merged ridges
   unsigned* neighs = malloc(0);
-  *length = 0;
+  *lengthout = 0;
   for(unsigned e=0; e<nridges; e++){
     for(unsigned v=0; v<allridges[e].nvertices; v++){
       if(id == allridges[e].vertices[v].id){
-        for(unsigned vv=0; vv<allridges[e].nvertices; vv++){
-          if(vv != v && (dim == 3 || // dim3 pas besoin de tester la distance: il n'y a que deux vertices connectés
-             squaredDistance(allridges[e].vertices[vv].point,
-                            allridges[e].vertices[v].point, dim) <=
+        for(unsigned w=0; w<allridges[e].nvertices; w++){
+          if(w != v && (dim == 3 || // dim3 pas besoin de tester la distance: il n'y a que deux vertices connectés
+             squaredDistance(allridges[e].vertices[w].point,
+                             allridges[e].vertices[v].point, dim) <=
               ridgeMaxDistance(allridges[e], v, dim)))
           {
             unsigned pushed;
-            appendu(allridges[e].vertices[vv].id, &neighs, *length, &pushed);
+            appendu(allridges[e].vertices[w].id, &neighs, *lengthout, &pushed);
             if(pushed){
-              (*length)++;
+              (*lengthout)++;
             }
           }
         }
@@ -292,6 +343,7 @@ unsigned* neighVertices(unsigned id, RidgeT* allridges, unsigned nridges,
   return neighs;
 }
 
+/* neighbor edges of a vertex */
 unsigned* neighEdges(unsigned id, RidgeT* allridges, unsigned nridges,
                      unsigned* length)
 {
@@ -314,7 +366,10 @@ unsigned* neighEdges(unsigned id, RidgeT* allridges, unsigned nridges,
   return neighs;
 }
 
-unsigned areElementsOf(unsigned x1, unsigned x2, unsigned* array, unsigned length){
+/* whether x1 and x2 belong to array */
+unsigned areElementsOf(unsigned x1, unsigned x2, unsigned* array,
+                       unsigned length)
+{
   unsigned count = 0;
   for(unsigned i=0; (i < length) && (count < 2) ; i++){
     if(x1 == array[i] || x2 == array[i]){
@@ -324,17 +379,20 @@ unsigned areElementsOf(unsigned x1, unsigned x2, unsigned* array, unsigned lengt
   return count==2;
 }
 
+/* make face edges from all edges */
 unsigned** faceEdges(FaceT face, unsigned** alledges, unsigned nalledges,
                       unsigned* lengthout)
 {
   *lengthout = 0;
-  unsigned faceverticesids[face.nvertices];
-  for(unsigned v=0; v < face.nvertices; v++){
-    faceverticesids[v] = face.vertices[v].id;
-  }
+  // unsigned faceverticesids[face.nvertices];
+  // for(unsigned v=0; v < face.nvertices; v++){
+  //   faceverticesids[v] = face.vertices[v].id;
+  // }
+  unsigned* faceverticesids = map_vertexid(face.vertices, face.nvertices);
   unsigned flags[nalledges];
   for(unsigned e=0; e < nalledges; e++){
-    if(areElementsOf(alledges[e][0], alledges[e][1], faceverticesids, face.nvertices))
+    if(areElementsOf(alledges[e][0], alledges[e][1], faceverticesids,
+                     face.nvertices))
     {
       flags[e] = 1;
       (*lengthout)++;
@@ -345,7 +403,7 @@ unsigned** faceEdges(FaceT face, unsigned** alledges, unsigned nalledges,
   unsigned** out = malloc(*lengthout * sizeof(unsigned*));
   unsigned count = 0;
   for(unsigned e=0; e < nalledges; e++){
-    if(flags[e]==1){
+    if(flags[e] == 1){
       out[count] = alledges[e];
       count++;
     }
@@ -353,6 +411,7 @@ unsigned** faceEdges(FaceT face, unsigned** alledges, unsigned nalledges,
   return out;
 }
 
+/* all edges from all vertices */
 unsigned** allEdges(FullVertexT* vertices, unsigned nvertices,
                     unsigned outlength)
 {
@@ -399,6 +458,7 @@ unsigned** allEdges(FullVertexT* vertices, unsigned nvertices,
 // un ridge est simplicial ; pour l'hypercube il y a 2 ridges entre 2 faces,
 // ils forment le carré à l'intersection
 
+/* main function */
 ConvexHullT* convexHull(
 	double*   points,
 	unsigned  dim,
@@ -542,6 +602,7 @@ ConvexHullT* convexHull(
               /**/
               i_ridge++;
             }
+            /* merge triangulated ridges */
             if(dim > 3){
               unsigned l;
               faces[i_facet].ridges  = mergeRidges(ridges, nridges, &l);
@@ -562,15 +623,19 @@ ConvexHullT* convexHull(
         i_facet++;
       }
     }
+    /* make unique ridges */
     unsigned n_allridges;
     RidgeT* allridges = allRidges(faces, nfaces, dim, &n_allridges);
     printf("nallridges: %d\n", n_allridges);
+    /* assign ridges ids to the ridges stored in the faces */
+    assignRidgesIds(&faces, nfaces, allridges, n_allridges);
     // unsigned n_allridges;
     // RidgeT* allridges  = mergeRidges(allridges0, n_allridges0, &n_allridges);
     // printf("nallridges: %d\n", n_allridges);
     // printf("last id: %d\n", allridges[n_allridges-1].vertices[allridges[n_allridges-1].nvertices-1].id);
     // printf("last point: %f\n", allridges[n_allridges-1].vertices[allridges[n_allridges-1].nvertices-1].point[0]);
     //free(allridges0);
+
     /* all vertices */
     unsigned nvertices = qh->num_vertices;
     FullVertexT* vertices = malloc(nvertices * sizeof(FullVertexT));
