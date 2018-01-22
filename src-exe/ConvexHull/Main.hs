@@ -23,7 +23,7 @@ main = do
              ,[ 1,-1, 1]
              ,[ 1, 1,-1]
              ,[ 1, 1, 1]]
-  chull2 <- convexHull cube True
+  chull2 <- convexHull cube False
   putStrLn "\n--- CUBE ---"
   pPrint chull2
 

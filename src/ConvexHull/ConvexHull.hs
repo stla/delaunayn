@@ -7,6 +7,7 @@ import           ConvexHull.Types
 import qualified Data.IntMap.Strict     as IM
 import           Data.List
 import qualified Data.HashMap.Strict    as H
+import Data.Maybe
 import           Data.Set               (Set)
 import qualified Data.Set               as S
 import           Data.Tuple             (swap)
@@ -71,13 +72,13 @@ xxx chull = map (IM.keys . _rvertices) (IM.elems (_allridges chull))
 faceVertices :: Face -> [[Double]]
 faceVertices = IM.elems . _fvertices
 
--- | get edges of a face as a map
-faceEdges :: ConvexHull -> Face -> EdgeMap
-faceEdges hull face = H.filterWithKey (\x _ -> x `elem` pairs) (_alledges hull)
-  where
-    pairs = [Pair i j | i <- faceVerticesIndices,
-                        j <- faceVerticesIndices, j > i]
-    faceVerticesIndices = IM.keys (_fvertices face)
+-- -- | get edges of a face as a map ; now it is in _edges face
+-- faceEdges :: ConvexHull -> Face -> EdgeMap
+-- faceEdges hull face = H.filterWithKey (\x _ -> x `elem` pairs) (_alledges hull)
+--   where
+--     pairs = [Pair i j | i <- faceVerticesIndices,
+--                         j <- faceVerticesIndices, j > i]
+--     faceVerticesIndices = IM.keys (_fvertices face)
 
 
 -- | get faces ids an edge belongs to
@@ -87,7 +88,18 @@ edgeOf hull v1v2@(v1, v2) =
     then Nothing
     else Just $ IM.keys (IM.filter (elem v1v2') facesEdges)
   where
-    facesEdges = IM.map (H.keys . faceEdges hull) (_faces hull)
+    facesEdges = IM.map (H.keys . _edges) (_faces hull)
     v1v2' = if v1<v2 then Pair v1 v2 else Pair v2 v1
 
--- | group faces of the same family : résultat ? edges et vertices ?
+-- | group faces of the same family
+groupedFaces :: ConvexHull -> [(Maybe Int, IndexMap [Double], EdgeMap)]
+groupedFaces hull =
+  zip3 (map head families) (map (foldr IM.union IM.empty) verticesGroups) (map (foldr delta H.empty) edgesGroups)
+  where
+    faces          = IM.elems (_faces hull)
+    facesGroups    = groupBy (\f1 f2 -> isJust (_family f1) && (_family f1 == _family f2)) faces
+    edgesGroups    = map (map _edges) facesGroups
+    verticesGroups = map (map _fvertices) facesGroups
+    families       = map (map _family) facesGroups
+    delta :: EdgeMap -> EdgeMap -> EdgeMap
+    delta e1 e2 = H.difference (H.union e1 e2) (H.intersection e1 e2)
