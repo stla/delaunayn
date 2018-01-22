@@ -12,6 +12,7 @@ import Data.List.Index (imapM)
 import           Data.IntMap.Strict    (IntMap)
 import qualified Data.IntMap.Strict    as IM
 import qualified Data.IntSet           as IS
+import qualified Data.Set as S
 
 #include "convexhull.h"
 
@@ -52,8 +53,8 @@ data CVertex' = CVertex' {
   , __nneighfacets :: CUInt
   , __neighvertices :: Ptr CUInt
   , __nneighvertices :: CUInt
-  , __neighedges :: Ptr CUInt
-  , __nneighedges :: CUInt
+  , __neighridges :: Ptr CUInt
+  , __nneighridges :: CUInt
 }
 
 instance Storable CVertex' where
@@ -66,16 +67,16 @@ instance Storable CVertex' where
       nneighfacets'    <- #{peek FullVertexT, nneighfacets}    ptr
       neighvertices'   <- #{peek FullVertexT, neighvertices}   ptr
       nneighsvertices' <- #{peek FullVertexT, nneighsvertices} ptr
-      neighedges'      <- #{peek FullVertexT, neighedges}      ptr
-      nneighedges'     <- #{peek FullVertexT, nneighedges}     ptr
+      neighridges'      <- #{peek FullVertexT, neighridges}      ptr
+      nneighridges'     <- #{peek FullVertexT, nneighridges}     ptr
       return CVertex' { __id' = id'
                       , __point' = point'
                       , __neighfacets = neighfacets'
                       , __nneighfacets = nneighfacets'
                       , __neighvertices = neighvertices'
                       , __nneighvertices = nneighsvertices'
-                      , __neighedges = neighedges'
-                      , __nneighedges = nneighedges'
+                      , __neighridges = neighridges'
+                      , __nneighridges = nneighridges'
                       }
     poke ptr (CVertex' r1 r2 r3 r4 r5 r6 r7 r8)
       = do
@@ -85,15 +86,15 @@ instance Storable CVertex' where
           #{poke FullVertexT, nneighfacets}     ptr r4
           #{poke FullVertexT, neighvertices}    ptr r5
           #{poke FullVertexT, nneighsvertices}  ptr r6
-          #{poke FullVertexT, neighedges}       ptr r7
-          #{poke FullVertexT, nneighedges}      ptr r8
+          #{poke FullVertexT, neighridges}       ptr r7
+          #{poke FullVertexT, nneighridges}      ptr r8
 
 cVerticesToVertexMap :: Int -> [CVertex'] -> IO (IntMap Vertex)
 cVerticesToVertexMap dim cvertices = do
   let ids             = map (fromIntegral . __id') cvertices
       nneighfacets    = map (fromIntegral . __nneighfacets) cvertices
       nneighsvertices = map (fromIntegral . __nneighvertices) cvertices
-      nneighedges     = map (fromIntegral . __nneighedges) cvertices
+      nneighridges     = map (fromIntegral . __nneighridges) cvertices
   points <- mapM (\cv -> (<$!>) (map realToFrac) (peekArray dim (__point' cv)))
                  cvertices
   neighfacets <- mapM (\(i, cv) -> (<$!>) (map fromIntegral)
@@ -103,10 +104,10 @@ cVerticesToVertexMap dim cvertices = do
                           (<$!>) (map fromIntegral)
                                  (peekArray i (__neighvertices cv)))
                         (zip nneighsvertices cvertices)
-  neighedges <- mapM (\(i, cv) ->
+  neighridges <- mapM (\(i, cv) ->
                        (<$!>) (map fromIntegral)
-                              (peekArray i (__neighedges cv)))
-                     (zip nneighedges cvertices)
+                              (peekArray i (__neighridges cv)))
+                     (zip nneighridges cvertices)
   return $ IM.fromList (zip ids
                             (map (\(pt, fneighs, vneighs, eneighs) ->
                                   Vertex { _point = pt
@@ -114,11 +115,11 @@ cVerticesToVertexMap dim cvertices = do
                                               IS.fromAscList fneighs
                                          , _neighvertices =
                                               IS.fromAscList vneighs
-                                         , _neighedges =
+                                         , _neighridges =
                                               IS.fromAscList eneighs
                                          })
                                   (zip4 points neighfacets neighvertices
-                                        neighedges)))
+                                        neighridges)))
 
 data CRidge = CRidge {
     __rvertices :: Ptr CVertex
@@ -158,8 +159,8 @@ cRidgeToRidge dim cridge = do
 
 data CFace = CFace {
     __fvertices :: Ptr CVertex
-  , __edges :: Ptr CRidge
-  , __nedges' :: CUInt
+  , __ridges :: Ptr CRidge
+  , __nridges' :: CUInt
   , __center :: Ptr CDouble
   , __normal :: Ptr CDouble
   , __offset :: CDouble
@@ -174,8 +175,8 @@ instance Storable CFace where
     alignment __ = #{alignment FaceT}
     peek ptr = do
       fvertices' <- #{peek FaceT, vertices} ptr
-      edges'     <- #{peek FaceT, edges} ptr
-      nedges'    <- #{peek FaceT, nedges} ptr
+      ridges'     <- #{peek FaceT, ridges} ptr
+      nridges'    <- #{peek FaceT, nridges} ptr
       center'    <- #{peek FaceT, center} ptr
       normal'    <- #{peek FaceT, normal} ptr
       offset'    <- #{peek FaceT, offset} ptr
@@ -184,8 +185,8 @@ instance Storable CFace where
       neighsize  <- #{peek FaceT, neighborsize} ptr
       family'    <- #{peek FaceT, family} ptr
       return CFace { __fvertices    = fvertices'
-                   , __edges        = edges'
-                   , __nedges'      = nedges'
+                   , __ridges        = ridges'
+                   , __nridges'      = nridges'
                    , __center       = center'
                    , __normal       = normal'
                    , __offset       = offset'
@@ -196,8 +197,8 @@ instance Storable CFace where
     poke ptr (CFace r1 r2 r3 r4 r5 r6 r7 r8 r9 r10)
       = do
           #{poke FaceT, vertices}     ptr r1
-          #{poke FaceT, edges}        ptr r2
-          #{poke FaceT, nedges}       ptr r3
+          #{poke FaceT, ridges}        ptr r2
+          #{poke FaceT, nridges}       ptr r3
           #{poke FaceT, center}       ptr r4
           #{poke FaceT, normal}       ptr r5
           #{poke FaceT, offset}       ptr r6
@@ -212,17 +213,17 @@ cFaceToFace dim nvertices cface = do
       neighsize = fromIntegral (__neighborsize cface)
       offset    = realToFrac (__offset cface)
       family    = fromIntegral (__family cface)
-      nedges    = fromIntegral (__nedges' cface)
+      nridges    = fromIntegral (__nridges' cface)
   center    <- (<$!>) (map realToFrac) (peekArray dim (__center cface))
   normal    <- (<$!>) (map realToFrac) (peekArray dim (__normal cface))
   vertices  <- (=<<) (cVerticesToMap dim)
                      (peekArray nvertices (__fvertices cface))
-  edges  <- (=<<) (mapM (cRidgeToRidge dim))
-                  (peekArray nedges (__edges cface))
+  ridges  <- (=<<) (mapM (cRidgeToRidge dim))
+                  (peekArray nridges (__ridges cface))
   neighbors <- (<$!>) (map fromIntegral)
                       (peekArray neighsize (__neighbors cface))
   return Face { _fvertices = vertices
-              , _edges     = edges
+              , _ridges     = ridges
               , _centroid  = center
               , _normal    = normal
               , _offset    = offset
@@ -237,8 +238,10 @@ data CConvexHull = CConvexHull {
   , __faces :: Ptr CFace
   , __facesizes :: Ptr CUInt
   , __nfaces :: CUInt
-  , __alledges :: Ptr CRidge
-  , __nedges :: CUInt
+  , __allridges :: Ptr CRidge
+  , __nridges :: CUInt
+  , __alledges :: Ptr (Ptr CUInt)
+  , __nalledges :: CUInt
 }
 
 instance Storable CConvexHull where
@@ -251,6 +254,8 @@ instance Storable CConvexHull where
       faces'       <- #{peek ConvexHullT, faces}     ptr
       facesizes'   <- #{peek ConvexHullT, facesizes} ptr
       nfaces'      <- #{peek ConvexHullT, nfaces}    ptr
+      allridges'    <- #{peek ConvexHullT, ridges}     ptr
+      nridges'      <- #{peek ConvexHullT, nridges}    ptr
       alledges'    <- #{peek ConvexHullT, edges}     ptr
       nedges'      <- #{peek ConvexHullT, nedges}    ptr
       return CConvexHull { __dim = dim'
@@ -259,10 +264,12 @@ instance Storable CConvexHull where
                          , __faces = faces'
                          , __facesizes = facesizes'
                          , __nfaces = nfaces'
+                         , __allridges = allridges'
+                         , __nridges = nridges'
                          , __alledges = alledges'
-                         , __nedges = nedges'
+                         , __nalledges = nedges'
                      }
-    poke ptr (CConvexHull r1 r2 r3 r4 r5 r6 r7 r8)
+    poke ptr (CConvexHull r1 r2 r3 r4 r5 r6 r7 r8 r9 r10)
       = do
           #{poke ConvexHullT, dim}         ptr r1
           #{poke ConvexHullT, vertices}    ptr r2
@@ -270,8 +277,10 @@ instance Storable CConvexHull where
           #{poke ConvexHullT, faces}       ptr r4
           #{poke ConvexHullT, facesizes}   ptr r5
           #{poke ConvexHullT, nfaces}      ptr r6
-          #{poke ConvexHullT, edges}       ptr r7
-          #{poke ConvexHullT, nedges}      ptr r8
+          #{poke ConvexHullT, ridges}       ptr r7
+          #{poke ConvexHullT, nridges}      ptr r8
+          #{poke ConvexHullT, edges}       ptr r9
+          #{poke ConvexHullT, nedges}      ptr r10
 
 foreign import ccall unsafe "convexHull" c_convexhull
   :: Ptr CDouble -- points
@@ -287,7 +296,8 @@ peekConvexHull ptr = do
   let dim       = fromIntegral (__dim cconvexhull)
       nvertices = fromIntegral (__nvertices cconvexhull)
       nfaces    = fromIntegral (__nfaces cconvexhull)
-      nedges    = fromIntegral (__nedges cconvexhull)
+      nridges   = fromIntegral (__nridges cconvexhull)
+      nedges    = fromIntegral (__nalledges cconvexhull)
   facesizes <- (<$!>) (map fromIntegral)
                       (peekArray nfaces (__facesizes cconvexhull))
   vertices <- (=<<) (cVerticesToVertexMap dim)
@@ -295,9 +305,12 @@ peekConvexHull ptr = do
   faces <- (=<<) (imapM (\i cface -> cFaceToFace dim (facesizes !! i) cface))
                         (peekArray nfaces (__faces cconvexhull))
   --faces <- mapM (\i -> (<$!>) (map fromIntegral) (peekArray (facesizes !! i) (faces' !! i))) [0 .. length faces'-1]
-  alledges <- (=<<) (mapM (cRidgeToRidge dim))
-                          (peekArray nedges (__alledges cconvexhull))
+  allridges <- (=<<) (mapM (cRidgeToRidge dim))
+                          (peekArray nridges (__allridges cconvexhull))
+  alledges' <- (=<<) (mapM (peekArray 2)) (peekArray nedges (__alledges cconvexhull))
+  let alledges = map (map fromIntegral) alledges'
   return ConvexHull { _allvertices = vertices
                     , _faces = IM.fromAscList (zip [0 .. nfaces-1] faces)
-                    , _alledges = IM.fromAscList (zip [0 .. nedges-1] alledges)
+                    , _allridges = IM.fromAscList (zip [0 .. nridges-1] allridges)
+                    , _alledges = S.fromList (map (\x -> (x!!0, x!!1)) alledges)
                     }

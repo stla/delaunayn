@@ -11,9 +11,9 @@ import qualified Data.IntMap.Strict as IM
 import qualified Data.IntSet        as IS
 import           Data.List
 import           Data.List.Index    (imapM)
+import qualified Data.Set           as S
 import           Foreign
 import           Foreign.C.Types
-import Data.Maybe
 
 data CVertex = CVertex {
     __id    :: CUInt
@@ -22,22 +22,22 @@ data CVertex = CVertex {
 
 instance Storable CVertex where
     sizeOf    __ = (16)
-{-# LINE 25 "convexhull.hsc" #-}
-    alignment __ = 8
 {-# LINE 26 "convexhull.hsc" #-}
+    alignment __ = 8
+{-# LINE 27 "convexhull.hsc" #-}
     peek ptr = do
       id'     <- (\hsc_ptr -> peekByteOff hsc_ptr 0)       ptr
-{-# LINE 28 "convexhull.hsc" #-}
-      point'  <- (\hsc_ptr -> peekByteOff hsc_ptr 8)    ptr
 {-# LINE 29 "convexhull.hsc" #-}
+      point'  <- (\hsc_ptr -> peekByteOff hsc_ptr 8)    ptr
+{-# LINE 30 "convexhull.hsc" #-}
       return CVertex { __id = id'
                      , __point = point' }
     poke ptr (CVertex r1 r2)
       = do
           (\hsc_ptr -> pokeByteOff hsc_ptr 0)         ptr r1
-{-# LINE 34 "convexhull.hsc" #-}
-          (\hsc_ptr -> pokeByteOff hsc_ptr 8)      ptr r2
 {-# LINE 35 "convexhull.hsc" #-}
+          (\hsc_ptr -> pokeByteOff hsc_ptr 8)      ptr r2
+{-# LINE 36 "convexhull.hsc" #-}
 
 --data Vertex = Vertex {
 --    _id :: Int
@@ -58,66 +58,66 @@ data CVertex' = CVertex' {
   , __nneighfacets   :: CUInt
   , __neighvertices  :: Ptr CUInt
   , __nneighvertices :: CUInt
-  , __neighedges     :: Ptr CUInt
-  , __nneighedges    :: CUInt
+  , __neighridges    :: Ptr CUInt
+  , __nneighridges   :: CUInt
 }
 
 instance Storable CVertex' where
     sizeOf    __ = (64)
-{-# LINE 61 "convexhull.hsc" #-}
-    alignment __ = 8
 {-# LINE 62 "convexhull.hsc" #-}
+    alignment __ = 8
+{-# LINE 63 "convexhull.hsc" #-}
     peek ptr = do
       id'              <- (\hsc_ptr -> peekByteOff hsc_ptr 0)              ptr
-{-# LINE 64 "convexhull.hsc" #-}
-      point'           <- (\hsc_ptr -> peekByteOff hsc_ptr 8)           ptr
 {-# LINE 65 "convexhull.hsc" #-}
-      neighfacets'     <- (\hsc_ptr -> peekByteOff hsc_ptr 16)     ptr
+      point'           <- (\hsc_ptr -> peekByteOff hsc_ptr 8)           ptr
 {-# LINE 66 "convexhull.hsc" #-}
-      nneighfacets'    <- (\hsc_ptr -> peekByteOff hsc_ptr 24)    ptr
+      neighfacets'     <- (\hsc_ptr -> peekByteOff hsc_ptr 16)     ptr
 {-# LINE 67 "convexhull.hsc" #-}
-      neighvertices'   <- (\hsc_ptr -> peekByteOff hsc_ptr 32)   ptr
+      nneighfacets'    <- (\hsc_ptr -> peekByteOff hsc_ptr 24)    ptr
 {-# LINE 68 "convexhull.hsc" #-}
-      nneighsvertices' <- (\hsc_ptr -> peekByteOff hsc_ptr 40) ptr
+      neighvertices'   <- (\hsc_ptr -> peekByteOff hsc_ptr 32)   ptr
 {-# LINE 69 "convexhull.hsc" #-}
-      neighedges'      <- (\hsc_ptr -> peekByteOff hsc_ptr 48)      ptr
+      nneighsvertices' <- (\hsc_ptr -> peekByteOff hsc_ptr 40) ptr
 {-# LINE 70 "convexhull.hsc" #-}
-      nneighedges'     <- (\hsc_ptr -> peekByteOff hsc_ptr 56)     ptr
+      neighridges'      <- (\hsc_ptr -> peekByteOff hsc_ptr 48)      ptr
 {-# LINE 71 "convexhull.hsc" #-}
+      nneighridges'     <- (\hsc_ptr -> peekByteOff hsc_ptr 56)     ptr
+{-# LINE 72 "convexhull.hsc" #-}
       return CVertex' { __id' = id'
                       , __point' = point'
                       , __neighfacets = neighfacets'
                       , __nneighfacets = nneighfacets'
                       , __neighvertices = neighvertices'
                       , __nneighvertices = nneighsvertices'
-                      , __neighedges = neighedges'
-                      , __nneighedges = nneighedges'
+                      , __neighridges = neighridges'
+                      , __nneighridges = nneighridges'
                       }
     poke ptr (CVertex' r1 r2 r3 r4 r5 r6 r7 r8)
       = do
           (\hsc_ptr -> pokeByteOff hsc_ptr 0)               ptr r1
-{-# LINE 83 "convexhull.hsc" #-}
-          (\hsc_ptr -> pokeByteOff hsc_ptr 8)            ptr r2
 {-# LINE 84 "convexhull.hsc" #-}
-          (\hsc_ptr -> pokeByteOff hsc_ptr 16)      ptr r3
+          (\hsc_ptr -> pokeByteOff hsc_ptr 8)            ptr r2
 {-# LINE 85 "convexhull.hsc" #-}
-          (\hsc_ptr -> pokeByteOff hsc_ptr 24)     ptr r4
+          (\hsc_ptr -> pokeByteOff hsc_ptr 16)      ptr r3
 {-# LINE 86 "convexhull.hsc" #-}
-          (\hsc_ptr -> pokeByteOff hsc_ptr 32)    ptr r5
+          (\hsc_ptr -> pokeByteOff hsc_ptr 24)     ptr r4
 {-# LINE 87 "convexhull.hsc" #-}
-          (\hsc_ptr -> pokeByteOff hsc_ptr 40)  ptr r6
+          (\hsc_ptr -> pokeByteOff hsc_ptr 32)    ptr r5
 {-# LINE 88 "convexhull.hsc" #-}
-          (\hsc_ptr -> pokeByteOff hsc_ptr 48)       ptr r7
+          (\hsc_ptr -> pokeByteOff hsc_ptr 40)  ptr r6
 {-# LINE 89 "convexhull.hsc" #-}
-          (\hsc_ptr -> pokeByteOff hsc_ptr 56)      ptr r8
+          (\hsc_ptr -> pokeByteOff hsc_ptr 48)       ptr r7
 {-# LINE 90 "convexhull.hsc" #-}
+          (\hsc_ptr -> pokeByteOff hsc_ptr 56)      ptr r8
+{-# LINE 91 "convexhull.hsc" #-}
 
 cVerticesToVertexMap :: Int -> [CVertex'] -> IO (IntMap Vertex)
 cVerticesToVertexMap dim cvertices = do
   let ids             = map (fromIntegral . __id') cvertices
       nneighfacets    = map (fromIntegral . __nneighfacets) cvertices
       nneighsvertices = map (fromIntegral . __nneighvertices) cvertices
-      nneighedges     = map (fromIntegral . __nneighedges) cvertices
+      nneighridges     = map (fromIntegral . __nneighridges) cvertices
   points <- mapM (\cv -> (<$!>) (map realToFrac) (peekArray dim (__point' cv)))
                  cvertices
   neighfacets <- mapM (\(i, cv) -> (<$!>) (map fromIntegral)
@@ -127,10 +127,10 @@ cVerticesToVertexMap dim cvertices = do
                           (<$!>) (map fromIntegral)
                                  (peekArray i (__neighvertices cv)))
                         (zip nneighsvertices cvertices)
-  neighedges <- mapM (\(i, cv) ->
+  neighridges <- mapM (\(i, cv) ->
                        (<$!>) (map fromIntegral)
-                              (peekArray i (__neighedges cv)))
-                     (zip nneighedges cvertices)
+                              (peekArray i (__neighridges cv)))
+                     (zip nneighridges cvertices)
   return $ IM.fromList (zip ids
                             (map (\(pt, fneighs, vneighs, eneighs) ->
                                   Vertex { _point = pt
@@ -138,11 +138,11 @@ cVerticesToVertexMap dim cvertices = do
                                               IS.fromAscList fneighs
                                          , _neighvertices =
                                               IS.fromAscList vneighs
-                                         , _neighedges =
+                                         , _neighridges =
                                               IS.fromAscList eneighs
                                          })
                                   (zip4 points neighfacets neighvertices
-                                        neighedges)))
+                                        neighridges)))
 
 data CRidge = CRidge {
     __rvertices :: Ptr CVertex
@@ -153,18 +153,18 @@ data CRidge = CRidge {
 
 instance Storable CRidge where
     sizeOf    __ = (24)
-{-# LINE 132 "convexhull.hsc" #-}
-    alignment __ = 8
 {-# LINE 133 "convexhull.hsc" #-}
+    alignment __ = 8
+{-# LINE 134 "convexhull.hsc" #-}
     peek ptr = do
       rvertices <- (\hsc_ptr -> peekByteOff hsc_ptr 0) ptr
-{-# LINE 135 "convexhull.hsc" #-}
-      ridgeOf1' <- (\hsc_ptr -> peekByteOff hsc_ptr 8) ptr
 {-# LINE 136 "convexhull.hsc" #-}
-      ridgeOf2' <- (\hsc_ptr -> peekByteOff hsc_ptr 12) ptr
+      ridgeOf1' <- (\hsc_ptr -> peekByteOff hsc_ptr 8) ptr
 {-# LINE 137 "convexhull.hsc" #-}
-      ridgeSize <- (\hsc_ptr -> peekByteOff hsc_ptr 16) ptr
+      ridgeOf2' <- (\hsc_ptr -> peekByteOff hsc_ptr 12) ptr
 {-# LINE 138 "convexhull.hsc" #-}
+      ridgeSize <- (\hsc_ptr -> peekByteOff hsc_ptr 16) ptr
+{-# LINE 139 "convexhull.hsc" #-}
       return CRidge { __rvertices = rvertices
                     , __ridgeOf1 = ridgeOf1'
                     , __ridgeOf2 = ridgeOf2'
@@ -172,30 +172,28 @@ instance Storable CRidge where
     poke ptr (CRidge r1 r2 r3 r4)
       = do
           (\hsc_ptr -> pokeByteOff hsc_ptr 0) ptr r1
-{-# LINE 145 "convexhull.hsc" #-}
-          (\hsc_ptr -> pokeByteOff hsc_ptr 8) ptr r2
 {-# LINE 146 "convexhull.hsc" #-}
-          (\hsc_ptr -> pokeByteOff hsc_ptr 12) ptr r3
+          (\hsc_ptr -> pokeByteOff hsc_ptr 8) ptr r2
 {-# LINE 147 "convexhull.hsc" #-}
-          (\hsc_ptr -> pokeByteOff hsc_ptr 16) ptr r4
+          (\hsc_ptr -> pokeByteOff hsc_ptr 12) ptr r3
 {-# LINE 148 "convexhull.hsc" #-}
+          (\hsc_ptr -> pokeByteOff hsc_ptr 16) ptr r4
+{-# LINE 149 "convexhull.hsc" #-}
 
-cRidgeToRidge :: Int -> Maybe Int -> CRidge -> IO Ridge
-cRidgeToRidge dim rsize cridge = do
+cRidgeToRidge :: Int -> CRidge -> IO Ridge
+cRidgeToRidge dim cridge = do
   let f1 = fromIntegral $ __ridgeOf1 cridge
       f2 = fromIntegral $ __ridgeOf2 cridge
-      n  = if isNothing rsize then fromIntegral $ __ridgeSize cridge else fromJust rsize
+      n  = fromIntegral $ __ridgeSize cridge
   vertices <- peekArray n (__rvertices cridge)
-  --print $ __id (vertices !! 0)
   rvertices <- cVerticesToMap dim vertices
---  let rvertices = IM.empty
   return Ridge { _rvertices = rvertices
                , _ridgeOf = IS.fromAscList [f1,f2] }
 
 data CFace = CFace {
     __fvertices    :: Ptr CVertex
-  , __edges        :: Ptr CRidge
-  , __nedges'      :: CUInt
+  , __ridges       :: Ptr CRidge
+  , __nridges'     :: CUInt
   , __center       :: Ptr CDouble
   , __normal       :: Ptr CDouble
   , __offset       :: CDouble
@@ -207,33 +205,33 @@ data CFace = CFace {
 
 instance Storable CFace where
     sizeOf    __ = (72)
-{-# LINE 174 "convexhull.hsc" #-}
-    alignment __ = 8
 {-# LINE 175 "convexhull.hsc" #-}
+    alignment __ = 8
+{-# LINE 176 "convexhull.hsc" #-}
     peek ptr = do
       fvertices' <- (\hsc_ptr -> peekByteOff hsc_ptr 0) ptr
-{-# LINE 177 "convexhull.hsc" #-}
-      edges'     <- (\hsc_ptr -> peekByteOff hsc_ptr 8) ptr
 {-# LINE 178 "convexhull.hsc" #-}
-      nedges'    <- (\hsc_ptr -> peekByteOff hsc_ptr 16) ptr
+      ridges'     <- (\hsc_ptr -> peekByteOff hsc_ptr 8) ptr
 {-# LINE 179 "convexhull.hsc" #-}
-      center'    <- (\hsc_ptr -> peekByteOff hsc_ptr 24) ptr
+      nridges'    <- (\hsc_ptr -> peekByteOff hsc_ptr 16) ptr
 {-# LINE 180 "convexhull.hsc" #-}
-      normal'    <- (\hsc_ptr -> peekByteOff hsc_ptr 32) ptr
+      center'    <- (\hsc_ptr -> peekByteOff hsc_ptr 24) ptr
 {-# LINE 181 "convexhull.hsc" #-}
-      offset'    <- (\hsc_ptr -> peekByteOff hsc_ptr 40) ptr
+      normal'    <- (\hsc_ptr -> peekByteOff hsc_ptr 32) ptr
 {-# LINE 182 "convexhull.hsc" #-}
-      area'      <- (\hsc_ptr -> peekByteOff hsc_ptr 48) ptr
+      offset'    <- (\hsc_ptr -> peekByteOff hsc_ptr 40) ptr
 {-# LINE 183 "convexhull.hsc" #-}
-      neighbors' <- (\hsc_ptr -> peekByteOff hsc_ptr 56) ptr
+      area'      <- (\hsc_ptr -> peekByteOff hsc_ptr 48) ptr
 {-# LINE 184 "convexhull.hsc" #-}
-      neighsize  <- (\hsc_ptr -> peekByteOff hsc_ptr 64) ptr
+      neighbors' <- (\hsc_ptr -> peekByteOff hsc_ptr 56) ptr
 {-# LINE 185 "convexhull.hsc" #-}
-      family'    <- (\hsc_ptr -> peekByteOff hsc_ptr 68) ptr
+      neighsize  <- (\hsc_ptr -> peekByteOff hsc_ptr 64) ptr
 {-# LINE 186 "convexhull.hsc" #-}
+      family'    <- (\hsc_ptr -> peekByteOff hsc_ptr 68) ptr
+{-# LINE 187 "convexhull.hsc" #-}
       return CFace { __fvertices    = fvertices'
-                   , __edges        = edges'
-                   , __nedges'      = nedges'
+                   , __ridges        = ridges'
+                   , __nridges'      = nridges'
                    , __center       = center'
                    , __normal       = normal'
                    , __offset       = offset'
@@ -244,25 +242,25 @@ instance Storable CFace where
     poke ptr (CFace r1 r2 r3 r4 r5 r6 r7 r8 r9 r10)
       = do
           (\hsc_ptr -> pokeByteOff hsc_ptr 0)     ptr r1
-{-# LINE 199 "convexhull.hsc" #-}
-          (\hsc_ptr -> pokeByteOff hsc_ptr 8)        ptr r2
 {-# LINE 200 "convexhull.hsc" #-}
-          (\hsc_ptr -> pokeByteOff hsc_ptr 16)       ptr r3
+          (\hsc_ptr -> pokeByteOff hsc_ptr 8)        ptr r2
 {-# LINE 201 "convexhull.hsc" #-}
-          (\hsc_ptr -> pokeByteOff hsc_ptr 24)       ptr r4
+          (\hsc_ptr -> pokeByteOff hsc_ptr 16)       ptr r3
 {-# LINE 202 "convexhull.hsc" #-}
-          (\hsc_ptr -> pokeByteOff hsc_ptr 32)       ptr r5
+          (\hsc_ptr -> pokeByteOff hsc_ptr 24)       ptr r4
 {-# LINE 203 "convexhull.hsc" #-}
-          (\hsc_ptr -> pokeByteOff hsc_ptr 40)       ptr r6
+          (\hsc_ptr -> pokeByteOff hsc_ptr 32)       ptr r5
 {-# LINE 204 "convexhull.hsc" #-}
-          (\hsc_ptr -> pokeByteOff hsc_ptr 48)         ptr r7
+          (\hsc_ptr -> pokeByteOff hsc_ptr 40)       ptr r6
 {-# LINE 205 "convexhull.hsc" #-}
-          (\hsc_ptr -> pokeByteOff hsc_ptr 56)    ptr r8
+          (\hsc_ptr -> pokeByteOff hsc_ptr 48)         ptr r7
 {-# LINE 206 "convexhull.hsc" #-}
-          (\hsc_ptr -> pokeByteOff hsc_ptr 64) ptr r9
+          (\hsc_ptr -> pokeByteOff hsc_ptr 56)    ptr r8
 {-# LINE 207 "convexhull.hsc" #-}
-          (\hsc_ptr -> pokeByteOff hsc_ptr 68)       ptr r10
+          (\hsc_ptr -> pokeByteOff hsc_ptr 64) ptr r9
 {-# LINE 208 "convexhull.hsc" #-}
+          (\hsc_ptr -> pokeByteOff hsc_ptr 68)       ptr r10
+{-# LINE 209 "convexhull.hsc" #-}
 
 cFaceToFace :: Int -> Int -> CFace -> IO Face
 cFaceToFace dim nvertices cface = do
@@ -270,17 +268,17 @@ cFaceToFace dim nvertices cface = do
       neighsize = fromIntegral (__neighborsize cface)
       offset    = realToFrac (__offset cface)
       family    = fromIntegral (__family cface)
-      nedges    = fromIntegral (__nedges' cface)
+      nridges    = fromIntegral (__nridges' cface)
   center    <- (<$!>) (map realToFrac) (peekArray dim (__center cface))
   normal    <- (<$!>) (map realToFrac) (peekArray dim (__normal cface))
   vertices  <- (=<<) (cVerticesToMap dim)
                      (peekArray nvertices (__fvertices cface))
-  edges  <- (=<<) (mapM (cRidgeToRidge dim Nothing)) -- (Just $ dim-1)))
-                  (peekArray nedges (__edges cface))
+  ridges  <- (=<<) (mapM (cRidgeToRidge dim))
+                  (peekArray nridges (__ridges cface))
   neighbors <- (<$!>) (map fromIntegral)
                       (peekArray neighsize (__neighbors cface))
   return Face { _fvertices = vertices
-              , _edges     = edges
+              , _ridges     = ridges
               , _centroid  = center
               , _normal    = normal
               , _offset    = offset
@@ -295,59 +293,71 @@ data CConvexHull = CConvexHull {
   , __faces       :: Ptr CFace
   , __facesizes   :: Ptr CUInt
   , __nfaces      :: CUInt
-  , __alledges    :: Ptr CRidge
-  , __nedges      :: CUInt
+  , __allridges   :: Ptr CRidge
+  , __nridges     :: CUInt
+  , __alledges    :: Ptr (Ptr CUInt)
+  , __nalledges   :: CUInt
 }
 
 instance Storable CConvexHull where
-    sizeOf    __ = (64)
-{-# LINE 246 "convexhull.hsc" #-}
+    sizeOf    __ = (80)
+{-# LINE 249 "convexhull.hsc" #-}
     alignment __ = 8
-{-# LINE 247 "convexhull.hsc" #-}
+{-# LINE 250 "convexhull.hsc" #-}
     peek ptr = do
       dim'         <- (\hsc_ptr -> peekByteOff hsc_ptr 0)       ptr
-{-# LINE 249 "convexhull.hsc" #-}
-      vertices'    <- (\hsc_ptr -> peekByteOff hsc_ptr 8)  ptr
-{-# LINE 250 "convexhull.hsc" #-}
-      nvertices'   <- (\hsc_ptr -> peekByteOff hsc_ptr 16) ptr
-{-# LINE 251 "convexhull.hsc" #-}
-      faces'       <- (\hsc_ptr -> peekByteOff hsc_ptr 24)     ptr
 {-# LINE 252 "convexhull.hsc" #-}
-      facesizes'   <- (\hsc_ptr -> peekByteOff hsc_ptr 32) ptr
+      vertices'    <- (\hsc_ptr -> peekByteOff hsc_ptr 8)  ptr
 {-# LINE 253 "convexhull.hsc" #-}
-      nfaces'      <- (\hsc_ptr -> peekByteOff hsc_ptr 40)    ptr
+      nvertices'   <- (\hsc_ptr -> peekByteOff hsc_ptr 16) ptr
 {-# LINE 254 "convexhull.hsc" #-}
-      alledges'    <- (\hsc_ptr -> peekByteOff hsc_ptr 48)     ptr
+      faces'       <- (\hsc_ptr -> peekByteOff hsc_ptr 24)     ptr
 {-# LINE 255 "convexhull.hsc" #-}
-      nedges'      <- (\hsc_ptr -> peekByteOff hsc_ptr 56)    ptr
+      facesizes'   <- (\hsc_ptr -> peekByteOff hsc_ptr 32) ptr
 {-# LINE 256 "convexhull.hsc" #-}
+      nfaces'      <- (\hsc_ptr -> peekByteOff hsc_ptr 40)    ptr
+{-# LINE 257 "convexhull.hsc" #-}
+      allridges'    <- (\hsc_ptr -> peekByteOff hsc_ptr 48)     ptr
+{-# LINE 258 "convexhull.hsc" #-}
+      nridges'      <- (\hsc_ptr -> peekByteOff hsc_ptr 56)    ptr
+{-# LINE 259 "convexhull.hsc" #-}
+      alledges'    <- (\hsc_ptr -> peekByteOff hsc_ptr 64)     ptr
+{-# LINE 260 "convexhull.hsc" #-}
+      nedges'      <- (\hsc_ptr -> peekByteOff hsc_ptr 72)    ptr
+{-# LINE 261 "convexhull.hsc" #-}
       return CConvexHull { __dim = dim'
                          , __allvertices = vertices'
                          , __nvertices = nvertices'
                          , __faces = faces'
                          , __facesizes = facesizes'
                          , __nfaces = nfaces'
+                         , __allridges = allridges'
+                         , __nridges = nridges'
                          , __alledges = alledges'
-                         , __nedges = nedges'
+                         , __nalledges = nedges'
                      }
-    poke ptr (CConvexHull r1 r2 r3 r4 r5 r6 r7 r8)
+    poke ptr (CConvexHull r1 r2 r3 r4 r5 r6 r7 r8 r9 r10)
       = do
           (\hsc_ptr -> pokeByteOff hsc_ptr 0)         ptr r1
-{-# LINE 268 "convexhull.hsc" #-}
-          (\hsc_ptr -> pokeByteOff hsc_ptr 8)    ptr r2
-{-# LINE 269 "convexhull.hsc" #-}
-          (\hsc_ptr -> pokeByteOff hsc_ptr 16)   ptr r3
-{-# LINE 270 "convexhull.hsc" #-}
-          (\hsc_ptr -> pokeByteOff hsc_ptr 24)       ptr r4
-{-# LINE 271 "convexhull.hsc" #-}
-          (\hsc_ptr -> pokeByteOff hsc_ptr 32)   ptr r5
-{-# LINE 272 "convexhull.hsc" #-}
-          (\hsc_ptr -> pokeByteOff hsc_ptr 40)      ptr r6
-{-# LINE 273 "convexhull.hsc" #-}
-          (\hsc_ptr -> pokeByteOff hsc_ptr 48)       ptr r7
-{-# LINE 274 "convexhull.hsc" #-}
-          (\hsc_ptr -> pokeByteOff hsc_ptr 56)      ptr r8
 {-# LINE 275 "convexhull.hsc" #-}
+          (\hsc_ptr -> pokeByteOff hsc_ptr 8)    ptr r2
+{-# LINE 276 "convexhull.hsc" #-}
+          (\hsc_ptr -> pokeByteOff hsc_ptr 16)   ptr r3
+{-# LINE 277 "convexhull.hsc" #-}
+          (\hsc_ptr -> pokeByteOff hsc_ptr 24)       ptr r4
+{-# LINE 278 "convexhull.hsc" #-}
+          (\hsc_ptr -> pokeByteOff hsc_ptr 32)   ptr r5
+{-# LINE 279 "convexhull.hsc" #-}
+          (\hsc_ptr -> pokeByteOff hsc_ptr 40)      ptr r6
+{-# LINE 280 "convexhull.hsc" #-}
+          (\hsc_ptr -> pokeByteOff hsc_ptr 48)       ptr r7
+{-# LINE 281 "convexhull.hsc" #-}
+          (\hsc_ptr -> pokeByteOff hsc_ptr 56)      ptr r8
+{-# LINE 282 "convexhull.hsc" #-}
+          (\hsc_ptr -> pokeByteOff hsc_ptr 64)       ptr r9
+{-# LINE 283 "convexhull.hsc" #-}
+          (\hsc_ptr -> pokeByteOff hsc_ptr 72)      ptr r10
+{-# LINE 284 "convexhull.hsc" #-}
 
 foreign import ccall unsafe "convexHull" c_convexhull
   :: Ptr CDouble -- points
@@ -363,7 +373,8 @@ peekConvexHull ptr = do
   let dim       = fromIntegral (__dim cconvexhull)
       nvertices = fromIntegral (__nvertices cconvexhull)
       nfaces    = fromIntegral (__nfaces cconvexhull)
-      nedges    = fromIntegral (__nedges cconvexhull)
+      nridges    = fromIntegral (__nridges cconvexhull)
+      nedges    = fromIntegral (__nalledges cconvexhull)
   facesizes <- (<$!>) (map fromIntegral)
                       (peekArray nfaces (__facesizes cconvexhull))
   vertices <- (=<<) (cVerticesToVertexMap dim)
@@ -371,9 +382,12 @@ peekConvexHull ptr = do
   faces <- (=<<) (imapM (\i cface -> cFaceToFace dim (facesizes !! i) cface))
                         (peekArray nfaces (__faces cconvexhull))
   --faces <- mapM (\i -> (<$!>) (map fromIntegral) (peekArray (facesizes !! i) (faces' !! i))) [0 .. length faces'-1]
-  alledges <- (=<<) (mapM (cRidgeToRidge dim Nothing))
-                          (peekArray nedges (__alledges cconvexhull))
+  allridges <- (=<<) (mapM (cRidgeToRidge dim))
+                          (peekArray nridges (__allridges cconvexhull))
+  alledges' <- (=<<) (mapM (peekArray 2)) (peekArray nedges (__alledges cconvexhull))
+  let alledges = map (map fromIntegral) alledges'
   return ConvexHull { _allvertices = vertices
                     , _faces = IM.fromAscList (zip [0 .. nfaces-1] faces)
-                    , _alledges = IM.fromAscList (zip [0 .. nedges-1] alledges)
+                    , _allridges = IM.fromAscList (zip [0 .. nridges-1] allridges)
+                    , _alledges = S.fromList (map (\x -> (x!!0, x!!1)) alledges)
                     }

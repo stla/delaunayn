@@ -2,6 +2,7 @@ module ConvexHull.Types
   where
 import           Data.IntMap.Strict (IntMap)
 import           Data.IntSet        (IntSet)
+import           Data.Set           (Set)
 
 
 type Index = Int -- not used here but used in ConvexHull.ConvexHull
@@ -12,7 +13,7 @@ data Vertex = Vertex {
     _point         :: [Double]
   , _neighfaces    :: IntSet
   , _neighvertices :: IndexSet
-  , _neighedges    :: IndexSet
+  , _neighridges   :: IndexSet
 } deriving Show
 
 data Ridge = Ridge {
@@ -22,7 +23,7 @@ data Ridge = Ridge {
 
 data Face = Face {
     _fvertices :: IndexMap [Double]
-  , _edges     :: [Ridge]
+  , _ridges    :: [Ridge]
   , _centroid  :: [Double]
   , _normal    :: [Double]
   , _offset    :: Double
@@ -34,5 +35,6 @@ data Face = Face {
 data ConvexHull = ConvexHull {
     _allvertices :: IndexMap Vertex
   , _faces       :: IntMap Face
-  , _alledges    :: IntMap Ridge
+  , _allridges   :: IntMap Ridge
+  , _alledges    :: Set (Index, Index)
 } deriving Show
