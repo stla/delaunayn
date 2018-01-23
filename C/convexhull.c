@@ -3,21 +3,15 @@
 #include "convexhull.h"
 #include "utils.h"
 
-// to use the qsort function
+// to use the qsort function - sort vertices according to their ids
 int cmpvertices (const void * a, const void * b) {
    return ( (*((VertexT*)a)).id - (*((VertexT*)b)).id );
 }
+// - sort full vertices
 int cmpfullvertices (const void * a, const void * b) {
    return ( (*((FullVertexT*)a)).id - (*((FullVertexT*)b)).id );
 }
 
-double* getpoint(double* points, unsigned dim, unsigned id){
-  double* out = malloc(dim * sizeof(double));
-  for(unsigned i=0; i<dim; i++){
-    out[i] = points[id*dim+i];
-  }
-  return out;
-}
 
 /* test equality of two _sorted_ arrays */
 unsigned equalarraysu(unsigned* array1, unsigned* array2, unsigned length){
@@ -64,21 +58,6 @@ RidgeT copyRidge(RidgeT ridge, unsigned dim){
     }
   }
   return out;
-}
-
-/* append to a vector of unsigned */
-void appendu(unsigned x, unsigned** array, unsigned length, unsigned* flag){
-  *flag = 1;
-  for(unsigned i=0; i<length; i++){
-    if(x==*(*array + i)){
-      *flag = 0;
-      break;
-    }
-  }
-  if(*flag==1){
-    *array = realloc(*array, (length+1)*sizeof(unsigned));
-    *(*array + length) = x;
-  }
 }
 
 /* append to a vector of VertexT */
@@ -268,13 +247,6 @@ double squaredDistance(double* p1, double* p2, unsigned dim){
   return out;
 }
 
-// double* middle(double* p1, double* p2, unsigned dim){
-//   double* out = malloc(dim * sizeof(double));
-//   for(unsigned i=0; i<dim; i++){
-//     out[i] = (p1[i] + p2[i])/2;
-//   }
-//   return out;
-// }
 
 // double* ridgeCentroid(RidgeT ridge, unsigned dim){
 //   double* out = malloc(dim * sizeof(double));

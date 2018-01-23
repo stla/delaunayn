@@ -49,14 +49,26 @@ cube5 = [[i,j,k,l,m] | i <- [-1,1], j <- [-1,1], k <- [-1,1], l <- [-1,1],
 
 randomInSphere :: Int -> IO [[Double]]
 randomInSphere n = do
-  g <- newStdGen
-  let theta = map (*(2*pi)) (take n (randoms g :: [Double]))
-  let phi   = map (*(2*pi)) (take n (randoms g :: [Double]))
-  let rho   = take n (randoms g :: [Double])
+  g1 <- newStdGen
+  let theta = map (*(2*pi)) (take n (randoms g1 :: [Double]))
+  g2 <- newStdGen
+  let phi   = map (*pi) (take n (randoms g2 :: [Double]))
+  g3 <- newStdGen
+  let rho   = take n (randoms g3 :: [Double])
   return $ zipWith3 (\r a b -> [r * sin a * cos b,
                                 r * sin a * sin b,
                                 r * cos a         ])
                      rho phi theta
+
+randomInSphere' :: Int -> IO [[Double]]
+randomInSphere' n = do
+  g <- newStdGen
+  let x = take (2*n) (randoms g :: [Double])
+  let u = map (*(2*pi)) (take n x)
+  let v = drop n x
+  return $ zipWith (\u v -> [sin u * cos (acos (2*v-1)),
+                             sin u * sin (acos (2*v-1)),
+                             cos u                     ]) u v
 
 randomInCube :: Int -> IO [[Double]]
 randomInCube n = do

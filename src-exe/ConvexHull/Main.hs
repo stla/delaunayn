@@ -13,8 +13,9 @@ approx n x = fromInteger (round $ x * (10^n)) / (10.0^^n)
 main :: IO ()
 main = do
 
-  -- points <- randomInCube 100
-  -- convexHull3DrglCode (map (map (approx 1)) points) "rgl/convexhull03.R"
+  points <- randomInCube 1000
+  convexHull3DrglCode (map (map (approx 4)) points) "rgl/convexhull04.R"
+
 
   -- let square3D = [[-1,-1, 0]
   --                ,[-1,-1, 0]
@@ -61,8 +62,8 @@ main = do
   -- pPrint (_allvertices chull)
   -- pPrint (_faces chull)
 
-  chull <- convexHull cube5 False False Nothing
-  putStrLn "done"
+  -- chull <- convexHull cube5 False False Nothing
+  -- putStrLn "done"
   -- pPrint chull
   -- pPrint $ length $ xxx chull
   -- pPrint $ length $ nub $ xxx chull

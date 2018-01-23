@@ -1,11 +1,12 @@
+
 typedef struct Site {
   unsigned   id;
   unsigned*  neighsites;
-  unsigned*  nneighsites;
+  unsigned   nneighsites;
   unsigned** neighridgesids;
-  unsigned*  nneighridges;
+  unsigned   nneighridges;
   unsigned*  neightiles;
-  unsigned*  nneightiles;
+  unsigned   nneightiles;
 } SiteT;
 
 typedef struct Simplex {
@@ -14,7 +15,7 @@ typedef struct Simplex {
   double*   normal;
   double    offset; // todo
   double    volume;
-  int       orientation;
+  int       orientation; // not done for ridges
 } SimplexT;
 
 typedef struct SubTile {
@@ -33,16 +34,17 @@ typedef struct Tile {
   unsigned* neighbors;
   unsigned  nneighbors;
   unsigned* ridgesids; // to do
-  unsigned  nridges;
+  unsigned  nridges; // to do
   int       family;
 } TileT;
 
 typedef struct Tesselation {
   SiteT*    sites;
   TileT*    tiles;
-//  unsigned* tilesids;
   unsigned  ntiles;
-  SubTile*  subtiles;
-//  unsigned* subtilesids;
+  SubTileT* subtiles;
   unsigned  nsubtiles;
 } TesselationT;
+
+TesselationT* tesselation(double*, unsigned, unsigned, unsigned, unsigned*);
+void testdel2();

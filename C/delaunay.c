@@ -3,14 +3,7 @@
 #include "delaunay.h"
 #include "utils.h"
 #include <math.h> // to use NAN
-
-double* nanvector(int dim){
-  double* out = malloc(dim*sizeof(double));
-  for(unsigned i=0; i<dim; i++){
-    out[i] = NAN;
-  }
-  return out;
-}
+#include "delaunay2.h"
 
 struct mat3X3 {
     double mat[3][3];
@@ -81,6 +74,10 @@ struct Delaunay* delaunay(
 	char*     tmpFile
 )
 {
+
+  // test delaunay2
+  testdel2();
+
   printf("HELLO\n");
 	char flags[250];             /* option flags for qhull, see qh_opt.htm */
   sprintf(flags, "qhull d Qt Fn Qbb", "");
@@ -227,7 +224,7 @@ struct Delaunay* delaunay(
       }else{
         owners[i_facet] = 0;
       }
-      printf("owner: %d\n", owners[i_facet]);
+//      printf("owner: %d\n", owners[i_facet]);
 
 			i_facet++;
 		}
@@ -282,9 +279,9 @@ struct Delaunay* delaunay(
         }
       }
     }
-    for(unsigned v=0; v<n_vertices_per_vertex[0]; v++){
-      printf("connected: %d", connectedVertices[0][v]);
-    }
+    // for(unsigned v=0; v<n_vertices_per_vertex[0]; v++){
+    //   printf("connected: %d", connectedVertices[0][v]);
+    // }
 
 
     /************************************************************/
@@ -389,7 +386,7 @@ struct Delaunay* delaunay(
               }
               if(ok==dim){
                 ridges_dup[i_ridge_dup][1] = fnid;
-                printf("neighid: %d", fnid);
+                //printf("neighid: %d", fnid);
                 break;
               }
             }

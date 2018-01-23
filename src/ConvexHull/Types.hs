@@ -4,7 +4,7 @@ import           Data.Hashable
 import           Data.HashMap.Strict (HashMap)
 import           Data.IntMap.Strict  (IntMap)
 import           Data.IntSet         (IntSet)
-import           Data.Map.Strict     (Map)
+-- import           Data.Map.Strict     (Map)
 -- import           Data.Set            (Set)
 
 type Index = Int

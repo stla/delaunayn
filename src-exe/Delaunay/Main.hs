@@ -14,7 +14,7 @@ import           Text.Show.Pretty
 import           Vis
 import           Voronoi2D
 import           Voronoi3D
-
+import ConvexHull.Examples
 
 connectedEdges :: Edge3 -> Edge3 -> Bool
 connectedEdges (Edge3 (x1,x2)) (Edge3 (y1,y2)) = length ([x1,x2] `intersect` [y1,y2]) == 1
@@ -40,6 +40,12 @@ main = do
   -- let v = voronoi3 tess
   -- writeFile "rgl.txt" (voronoi3ForRgl v Nothing)
   -- putStrLn $ ppShow v
+
+  points <- randomInSphere 50
+  tess <- delaunay points False
+  let v = voronoi3 tess
+      code1 = voronoi3ForRgl v Nothing -- delaunay3rgl tess True True True (Just 0.5) --
+  writeFile "rgl/voronoi_sphere.R" code1
 
   -- tess <- delaunay centricCuboctahedron False
   -- putStrLn $ ppShow $ map ridgeVertices (_ridges tess)
@@ -85,10 +91,10 @@ main = do
 --   let verts = foldr union [] $ map edgeVertices c
 --   putStrLn $ show verts
 
-  tess <- test
-  putStrLn $ ppShow $ _facets tess
-  putStrLn $ ppShow $ _ridges tess
-  putStrLn $ ppShow $ _sites tess
+  -- tess <- test
+  -- putStrLn $ ppShow $ _facets tess
+  -- putStrLn $ ppShow $ _ridges tess
+  -- putStrLn $ ppShow $ _sites tess
   --writeFile "rgl/rgg.R" (delaunay3rgl tess True (Just 0.9))
 
 --  display (defaultOpts {optWindowName = "display test"}) (delaunay3vis tess)

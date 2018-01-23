@@ -127,15 +127,15 @@ groupedFaces' hull =
 convexHull3DrglCode :: [[Double]] -> FilePath -> IO ()
 convexHull3DrglCode points file = do
   -- get edges --
-  hull1 <- convexHull points False False Nothing
+  hull1 <- convexHull points False False (Just "tmp.txt")
   let edges = H.elems (_alledges hull1)
   -- get triangles --
   hull2 <- convexHull points True False Nothing
   let families = map _family (IM.elems $ _faces hull2)
-  print families
+  -- print families
   let grpFaces = groupedFaces hull2
   let triangles = map (map IM.elems . snd3) grpFaces
-  mapM_ (mapM_ (print . length)) triangles
+  -- mapM_ (mapM_ (print . length)) triangles
   -- code for edges --
   let code1 = concatMap rglSegment edges
   -- color palette --
