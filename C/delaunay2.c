@@ -350,16 +350,27 @@ TesselationT* tesselation(
                         points[0], dim));
               }
             }
-            /* orient the normal (for Voronoi) */
-            if(!facet->degenerate || dim==2){
-              double h = 0;
-              pointT* otherpoint = ((vertexT*)facet->vertices->e[m].p)->point;
+            /* orient the normal (used for unbounded Voronoi cells) */
+            if(allridges_dup[i_ridge_dup].ridgeOf2 == -1 &&
+               (!facet->degenerate || dim==2))
+            {
+              pointT* otherpoint = /* the vertex of the facet not in the ridge */
+                getpoint(sites, allfacets[facet->id].simplex.sitesids[m], dim);
+              double thepoint[dim]; /* the point center+normal */
               for(unsigned i=0; i < dim; i++){
-                h += (allridges_dup[i_ridge_dup].simplex.center[i] -
-                      otherpoint[i]) *
-                      allridges_dup[i_ridge_dup].simplex.normal[i];
+                thepoint[i] = allridges_dup[i_ridge_dup].simplex.center[i] +
+                              allridges_dup[i_ridge_dup].simplex.normal[i];
               }
-              if(h < 0){
+              /* we check that these two points are on the same side of the ridge */
+              double h1 = dotproduct(otherpoint,
+                                     allridges_dup[i_ridge_dup].simplex.normal,
+                                     dim) +
+                          allridges_dup[i_ridge_dup].simplex.offset;
+              double h2 = dotproduct(thepoint,
+                                     allridges_dup[i_ridge_dup].simplex.normal,
+                                     dim) +
+                          allridges_dup[i_ridge_dup].simplex.offset;
+              if(h1*h2 > 0){
                 for(unsigned i=0; i < dim; i++){
                   allridges_dup[i_ridge_dup].simplex.normal[i] *= -1;
                 }

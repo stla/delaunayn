@@ -452,14 +452,23 @@ struct Delaunay* delaunay(
               }
             }
           }
-          if(!facet->degenerate || dim==2){
-            double h = 0;
-            pointT* otherpoint = ((vertexT*)facet->vertices->e[m].p)->point;
+          if((!facet->degenerate || dim==2) && ridges_dup[i_ridge_dup][1] == nf){
+            pointT* otherpoint =
+              getpoint(vertices, facetsIndices[fid*(dim+1)+m], dim);
+            // pointT* otherpoint = malloc(dim*sizeof(double));
+            // for(unsigned j=0; j<dim; j++){
+            //   otherpoint[j] = vertices[facetsIndices[fid*(dim+1)+m]*dim+j];
+            // }
+//            pointT* otherpoint = ((vertexT*)facet->vertices->e[m].p)->point; WRONG
+            double thepoint1[dim]; double thepoint2[dim];
             for(unsigned i=0; i<dim; i++){
-              h += (ridgesCenters[i_ridge_dup][i]-otherpoint[i]) *
-                   ridgesNormals[i_ridge_dup][i];
+              thepoint1[i] = otherpoint[i] - points[0][i];
+              thepoint2[i] = ridgesCenters[i_ridge_dup][i] +
+                             ridgesNormals[i_ridge_dup][i] - points[0][i];
             }
-            if(h < 0){
+            double h1 = dotproduct(thepoint1, ridgesNormals[i_ridge_dup], dim);
+            double h2 = dotproduct(thepoint2, ridgesNormals[i_ridge_dup], dim);
+            if(h1*h2>0){
               for(unsigned i=0; i<dim; i++){
                 ridgesNormals[i_ridge_dup][i] *= -1;
               }
@@ -630,6 +639,7 @@ struct Delaunay* delaunay(
     out->vvneighbors = connectedVertices_;
     out->vvnsizes    = n_vertices_per_vertex;
 
+    free(i_ridges_per_vertex);
     for(unsigned v=0; v<n; v++){
 			free(connectedVertices[v]);
 			for(unsigned r=0; r<n_ridges_per_vertex[v]; r++){

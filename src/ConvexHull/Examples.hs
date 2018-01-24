@@ -47,6 +47,17 @@ cube5 :: [[Double]]
 cube5 = [[i,j,k,l,m] | i <- [-1,1], j <- [-1,1], k <- [-1,1], l <- [-1,1],
                        m <- [-1,1]]
 
+
+randomInCircle :: Int -> IO [[Double]]
+randomInCircle n = do
+  g1 <- newStdGen
+  let theta = map (*(2*pi)) (take n (randoms g1 :: [Double]))
+  g2 <- newStdGen
+  let rho   = take n (randoms g2 :: [Double])
+  return $ zipWith (\r a  -> [r * cos a,
+                              r * sin a])
+                   rho theta
+
 randomInSphere :: Int -> IO [[Double]]
 randomInSphere n = do
   g1 <- newStdGen
