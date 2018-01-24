@@ -13,6 +13,11 @@ unsigned facetOK_(facetT* facet, unsigned degenerate){
   return !facet->upperdelaunay && (degenerate || !facet->degenerate);
 } // && simplicial, && !facet->redundant - pas de simplicial avec Qt
 
+// // to use the qsort function - sort sites according to their ids
+// int cmpsites (const void * a, const void * b) {
+//    return ( (*((SiteT*)a)).id - (*((SiteT*)b)).id );
+// }
+
 
 TesselationT* tesselation(
 	double*   sites,
@@ -22,22 +27,16 @@ TesselationT* tesselation(
 	unsigned* exitcode
 )
 {
-  printf("HELLO\n");
 	char flags[250];             /* option flags for qhull, see qh_opt.htm */
   sprintf(flags, "qhull d Qt Fn Qbb", "");
-  printf("HELLO\n");
 	qhT qh_qh;                /* Qhull's data structure.  First argument of most calls */
   qhT *qh= &qh_qh;
-  printf("HELLO\n");
   QHULL_LIB_CHECK
-  printf("HELLO\n");
-
   qh_meminit(qh, stderr);
 	boolT ismalloc  = False; /* True if qhull should free points in qh_freeqhull() or reallocation */
 	FILE *errfile   = NULL;
   FILE* outfile = stdout;
   qh_zero(qh, errfile);
-  printf("HELLOOO\n");
 	exitcode[0] = qh_new_qhull(qh, dim, n, sites, ismalloc, flags, outfile,
 		                         errfile);
   //fclose(tmpstdout);
@@ -46,18 +45,12 @@ TesselationT* tesselation(
   TesselationT* out = malloc(sizeof(TesselationT));
 
 	if (!exitcode[0]) {             /* 0 if no error from qhull */
-    printf("START\n");
-
-  	//qh_getarea(qh, qh->facet_list);
 
     /* Count the number of facets so we know how much space to allocate */
 		unsigned nfacets = 0; /* Number of facets */
     {
       facetT *facet;  /* set by FORALLfacets */
   		FORALLfacets {
-
-        printf("facet:%u\n", nfacets);
-
   			if(facetOK_(facet, degenerate)){
           facet->id = nfacets;
   	      nfacets++;
@@ -70,23 +63,13 @@ TesselationT* tesselation(
     /* Alocate the space */
     TileT* allfacets = malloc(nfacets * sizeof(TileT));
 
-    // unsigned* owners        = malloc(nf * sizeof(unsigned));
-    // unsigned* facetsIndices = malloc(nf * (dim+1) * sizeof(unsigned));
-		// double*   facetsVolumes = malloc(nf * sizeof(double));
-		// unsigned* neighbors     = malloc(nf * (dim+1) * sizeof(unsigned));
-		// double*   centers       = malloc(nf * dim * sizeof(double));
-		// unsigned* toporient     = malloc(nf * sizeof(unsigned));
-		// double*   facetsNormals = malloc(nf * (dim+1) * sizeof(double));
-
   	{ /* Iterate through facets to extract information - first pass */
       facetT* facet;
       unsigned i_facet = 0;
       FORALLfacets {
-
-        printf("facet:%u\n", facet->id);
-
         // ceci fait planter: fais getarea après le test tricoplanar
 //        allfacets[i_facet].simplex.volume = qh_facetarea(qh, facet);
+        allfacets[i_facet].id             = facet->id;
         allfacets[i_facet].orientation    = facet->toporient ? 1 : -1;
         allfacets[i_facet].simplex.normal = facet->normal;
         allfacets[i_facet].simplex.offset = facet->offset;
@@ -97,9 +80,6 @@ TesselationT* tesselation(
           vertexT *vertex, **vertexp;
           unsigned i_vertex = 0;
           FOREACHvertex_(facet->vertices) {
-
-            printf("i_vertex:%u\n", i_vertex);
-
             allfacets[i_facet].simplex.sitesids[i_vertex] =
               qh_pointid(qh, vertex->point);
             i_vertex++;
@@ -114,9 +94,6 @@ TesselationT* tesselation(
           allfacets[i_facet].nneighbors = 0;
           unsigned i_neighbor = 0;
     			FOREACHneighbor_(facet) {
-
-            printf("neighborid:%u\n", neighbor->id);
-
             flag[i_neighbor] = facetOK_(neighbor, degenerate);
             if(flag[i_neighbor]){
               allfacets[i_facet].nneighbors++;
@@ -128,9 +105,6 @@ TesselationT* tesselation(
           i_neighbor = 0;
           FOREACHneighbor_(facet) {
             if(flag[i_neighbor]){
-
-              printf("flag neigbor:%u\n", neighbor->id);
-
               allfacets[i_facet].neighbors[countok] = neighbor->id;
               countok++;
             }
@@ -141,7 +115,6 @@ TesselationT* tesselation(
 
         /* facet family */
         if(facet->tricoplanar){
-          printf("tricoplanar\n");
           allfacets[i_facet].family = facet->f.triowner->id;
         }else{
           allfacets[i_facet].family = -1;
@@ -168,29 +141,35 @@ TesselationT* tesselation(
     SiteT* allsites = malloc(n * sizeof(SiteT));
     /* --- array to flag neighbors - 0/1 if not neighbour/neighbour */
 		unsigned verticesFacetsNeighbours[n][nfacets];
-    { /* loop on all vertices */
-      vertexT* vertex;
-      unsigned i_vertex = 0;
-      FORALLvertices{
-
-        printf("i_vertex again:%u\n", i_vertex);
-
-        allsites[i_vertex].id = qh_pointid(qh, vertex->point);
-        allsites[i_vertex].nneighsites = 0;
-        allsites[i_vertex].neighsites = malloc(0);
-        allsites[i_vertex].nneightiles = 0;
-        for(unsigned i_facet=0; i_facet < nfacets; i_facet++){
-          verticesFacetsNeighbours[i_vertex][i_facet] = 0;
-        }
-        /**/
-        i_vertex++;
+    for(unsigned v=0; v<n; v++){
+      allsites[v].id = v;
+      allsites[v].nneighsites = 0;
+      allsites[v].neighsites = malloc(0);
+      allsites[v].nneightiles = 0;
+      for(unsigned f=0; f < nfacets; f++){
+        verticesFacetsNeighbours[v][f] = 0;
       }
     }
+    // { /* loop on all vertices */
+    //   vertexT* vertex;
+    //   unsigned i_vertex = 0;
+    //   FORALLvertices{
+    //
+    //     printf("i_vertex again:%u\n", i_vertex);
+    //
+    //     allsites[i_vertex].id = i_vertex; //qh_pointid(qh, vertex->point);
+    //     allsites[i_vertex].nneighsites = 0;
+    //     allsites[i_vertex].neighsites = malloc(0);
+    //     allsites[i_vertex].nneightiles = 0;
+    //     for(unsigned i_facet=0; i_facet < nfacets; i_facet++){
+    //       verticesFacetsNeighbours[i_vertex][i_facet] = 0;
+    //     }
+    //     /**/
+    //     i_vertex++;
+    //   }
+    // }
 
     for(unsigned i_facet=0; i_facet < nfacets; i_facet++){
-
-      printf("i_facet:%u \n", i_facet);
-
       for(unsigned j=0; j<dim+1; j++){
         unsigned vertexid = allfacets[i_facet].simplex.sitesids[j];
         if(verticesFacetsNeighbours[vertexid][i_facet] == 0){
@@ -201,22 +180,14 @@ TesselationT* tesselation(
           unsigned vertexid2 =
             allfacets[i_facet].simplex.sitesids[combinations[j][k]];
           unsigned pushed;
-
-          printf("appendu\n");
-
           appendu(vertexid2, &allsites[vertexid].neighsites,
                   allsites[vertexid].nneighsites, &pushed);
           if(pushed){
-
-            printf("push\n");
-
             allsites[vertexid].nneighsites++;
           }
         }
       }
     }
-
-    printf("BYEBYE LOOP\n");
 
     /************************************************************/
     /* second pass: ridges, centers, normals and volumes        */
@@ -237,31 +208,19 @@ TesselationT* tesselation(
       unsigned i_facet = 0;
       FORALLfacets {
 
-        printf("loop on facets again\n");
-        printf("ifacet: %u\n", i_facet);
-
         allfacets[i_facet].simplex.volume = facet->f.area;
         allfacets[i_facet].simplex.center =
           facet->degenerate ? nanvector(dim)
                               : qh_facetcenter(qh, facet->vertices);
-
-        printf("facetcenter ok ?\n");
-
         allfacets[i_facet].nridges   = dim+1;
         allfacets[i_facet].ridgesids = malloc((dim+1) * sizeof(unsigned));
 
         /* loop on the combinations - it increments i_ridge_dup */
         for(unsigned m=0; m < dim+1; m++){
-
-          printf("m(combination)=%u\n", m);
-
           allridges_dup[i_ridge_dup].ridgeOf1 = facet->id;
           allridges_dup[i_ridge_dup].ridgeOf2 = -1; /* this means "nothing" */
           unsigned ids[dim];
           for(unsigned i=0; i < dim; i++){
-
-            printf("combinations[m][i]=%u\n", combinations[m][i]);
-
             ids[i] = allfacets[i_facet].simplex.sitesids[combinations[m][i]];
           }
           unsigned done = 0;
@@ -269,7 +228,6 @@ TesselationT* tesselation(
             if(allridges_dup[r].ridgeOf2 == (int) facet->id &&
                allridges_dup[r].flag==1)
             {
-              printf("FLLLLLLLAAAG");
               unsigned ids2[dim];
               unsigned i;
               for(i=0; i<dim; i++){
@@ -279,7 +237,6 @@ TesselationT* tesselation(
                 }
               }
               if(i==dim){
-                printf("DONE = 1\n");
                 allfacets[i_facet].ridgesids[m] = allridges_dup[r].id;
                 done = 1;
                 break;
@@ -287,17 +244,11 @@ TesselationT* tesselation(
             }
           }
           if(done==0){
-
-            printf("done=0\n");
-
             allridges_dup[i_ridge_dup].flag = 1;
             allridges_dup[i_ridge_dup].id = n_ridges;
             allfacets[i_facet].ridgesids[m] = n_ridges;
             n_ridges++;
             for(unsigned i=0; i<dim; i++){
-
-              printf("ids[i]:%u\n", ids[i]);
-
               allridges_dup[i_ridge_dup].simplex.sitesids[i] = ids[i];
               allsites[ids[i]].nneighridges++;
             }
@@ -305,9 +256,6 @@ TesselationT* tesselation(
             {
               facetT *neighbor, **neighborp;
               FOREACHneighbor_(facet){
-
-                printf("loop on neighbor - %u\n", neighbor->id);
-
                 unsigned fnid = neighbor->id;
                 if(facetOK_(neighbor, degenerate)){
                   unsigned ok;
@@ -325,9 +273,6 @@ TesselationT* tesselation(
                     }
                   }
                   if(ok==dim){
-
-                    printf("ok=dim\n");
-
                     allridges_dup[i_ridge_dup].ridgeOf2 = (int) fnid;
                     break;
                   }
@@ -335,21 +280,18 @@ TesselationT* tesselation(
               } // end FOREACHneighbor_(facet)
             }
 
-            printf("end loop on neighbors\n");
-
             pointT* points[dim];
             for(unsigned i=0; i<dim; i++){
               points[i] = getpoint(sites, dim, ids[i]);
             }
             double normal[dim];
             if(dim==2){
-
-              printf("calculate center\n");
-
               double u1 = points[1][0] - points[0][0];
               double v1 = points[1][1] - points[0][1];
-              allridges_dup[i_ridge_dup].simplex.volume = sqrt(square(u1)+square(v1));
-              allridges_dup[i_ridge_dup].simplex.center = middle(points[0], points[1], dim);
+              allridges_dup[i_ridge_dup].simplex.volume =
+                sqrt(square(u1)+square(v1));
+              allridges_dup[i_ridge_dup].simplex.center =
+                middle(points[0], points[1], dim);
               normal[0] = v1; normal[1] = -u1;
             }else{
               int parity=1;
@@ -417,22 +359,15 @@ TesselationT* tesselation(
               }
             }
             for(unsigned i=0; i<dim; i++){
-
-              printf("free points\n");
-
               free(points[i]);
             }
           }
           i_ridge_dup++;
         } // end loop combinations (m)
-        qsort(allfacets[i_facet].ridgesids, dim+1, sizeof(unsigned), cmpfunc); 
+        qsort(allfacets[i_facet].ridgesids, dim+1, sizeof(unsigned), cmpfunc);
         i_facet++;
       } // end FORALLfacets
     }
-
-/////////////////////////////////////////////////////////////////////////
-
-		printf("LEAVING LOOP");
 
     /* make unique ridges */
     SubTileT* allridges = malloc(n_ridges * sizeof(SubTileT));
@@ -462,7 +397,6 @@ TesselationT* tesselation(
       }
     }
 
-		//unsigned inc_vfn_tot = 0;
     /* make neighbor tiles per vertex */
 		for(unsigned v=0; v < n; v++){
       allsites[v].neightiles = malloc(allsites[v].nneightiles * sizeof(unsigned));
@@ -470,7 +404,7 @@ TesselationT* tesselation(
 			while(inc_vfn < allsites[v].nneightiles){
 				if(verticesFacetsNeighbours[v][inc_facet] == 1){
           allsites[v].neightiles[inc_vfn] = inc_facet;
-					inc_vfn++; //inc_vfn_tot++;
+					inc_vfn++;
 				}
 				inc_facet++;
 			}
@@ -497,7 +431,6 @@ TesselationT* tesselation(
 	qh_freeqhull(qh, !qh_ALL);                  /* free long memory */
 	qh_memfreeshort(qh, &curlong, &totlong);   /* free short memory and memory allocator */
 
-	printf("RETURN\n");
   return out;
 }
 

@@ -36,8 +36,9 @@ delaunay3vis tess = VisObjects $ concatMap visRidge (_ridges tess)
 main :: IO ()
 main = do
 
-  tess <- delaunay [[0,0],[0,1],[1,0],[1,1],[0.5,0.5]] False
+  tess <- delaunay centricCube False
   pPrint tess
+  print $ length $ _ridges tess
   -- let v = voronoi3 tess
   -- writeFile "rgl.txt" (voronoi3ForRgl v Nothing)
   -- putStrLn $ ppShow v

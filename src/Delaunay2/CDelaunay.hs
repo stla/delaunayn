@@ -4,17 +4,17 @@ module Delaunay2.CDelaunay
   ( cTesselationToTesselation
   , c_tesselation )
   where
-import           Control.Monad       ((<$!>), (=<<))
-import qualified Data.HashMap.Strict as H
+import           Control.Monad       ((<$!>))
+import           Delaunay2.Types
 import           Data.IntMap.Strict  (IntMap, fromAscList)
 import qualified Data.IntMap.Strict  as IM
 import qualified Data.IntSet         as IS
 import           Data.List
-import           Data.Tuple.Extra    (both)
-import           Delaunay2.Types
+import qualified Data.HashMap.Strict as H
+-- import           Data.Tuple.Extra    (both)
 import           Foreign
-import           Foreign.C.String
 import           Foreign.C.Types
+-- import           Foreign.C.String
 
 data CSite = CSite {
     __id             :: CUInt

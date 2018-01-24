@@ -26,3 +26,5 @@ OpenGL*
 *.gif
 zz.txt
 *.txt
+rgl/.Rhistory
+Rplots/.Rhistory

@@ -1,17 +1,17 @@
 module Delaunay2.Types
   where
-import           Data.IntMap.Strict  (IntMap)
-import           Data.IntSet         (IntSet)
+import           Data.IntMap.Strict (IntMap)
+import           Data.IntSet        (IntSet)
 
 type Index = Int
 type IndexMap = IntMap
 type IndexSet = IntSet
 
 data Site = Site {
-    _point         :: [Double]
-  , _neighsites    :: IndexSet
-  , _neighridges   :: IntSet
-  , _neightiles    :: IntSet
+    _point       :: [Double]
+  , _neighsites  :: IndexSet
+  , _neighridges :: IntSet
+  , _neightiles  :: IntSet
 } deriving Show
 
 data Simplex = Simplex {
@@ -22,22 +22,21 @@ data Simplex = Simplex {
   , _volume       :: Double
 } deriving Show
 
-
 data SubTile = SubTile {
     _subsimplex :: Simplex
-  , _ridgeOf :: IntSet
-}
+  , _ridgeOf    :: IntSet
+} deriving Show
 
 data Tile = Tile {
-    _simplex :: Simplex
-  , _neighbors :: IntSet
-  , _subtiles'  :: IntSet
-  , _family    :: Maybe Int
-  , _toporiented  :: Bool
-}
+    _simplex     :: Simplex
+  , _neighbors   :: IntSet
+  , _subtiles'   :: IntSet
+  , _family      :: Maybe Int
+  , _toporiented :: Bool
+} deriving Show
 
 data Tesselation = Tesselation {
-    _sites :: IndexMap Site
-  , _tiles :: IntMap Tile
+    _sites    :: IndexMap Site
+  , _tiles    :: IntMap Tile
   , _subtiles :: IntMap SubTile
-}
+} deriving Show

@@ -1,6 +1,7 @@
 module Delaunay2.Delaunay
   where
-import           Control.Monad         (when, unless)
+import           Control.Monad         (unless, when)
+import           Data.List.Unique      (allUnique)
 import           Delaunay2.CDelaunay
 import           Delaunay2.Types
 import           Foreign.C.Types
@@ -19,6 +20,8 @@ delaunay2 sites deg = do
     error "dimension must be at least 2"
   when (n <= dim+1) $
     error "insufficient number of points"
+  unless (allUnique sites) $
+    error "some points are duplicated"
   sitesPtr <- mallocBytes (n * dim * sizeOf (undefined :: CDouble))
   pokeArray sitesPtr (concatMap (map realToFrac) sites)
   exitcodePtr <- mallocBytes (sizeOf (undefined :: CUInt))

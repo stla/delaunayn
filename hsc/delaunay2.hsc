@@ -3,17 +3,17 @@ module Delaunay2.CDelaunay
   ( cTesselationToTesselation
   , c_tesselation )
   where
-import           Control.Monad       ((<$!>), (=<<))
+import           Control.Monad       ((<$!>))
 import           Delaunay2.Types
 import           Data.IntMap.Strict  (IntMap, fromAscList)
 import qualified Data.IntMap.Strict  as IM
 import qualified Data.IntSet         as IS
 import           Data.List
 import qualified Data.HashMap.Strict as H
-import           Data.Tuple.Extra    (both)
+-- import           Data.Tuple.Extra    (both)
 import           Foreign
 import           Foreign.C.Types
-import           Foreign.C.String
+-- import           Foreign.C.String
 
 #include "delaunay2.h"
 
@@ -280,7 +280,6 @@ cTesselationToTesselation :: [[Double]] -> CTesselation -> IO Tesselation
 cTesselationToTesselation sites ctess = do
   let ntiles    = fromIntegral $ __ntiles ctess
       nsubtiles = fromIntegral $ __nsubtiles ctess
-      dim       = length (head sites)
       nsites    = length sites
   sites'' <- peekArray nsites (__sites ctess)
   tiles'' <- peekArray ntiles (__tiles ctess)

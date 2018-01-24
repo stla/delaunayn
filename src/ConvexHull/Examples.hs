@@ -4,8 +4,8 @@ import           Data.List.Split (chunksOf)
 import           System.Random
 
 rgg :: [[Double]]
-rgg =[[-5,-5, 16], [-5, 8, 3 ], [ 4,-1, 3 ], [ 4,-5, 7], [ 4,-1,-10],
-      [ 4,-5,-10], [-5, 8,-10], [-5,-5,-10]]
+rgg = [[-5,-5, 16], [-5, 8, 3 ], [ 4,-1, 3 ], [ 4,-5, 7], [ 4,-1,-10],
+       [ 4,-5,-10], [-5, 8,-10], [-5,-5,-10]]
 
 centricCube :: [[Double]]
 centricCube =  [[-1,-1,-1],[-1,-1, 1],[-1, 1,-1],[-1, 1, 1],[ 1,-1,-1],
@@ -64,11 +64,11 @@ randomInSphere' :: Int -> IO [[Double]]
 randomInSphere' n = do
   g <- newStdGen
   let x = take (2*n) (randoms g :: [Double])
-  let u = map (*(2*pi)) (take n x)
-  let v = drop n x
+  let u_ = map (*(2*pi)) (take n x)
+  let v_ = drop n x
   return $ zipWith (\u v -> [sin u * cos (acos (2*v-1)),
                              sin u * sin (acos (2*v-1)),
-                             cos u                     ]) u v
+                             cos u                     ]) u_ v_
 
 randomInCube :: Int -> IO [[Double]]
 randomInCube n = do
