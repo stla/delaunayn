@@ -23,6 +23,10 @@ library
                      , Delaunay.Delaunay
                      , Delaunay.CDelaunay
                      , Delaunay.Types
+                     , Delaunay2
+                     , Delaunay2.Delaunay
+                     , Delaunay2.CDelaunay
+                     , Delaunay2.Types
                      , TemporaryFile
                      , Voronoi2D
                      , Voronoi3D
@@ -68,23 +72,35 @@ library
                      , C/delaunay2.c
   ghc-options:         -O0 -Wall
 
-executable test_delaunay
+-- executable test_delaunay
+--   if flag(exe)
+--     buildable:         True
+--   else
+--     buildable:         False
+--   hs-source-dirs:      src-exe/Delaunay
+--   main-is:             Main.hs
+--   default-language:    Haskell2010
+--   build-depends:       base >= 4.7 && < 5
+--                      , delaunayn
+--                      , pretty-show
+--                      , extra
+--                      , containers
+--                      , ilist
+--                      , Unique
+--                      , not-gloss
+--                      , linear
+
+executable test_delaunay2
   if flag(exe)
     buildable:         True
   else
     buildable:         False
-  hs-source-dirs:      src-exe/Delaunay
+  hs-source-dirs:      src-exe/Delaunay2
   main-is:             Main.hs
   default-language:    Haskell2010
   build-depends:       base >= 4.7 && < 5
                      , delaunayn
                      , pretty-show
-                     , extra
-                     , containers
-                     , ilist
-                     , Unique
-                     , not-gloss
-                     , linear
 
 -- executable test_convexhull
 --   if flag(exe)

@@ -36,16 +36,17 @@ delaunay3vis tess = VisObjects $ concatMap visRidge (_ridges tess)
 main :: IO ()
 main = do
 
-  -- tess <- test2
+  tess <- delaunay [[0,0],[0,1],[1,0],[1,1],[0.5,0.5]] False
+  pPrint tess
   -- let v = voronoi3 tess
   -- writeFile "rgl.txt" (voronoi3ForRgl v Nothing)
   -- putStrLn $ ppShow v
 
-  points <- randomInSphere 50
-  tess <- delaunay points False
-  let v = voronoi3 tess
-      code1 = voronoi3ForRgl v Nothing -- delaunay3rgl tess True True True (Just 0.5) --
-  writeFile "rgl/voronoi_sphere.R" code1
+  -- points <- randomInSphere 50
+  -- tess <- delaunay points False
+  -- let v = voronoi3 tess
+  --     code1 = voronoi3ForRgl v Nothing -- delaunay3rgl tess True True True (Just 0.5) --
+  -- writeFile "rgl/voronoi_sphere.R" code1
 
   -- tess <- delaunay centricCuboctahedron False
   -- putStrLn $ ppShow $ map ridgeVertices (_ridges tess)

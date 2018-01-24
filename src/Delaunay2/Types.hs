@@ -1,0 +1,43 @@
+module Delaunay2.Types
+  where
+import           Data.IntMap.Strict  (IntMap)
+import           Data.IntSet         (IntSet)
+
+type Index = Int
+type IndexMap = IntMap
+type IndexSet = IntSet
+
+data Site = Site {
+    _point         :: [Double]
+  , _neighsites    :: IndexSet
+  , _neighridges   :: IntSet
+  , _neightiles    :: IntSet
+} deriving Show
+
+data Simplex = Simplex {
+    _points       :: IndexMap [Double]
+  , _circumcenter :: [Double]
+  , _normal       :: [Double]
+  , _offset       :: Double
+  , _volume       :: Double
+} deriving Show
+
+
+data SubTile = SubTile {
+    _subsimplex :: Simplex
+  , _ridgeOf :: IntSet
+}
+
+data Tile = Tile {
+    _simplex :: Simplex
+  , _neighbors :: IntSet
+  , _subtiles'  :: IntSet
+  , _family    :: Maybe Int
+  , _toporiented  :: Bool
+}
+
+data Tesselation = Tesselation {
+    _sites :: IndexMap Site
+  , _tiles :: IntMap Tile
+  , _subtiles :: IntMap SubTile
+}

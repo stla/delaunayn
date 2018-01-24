@@ -1,27 +1,26 @@
 typedef struct Site {
   unsigned   id;
   unsigned*  neighsites;
-  unsigned*  nneighsites;
-  unsigned** neighridgesids;
-  unsigned*  nneighridges;
+  unsigned   nneighsites;
+  unsigned*  neighridgesids;
+  unsigned   nneighridges;
   unsigned*  neightiles;
-  unsigned*  nneightiles;
+  unsigned   nneightiles;
 } SiteT;
 
 typedef struct Simplex {
-  unsigned* verticesids;
+  unsigned* sitesids;
   double*   center;
   double*   normal;
-  double    offset; // todo
+  double    offset;
   double    volume;
-  int       orientation;
 } SimplexT;
 
 typedef struct SubTile {
   unsigned id;
   SimplexT simplex;
   unsigned ridgeOf1;
-  unsigned ridgeOf2;
+  int      ridgeOf2;
   unsigned flag;
 } SubTileT;
 
@@ -32,17 +31,19 @@ typedef struct Tile {
   SimplexT  simplex;
   unsigned* neighbors;
   unsigned  nneighbors;
-  unsigned* ridgesids; // to do
-  unsigned  nridges;
+  unsigned* ridgesids;
+  unsigned  nridges; //  = dim+1
   int       family;
+  int       orientation; 
 } TileT;
 
 typedef struct Tesselation {
   SiteT*    sites;
   TileT*    tiles;
-//  unsigned* tilesids;
   unsigned  ntiles;
-  SubTile*  subtiles;
-//  unsigned* subtilesids;
+  SubTileT* subtiles;
   unsigned  nsubtiles;
 } TesselationT;
+
+TesselationT* tesselation(double*, unsigned, unsigned, unsigned, unsigned*);
+void testdel2();

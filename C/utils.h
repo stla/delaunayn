@@ -12,3 +12,5 @@ double* nanvector(int);
 double* middle(double*, double*, unsigned);
 
 double* getpoint(double*, unsigned, unsigned);
+
+double dotproduct(double*, double*, unsigned);

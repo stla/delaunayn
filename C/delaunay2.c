@@ -85,14 +85,14 @@ TesselationT* tesselation(
 
         printf("facet:%u\n", facet->id);
 
-        // ceci fait planter:
+        // ceci fait planter: fais getarea après le test tricoplanar
 //        allfacets[i_facet].simplex.volume = qh_facetarea(qh, facet);
-        allfacets[i_facet].simplex.orientation = facet->toporient ? 1 : -1;
-        allfacets[i_facet].simplex.normal    = facet->normal;
-        allfacets[i_facet].simplex.offset    = facet->offset;
+        allfacets[i_facet].orientation    = facet->toporient ? 1 : -1;
+        allfacets[i_facet].simplex.normal = facet->normal;
+        allfacets[i_facet].simplex.offset = facet->offset;
 
         { /* vertices ids */
-          allfacets[i_facet].simplex.verticesids =
+          allfacets[i_facet].simplex.sitesids =
             malloc((dim+1) * sizeof(unsigned));
           vertexT *vertex, **vertexp;
           unsigned i_vertex = 0;
@@ -100,11 +100,11 @@ TesselationT* tesselation(
 
             printf("i_vertex:%u\n", i_vertex);
 
-            allfacets[i_facet].simplex.verticesids[i_vertex] =
+            allfacets[i_facet].simplex.sitesids[i_vertex] =
               qh_pointid(qh, vertex->point);
             i_vertex++;
     			}
-          qsort(allfacets[i_facet].simplex.verticesids, dim+1, sizeof(unsigned),
+          qsort(allfacets[i_facet].simplex.sitesids, dim+1, sizeof(unsigned),
                 cmpfunc);
         }
 
@@ -153,7 +153,7 @@ TesselationT* tesselation(
     }
 
 		/* count number of neighbor facets and neighbor vertices per vertex */
-    /* we will use the following combinations, also used later          */
+    /* --- we will use the following combinations, also used later */
     unsigned combinations[dim+1][dim];
     for(unsigned m=0; m<dim+1; m++){
       unsigned kk=0;
@@ -164,12 +164,11 @@ TesselationT* tesselation(
         }
       }
     }
-
+    /* --- initialize all sites */
     SiteT* allsites = malloc(n * sizeof(SiteT));
-
-//    unsigned  n_total_vertex_neighbors_facets = 0;
-		unsigned verticesFacetsNeighbours[n][nfacets]; // 0/1 if not neighbour/neighbour
-    {
+    /* --- array to flag neighbors - 0/1 if not neighbour/neighbour */
+		unsigned verticesFacetsNeighbours[n][nfacets];
+    { /* loop on all vertices */
       vertexT* vertex;
       unsigned i_vertex = 0;
       FORALLvertices{
@@ -193,15 +192,14 @@ TesselationT* tesselation(
       printf("i_facet:%u \n", i_facet);
 
       for(unsigned j=0; j<dim+1; j++){
-        unsigned vertexid = allfacets[i_facet].simplex.verticesids[j];
+        unsigned vertexid = allfacets[i_facet].simplex.sitesids[j];
         if(verticesFacetsNeighbours[vertexid][i_facet] == 0){
           verticesFacetsNeighbours[vertexid][i_facet] = 1;
           allsites[vertexid].nneightiles++;
-//          n_total_vertex_neighbors_facets++;
         }
         for(unsigned k=0; k<dim; k++){
           unsigned vertexid2 =
-            allfacets[i_facet].simplex.verticesids[combinations[j][k]];
+            allfacets[i_facet].simplex.sitesids[combinations[j][k]];
           unsigned pushed;
 
           printf("appendu\n");
@@ -221,59 +219,68 @@ TesselationT* tesselation(
     printf("BYEBYE LOOP\n");
 
     /************************************************************/
-    /* second pass: ridges, centers and normals                 */
-    unsigned n_ridges_dup = nfacets * (dim+1);
+    /* second pass: ridges, centers, normals and volumes        */
+    unsigned n_ridges_dup = nfacets * (dim+1); /* number of ridges with duplicates */
     SubTileT* allridges_dup = malloc(n_ridges_dup * sizeof(SubTileT));
-    for(unsigned r=0; r<n_ridges_dup; r++){
-      allridges_dup[r].simplex.verticesids = malloc(dim * sizeof(unsigned));
+    for(unsigned r=0; r < n_ridges_dup; r++){
+      allridges_dup[r].simplex.sitesids = malloc(dim * sizeof(unsigned));
       allridges_dup[r].flag = 0;
     }
-    for(unsigned v=0; v<n; v++){
+    for(unsigned v=0; v < n; v++){
       allsites[v].nneighridges = 0;
     }
-
-    unsigned n_ridges     = 0;
-    unsigned i_ridge_dup  = 0;
+    qh_getarea(qh, qh->facet_list); /* make facets volumes, available in facet->f.area */
+    unsigned n_ridges = 0; /* count distinct ridges */
     { /* loop on facets */
       facetT *facet;
+      unsigned i_ridge_dup  = 0;
       unsigned i_facet = 0;
       FORALLfacets {
 
         printf("loop on facets again\n");
         printf("ifacet: %u\n", i_facet);
 
+        allfacets[i_facet].simplex.volume = facet->f.area;
         allfacets[i_facet].simplex.center =
           facet->degenerate ? nanvector(dim)
                               : qh_facetcenter(qh, facet->vertices);
 
         printf("facetcenter ok ?\n");
 
-        for(unsigned m=0; m<dim+1; m++){
+        allfacets[i_facet].nridges   = dim+1;
+        allfacets[i_facet].ridgesids = malloc((dim+1) * sizeof(unsigned));
+
+        /* loop on the combinations - it increments i_ridge_dup */
+        for(unsigned m=0; m < dim+1; m++){
 
           printf("m(combination)=%u\n", m);
 
           allridges_dup[i_ridge_dup].ridgeOf1 = facet->id;
-          allridges_dup[i_ridge_dup].ridgeOf2 = nfacets; // "nothing"
-//          unsigned fid = facet->id-1;
+          allridges_dup[i_ridge_dup].ridgeOf2 = -1; /* this means "nothing" */
           unsigned ids[dim];
-          for(unsigned i=0; i<dim; i++){
+          for(unsigned i=0; i < dim; i++){
 
             printf("combinations[m][i]=%u\n", combinations[m][i]);
 
-            ids[i] = allfacets[i_facet].simplex.verticesids[combinations[m][i]];
+            ids[i] = allfacets[i_facet].simplex.sitesids[combinations[m][i]];
           }
           unsigned done = 0;
-          for(unsigned r=0; r<i_ridge_dup; r++){
-            if(allridges_dup[r].ridgeOf1 == facet->id && allridges_dup[r].flag){
+          for(unsigned r=0; r < i_ridge_dup; r++){
+            if(allridges_dup[r].ridgeOf2 == (int) facet->id &&
+               allridges_dup[r].flag==1)
+            {
+              printf("FLLLLLLLAAAG");
               unsigned ids2[dim];
               unsigned i;
               for(i=0; i<dim; i++){
-                ids2[i] = allridges_dup[r].simplex.verticesids[i];
+                ids2[i] = allridges_dup[r].simplex.sitesids[i];
                 if(ids2[i] != ids[i]){
                   break;
                 }
               }
               if(i==dim){
+                printf("DONE = 1\n");
+                allfacets[i_facet].ridgesids[m] = allridges_dup[r].id;
                 done = 1;
                 break;
               }
@@ -283,13 +290,15 @@ TesselationT* tesselation(
 
             printf("done=0\n");
 
-            n_ridges++;
             allridges_dup[i_ridge_dup].flag = 1;
+            allridges_dup[i_ridge_dup].id = n_ridges;
+            allfacets[i_facet].ridgesids[m] = n_ridges;
+            n_ridges++;
             for(unsigned i=0; i<dim; i++){
 
               printf("ids[i]:%u\n", ids[i]);
 
-              allridges_dup[i_ridge_dup].simplex.verticesids[i] = ids[i];
+              allridges_dup[i_ridge_dup].simplex.sitesids[i] = ids[i];
               allsites[ids[i]].nneighridges++;
             }
 
@@ -305,7 +314,7 @@ TesselationT* tesselation(
                   for(unsigned mm=0; mm<dim+1; mm++){
                     ok = 0;
                     for(unsigned i=0; i<dim; i++){
-                      if(allfacets[fnid].simplex.verticesids[combinations[mm][i]] != ids[i]){
+                      if(allfacets[fnid].simplex.sitesids[combinations[mm][i]] != ids[i]){
                         break;
                       }else{
                         ok++;
@@ -319,7 +328,7 @@ TesselationT* tesselation(
 
                     printf("ok=dim\n");
 
-                    allridges_dup[i_ridge_dup].ridgeOf2 = fnid;
+                    allridges_dup[i_ridge_dup].ridgeOf2 = (int) fnid;
                     break;
                   }
                 }
@@ -375,6 +384,8 @@ TesselationT* tesselation(
             for(unsigned i=0; i < dim; i++){
               allridges_dup[i_ridge_dup].simplex.normal[i] = normal[i];
             }
+            allridges_dup[i_ridge_dup].simplex.offset =
+              - dotproduct(points[0], normal, dim);
             if(dim>2){
               if(facet->degenerate){
                 allridges_dup[i_ridge_dup].simplex.center = nanvector(dim);
@@ -383,7 +394,8 @@ TesselationT* tesselation(
                   malloc(dim * sizeof(double));
                 double scal = 0;
                 for(unsigned i=0; i < dim; i++){
-                  scal += (points[0][i]-allfacets[i_facet].simplex.center[i]) * normal[i];
+                  scal += (points[0][i]-allfacets[i_facet].simplex.center[i]) *
+                            normal[i];
                 }
                 for(unsigned i=0; i<dim; i++){
                   allridges_dup[i_ridge_dup].simplex.center[i] =
@@ -413,6 +425,7 @@ TesselationT* tesselation(
           }
           i_ridge_dup++;
         } // end loop combinations (m)
+        qsort(allfacets[i_facet].ridgesids, dim+1, sizeof(unsigned), cmpfunc); 
         i_facet++;
       } // end FORALLfacets
     }
@@ -421,99 +434,57 @@ TesselationT* tesselation(
 
 		printf("LEAVING LOOP");
 
-//keep flagged ridges, easy
-
+    /* make unique ridges */
     SubTileT* allridges = malloc(n_ridges * sizeof(SubTileT));
     unsigned inc_ridge = 0;
-		for(unsigned l=0; l<n_ridges_dup; l++){
+		for(unsigned l=0; l <n_ridges_dup; l++){
       if(allridges_dup[l].flag){
         allridges[inc_ridge] = allridges_dup[l];
         inc_ridge++;
       }
 		}
 
-// do allsites[v].neighridges
-    // unsigned    n_ridges_per_vertex_total = 0;
-    // unsigned*** verticesRidgesNeighbours  = malloc(n * sizeof(unsigned**));
-    unsigned*   i_ridges_per_vertex       = malloc(n * sizeof(unsigned));
-		for(unsigned v=0; v<n; v++){
-      allsites[v].neighridgesids = malloc(allsites[v].nneighridges * sizeof(unsigned*));
-			// verticesRidgesNeighbours[v] =
-      //   (unsigned**) malloc(n_ridges_per_vertex[v] * sizeof(unsigned*));
-      // n_ridges_per_vertex_total += n_ridges_per_vertex[v];
+    /* make neighbor ridges per vertex */
+    unsigned* i_ridges_per_vertex = malloc(n * sizeof(unsigned));
+		for(unsigned v=0; v < n; v++){
+      allsites[v].neighridgesids =
+        malloc(allsites[v].nneighridges * sizeof(unsigned));
       i_ridges_per_vertex[v] = 0;
     }
-    for(unsigned l=0; l<n_ridges_dup; l++){
+    for(unsigned l=0; l < n_ridges_dup; l++){
       if(allridges_dup[l].flag){
-        for(unsigned i=0; i<dim; i++){
-          unsigned v = allridges_dup[l].simplex.verticesids[i];
+        for(unsigned i=0; i < dim; i++){
+          unsigned v = allridges_dup[l].simplex.sitesids[i];
           allsites[v].neighridgesids[i_ridges_per_vertex[v]] =
-            allridges_dup[l].simplex.verticesids;
-          // verticesRidgesNeighbours[v][i_ridges_per_vertex[v]] =
-          //     (unsigned*) malloc(dim * sizeof(unsigned));
-          // for(unsigned j=0; j<dim; j++){
-          //   verticesRidgesNeighbours[v][i_ridges_per_vertex[v]][j] =
-          //       ridges_dup[l][2+j];
-          // }
+            allridges_dup[l].id;
           i_ridges_per_vertex[v]++;
         }
       }
     }
 
-		// unsigned* verticesRidgesNeighbours_ =
-    //   malloc(n_ridges_per_vertex_total * dim * sizeof(unsigned));
-		// unsigned count = 0;
-		// for(unsigned v=0; v<n; v++){
-		// 	for(unsigned r=0; r<n_ridges_per_vertex[v]; r++){
-		// 		for(unsigned l=0; l<dim; l++){
-		// 			verticesRidgesNeighbours_[count] = verticesRidgesNeighbours[v][r][l];
-		// 			count++;
-		// 		}
-		// 	}
-		// }
-
-//
-//		unsigned* verticesFacetsNeighbours_ =
-//			malloc(n_total_vertex_neighbors_facets * sizeof(unsigned));
-
-		unsigned inc_vfn_tot = 0;
+		//unsigned inc_vfn_tot = 0;
+    /* make neighbor tiles per vertex */
 		for(unsigned v=0; v < n; v++){
       allsites[v].neightiles = malloc(allsites[v].nneightiles * sizeof(unsigned));
 			unsigned inc_facet = 0; unsigned inc_vfn = 0;
 			while(inc_vfn < allsites[v].nneightiles){
 				if(verticesFacetsNeighbours[v][inc_facet] == 1){
           allsites[v].neightiles[inc_vfn] = inc_facet;
-//					verticesFacetsNeighbours_[inc_vfn_tot] = inc_facet;
-					inc_vfn++; inc_vfn_tot++;
+					inc_vfn++; //inc_vfn_tot++;
 				}
 				inc_facet++;
 			}
 		}
 
-// rien à faire sauf ordonner
-    // unsigned n_total_vertex_neighbors_vertices = 0;
-    // for(unsigned v=0; v<n; v++){
-    //   n_total_vertex_neighbors_vertices += n_vertices_per_vertex[v];
-    // }
-    // unsigned* connectedVertices_ =
-		// 	malloc(n_total_vertex_neighbors_vertices * sizeof(unsigned));
-    // unsigned inc_vvn_tot=0;
 		for(unsigned v=0; v<n; v++){
       qsort(allsites[v].neighsites, allsites[v].nneighsites, sizeof(unsigned),
             cmpfunc);
-      // qsort(connectedVertices[v], n_vertices_per_vertex[v], sizeof(unsigned),
-      //       cmpfunc);
-      // for(unsigned inc_vvn=0; inc_vvn<n_vertices_per_vertex[v]; inc_vvn++){
-      //   connectedVertices_[inc_vvn_tot] = connectedVertices[v][inc_vvn];
-      //   inc_vvn_tot++;
-      // }
 		}
 
-
-	  out->sites         = allsites;
-    out->tiles       = allfacets;
-	  out->ntiles      = nfacets;
-	  out->subtiles     = allridges;
+	  out->sites      = allsites;
+    out->tiles      = allfacets;
+	  out->ntiles     = nfacets;
+	  out->subtiles   = allridges;
     out->nsubtiles  = n_ridges;
 
     free(allridges_dup);
@@ -532,9 +503,36 @@ TesselationT* tesselation(
 
 
 void testdel2(){
-  double sites[10] = {0,0, 0,1, 1,0, 1,1, 0.5,0.5};
+  double sites[27] = {0,0,0, 0,0,1, 0,1,0, 0,1,1, 1,0,0, 1,0,1, 1,1,0, 1,1,1, 0.5,0.5,0.5};
   unsigned exitcode;
-  TesselationT* x = tesselation(sites, 2, 5, 0, &exitcode);
+  unsigned dim = 3;
+  TesselationT* x = tesselation(sites, dim, 9, 0, &exitcode);
   printf("TESTDEL2 - nfacets:%u\n", x->ntiles);
+  for(unsigned f=0; f < x->ntiles; f++){
+    printf("facet %u - sites:\n", f);
+    for(unsigned i=0; i < dim+1; i++){
+      printf("%u - ", x->tiles[f].simplex.sitesids[i]);
+    }
+    printf("\n");
+    printf("facet %u - ridges:\n", f);
+    for(unsigned i=0; i < dim+1; i++){
+      printf("%u - ", x->tiles[f].ridgesids[i]);
+    }
+    printf("\n");
+    printf("facet %u - neighbors:\n", f);
+    for(unsigned i=0; i < x->tiles[f].nneighbors; i++){
+      printf("%u - ", x->tiles[f].neighbors[i]);
+    }
+    printf("\n");
+  }
+  printf("nallridges:%u\n", x->nsubtiles);
+  for(unsigned r=0; r < x->nsubtiles; r++){
+    printf("ridge %u - id %u:\n", r, x->subtiles[r].id);
+    for(unsigned i=0; i < dim; i++){
+      printf("%u - ", x->subtiles[r].simplex.sitesids[i]);
+    }
+    printf("ridgeOf: %u %d", x->subtiles[r].ridgeOf1, x->subtiles[r].ridgeOf2);
+    printf("\n");
+  }
   free(x);
 }

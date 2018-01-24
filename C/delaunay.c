@@ -75,8 +75,8 @@ struct Delaunay* delaunay(
 )
 {
 
-  // test delaunay2
-  testdel2();
+  // // test delaunay2
+  // testdel2();
 
   printf("HELLO\n");
 	char flags[250];             /* option flags for qhull, see qh_opt.htm */

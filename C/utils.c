@@ -3,8 +3,16 @@
 
 double* getpoint(double* points, unsigned dim, unsigned id){
   double* out = malloc(dim * sizeof(double));
-  for(unsigned i=0; i<dim; i++){
+  for(unsigned i=0; i < dim; i++){
     out[i] = points[id*dim+i];
+  }
+  return out;
+}
+
+double dotproduct(double* p1, double* p2, unsigned dim){
+  double out = 0;
+  for(unsigned i=0; i < dim; i++){
+    out += p1[i] * p2[i];
   }
   return out;
 }
