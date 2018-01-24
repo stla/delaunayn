@@ -238,15 +238,6 @@ void assignRidgesIds(FaceT** faces, unsigned nfaces, RidgeT* allridges,
   }
 }
 
-/* squared distance between two points */
-double squaredDistance(double* p1, double* p2, unsigned dim){
-  double out = 0;
-  for(unsigned i=0; i < dim; i++){
-    out += square(p1[i] - p2[i]);
-  }
-  return out;
-}
-
 
 // double* ridgeCentroid(RidgeT ridge, unsigned dim){
 //   double* out = malloc(dim * sizeof(double));
@@ -393,7 +384,8 @@ unsigned** allEdges(FullVertexT* vertices, unsigned nvertices,
     out[i] = malloc(2 * sizeof(unsigned));
     out[i][0] = vertices[0].id;
     out[i][1] = vertices[0].neighvertices[i];
-    qsort(out[i], 2, sizeof(unsigned), cmpfunc);
+//    qsort(out[i], 2, sizeof(unsigned), cmpfunc);
+    qsortu(out[i], 2);
   }
   unsigned n = vertices[0].nneighsvertices;
   for(unsigned v=1; v < nvertices; v++){
@@ -401,7 +393,8 @@ unsigned** allEdges(FullVertexT* vertices, unsigned nvertices,
     for(unsigned i=0; i < vertices[v].nneighsvertices; i++){
       ids[0] = vertices[v].id;
       ids[1] = vertices[v].neighvertices[i];
-      qsort(ids, 2, sizeof(unsigned), cmpfunc);
+//      qsort(ids, 2, sizeof(unsigned), cmpfunc);
+      qsortu(ids, 2);
       unsigned j;
       for(j=0; j < n; j++){
         if(ids[0] == out[j][0] && ids[1] == out[j][1]){
@@ -523,8 +516,9 @@ ConvexHullT* convexHull(
             faces[i_facet].neighbors[i_neighbor] = (unsigned) neighbor->id;
             i_neighbor++;
           }
-          qsort(faces[i_facet].neighbors, faces[i_facet].neighborsize,
-                sizeof(unsigned), cmpfunc);
+          // qsort(faces[i_facet].neighbors, faces[i_facet].neighborsize,
+          //       sizeof(unsigned), cmpfunc);
+          qsortu(faces[i_facet].neighbors, faces[i_facet].neighborsize);
         }
         { /* face family, when option Qt */
           if(facet->tricoplanar){
@@ -557,7 +551,8 @@ ConvexHullT* convexHull(
               ids[v] =
                 qh_pointid(qh, ((vertexT*)ridge->vertices->e[v].p)->point);
             }
-            qsort(ids, ridgeSize, sizeof(unsigned), cmpfunc);
+//            qsort(ids, ridgeSize, sizeof(unsigned), cmpfunc);
+            qsortu(ids, ridgeSize);
             ridges[i_ridge].vertices =
               malloc(ridgeSize * sizeof(VertexT));
             for(unsigned v=0; v < ridgeSize; v++){
@@ -568,7 +563,8 @@ ConvexHullT* convexHull(
             unsigned ridgeofs[2];
             ridgeofs[0] = ridge->bottom->id;
             ridgeofs[1] = ridge->top->id;
-            qsort(ridgeofs, 2, sizeof(unsigned), cmpfunc);
+//            qsort(ridgeofs, 2, sizeof(unsigned), cmpfunc);
+            qsortu(ridgeofs, 2);
             ridges[i_ridge].ridgeOf1 = ridgeofs[0];
             ridges[i_ridge].ridgeOf2 = ridgeofs[1];
             /**/
@@ -654,8 +650,9 @@ ConvexHullT* convexHull(
             }
           }
         }
-        qsort(vertices[i_vertex].neighfacets, vertices[i_vertex].nneighfacets,
-              sizeof(unsigned), cmpfunc);
+        // qsort(vertices[i_vertex].neighfacets, vertices[i_vertex].nneighfacets,
+        //       sizeof(unsigned), cmpfunc);
+        qsortu(vertices[i_vertex].neighfacets, vertices[i_vertex].nneighfacets);
 
         /* neighbor vertices of the vertex */
         if(dim > 2){ /* already done for dim=2 */
@@ -665,17 +662,19 @@ ConvexHullT* convexHull(
                           dim, &nneighsvertices);
           vertices[i_vertex].nneighsvertices = nneighsvertices;
         }
-        qsort(vertices[i_vertex].neighvertices,
-              vertices[i_vertex].nneighsvertices, sizeof(unsigned), cmpfunc);
-
+        // qsort(vertices[i_vertex].neighvertices,
+        //       vertices[i_vertex].nneighsvertices, sizeof(unsigned), cmpfunc);
+        qsortu(vertices[i_vertex].neighvertices,
+               vertices[i_vertex].nneighsvertices);
         /* neighbor ridges of the vertex */
         if(dim > 2){
           unsigned nneighridges;
           vertices[i_vertex].neighridges =
             neighRidges(vertices[i_vertex].id, allridges, n_allridges,
                        &nneighridges);
-          qsort(vertices[i_vertex].neighridges, nneighridges,
-                sizeof(unsigned), cmpfunc);
+          // qsort(vertices[i_vertex].neighridges, nneighridges,
+          //       sizeof(unsigned), cmpfunc);
+          qsortu(vertices[i_vertex].neighridges, nneighridges);
           vertices[i_vertex].nneighridges = nneighridges;
         }else{ /* dim=2 */
           vertices[i_vertex].nneighridges = 0; /* ridge = vertex singleton */

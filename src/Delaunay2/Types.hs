@@ -8,15 +8,16 @@ type IndexMap = IntMap
 type IndexSet = IntSet
 
 data Site = Site {
-    _point       :: [Double]
-  , _neighsites  :: IndexSet
-  , _neighridges :: IntSet
-  , _neightiles  :: IntSet
+    _point          :: [Double]
+  , _neighsitesIds  :: IndexSet
+  , _neighridgesIds :: IntSet
+  , _neightilesIds  :: IntSet
 } deriving Show
 
 data Simplex = Simplex {
     _points       :: IndexMap [Double]
   , _circumcenter :: [Double]
+  , _circumradius :: Double
   , _normal       :: [Double]
   , _offset       :: Double
   , _volume       :: Double
@@ -28,11 +29,11 @@ data SubTile = SubTile {
 } deriving Show
 
 data Tile = Tile {
-    _simplex     :: Simplex
-  , _neighbors   :: IntSet
-  , _subtiles'   :: IntSet
-  , _family      :: Maybe Int
-  , _toporiented :: Bool
+    _simplex      :: Simplex
+  , _neighborsIds :: IntSet
+  , _subtilesIds  :: IntSet
+  , _family       :: Maybe Int
+  , _toporiented  :: Bool
 } deriving Show
 
 data Tesselation = Tesselation {

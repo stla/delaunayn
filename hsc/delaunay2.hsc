@@ -5,15 +5,11 @@ module Delaunay2.CDelaunay
   where
 import           Control.Monad       ((<$!>))
 import           Delaunay2.Types
-import           Data.IntMap.Strict  (IntMap, fromAscList)
-import qualified Data.IntMap.Strict  as IM
+import           Data.IntMap.Strict  (fromAscList)
 import qualified Data.IntSet         as IS
-import           Data.List
-import qualified Data.HashMap.Strict as H
--- import           Data.Tuple.Extra    (both)
+-- import qualified Data.HashMap.Strict as H
 import           Foreign
 import           Foreign.C.Types
--- import           Foreign.C.String
 
 #include "delaunay2.h"
 
@@ -70,15 +66,16 @@ cSiteToSite sites csite = do
   neightiles <- (<$!>) (map fromIntegral)
                        (peekArray nneightiles (__neightiles csite))
   return (id', Site {
-                      _point       = point
-                    , _neighsites  = IS.fromAscList neighsites
-                    , _neighridges = IS.fromAscList neighridges
-                    , _neightiles  = IS.fromAscList neightiles
+                      _point          = point
+                    , _neighsitesIds  = IS.fromAscList neighsites
+                    , _neighridgesIds = IS.fromAscList neighridges
+                    , _neightilesIds  = IS.fromAscList neightiles
                   })
 
 data CSimplex = CSimplex {
     __sitesids :: Ptr CUInt
   , __center :: Ptr CDouble
+  , __radius :: CDouble
   , __normal :: Ptr CDouble
   , __offset :: CDouble
   , __volume :: CDouble
@@ -90,36 +87,41 @@ instance Storable CSimplex where
     peek ptr = do
       sitesids'    <- #{peek SimplexT, sitesids} ptr
       center'      <- #{peek SimplexT, center} ptr
+      radius'      <- #{peek SimplexT, radius} ptr
       normal'      <- #{peek SimplexT, normal} ptr
       offset'      <- #{peek SimplexT, offset} ptr
       volume'      <- #{peek SimplexT, volume} ptr
       return CSimplex { __sitesids    = sitesids'
                       , __center      = center'
+                      , __radius      = radius'
                       , __normal      = normal'
                       , __offset      = offset'
                       , __volume      = volume'
                     }
-    poke ptr (CSimplex r1 r2 r3 r4 r5)
+    poke ptr (CSimplex r1 r2 r3 r4 r5 r6)
       = do
           #{poke SimplexT, sitesids} ptr r1
           #{poke SimplexT, center} ptr r2
-          #{poke SimplexT, normal} ptr r3
-          #{poke SimplexT, offset} ptr r4
-          #{poke SimplexT, volume} ptr r5
+          #{poke SimplexT, radius} ptr r3
+          #{poke SimplexT, normal} ptr r4
+          #{poke SimplexT, offset} ptr r5
+          #{poke SimplexT, volume} ptr r6
 
 cSimplexToSimplex :: [[Double]] -> Int -> CSimplex -> IO Simplex
 cSimplexToSimplex sites simplexdim csimplex = do
-  let offset      = cdbl2dbl $ __offset csimplex
+  let radius      = cdbl2dbl $ __radius csimplex
+      offset      = cdbl2dbl $ __offset csimplex
       volume      = cdbl2dbl $ __volume csimplex
       dim         = length (head sites)
   sitesids <- (<$!>) (map fromIntegral)
                      (peekArray simplexdim (__sitesids csimplex))
-  let points = IM.fromAscList
+  let points = fromAscList
                (zip sitesids (map ((!!) sites) sitesids))
   center <- (<$!>) (map cdbl2dbl) (peekArray dim (__center csimplex))
   normal <- (<$!>) (map cdbl2dbl) (peekArray simplexdim (__normal csimplex))
   return Simplex { _points       = points
                  , _circumcenter = center
+                 , _circumradius = radius
                  , _normal       = normal
                  , _offset       = offset
                  , _volume       = volume
@@ -228,8 +230,8 @@ cTileToTile points ctile = do
                       (peekArray nridges (__ridgesids ctile))
   return (id', Tile {
                  _simplex      = simplex
-               , _neighbors    = IS.fromAscList neighbors
-               , _subtiles'     = IS.fromAscList ridgesids
+               , _neighborsIds = IS.fromAscList neighbors
+               , _subtilesIds  = IS.fromAscList ridgesids
                , _family       = if family == -1
                                   then Nothing
                                   else Just (fromIntegral family)
@@ -289,7 +291,7 @@ cTesselationToTesselation sites ctess = do
   subtiles' <- mapM (cSubTiletoSubTile sites) subtiles''
   return Tesselation
          {
-            _sites    = IM.fromAscList sites'
-          , _tiles    = IM.fromAscList tiles'
-          , _subtiles = IM.fromAscList subtiles'
+            _sites    = fromAscList sites'
+          , _tiles    = fromAscList tiles'
+          , _subtiles = fromAscList subtiles'
          }

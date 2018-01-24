@@ -9,6 +9,7 @@ double* getpoint(double* points, unsigned dim, unsigned id){
   return out;
 }
 
+/* dot product of two vectors */
 double dotproduct(double* p1, double* p2, unsigned dim){
   double out = 0;
   for(unsigned i=0; i < dim; i++){
@@ -17,7 +18,7 @@ double dotproduct(double* p1, double* p2, unsigned dim){
   return out;
 }
 
-
+/* middle of segment [p1,p2] */
 double* middle(double* p1, double* p2, unsigned dim){
   double* out = malloc(dim * sizeof(double));
   for(unsigned i=0; i<dim; i++){
@@ -26,9 +27,10 @@ double* middle(double* p1, double* p2, unsigned dim){
   return out;
 }
 
+/* vector of NANs */
 double* nanvector(int dim){
-  double* out = malloc(dim*sizeof(double));
-  for(unsigned i=0; i<dim; i++){
+  double* out = malloc(dim * sizeof(double));
+  for(unsigned i=0; i < dim; i++){
     out[i] = NAN;
   }
   return out;
@@ -38,10 +40,13 @@ double* nanvector(int dim){
 int cmpfunc (const void * a, const void * b) {
    return ( *(int*)a - *(int*)b );
 }
-
 int cmpfuncdbl (const void * a, const void * b) {
    return ( *(double*)a - *(double*)b > 0 ? 1 : -1);
 }
+void qsortu(unsigned* vector, unsigned length){
+  qsort(vector, length, sizeof(unsigned), cmpfunc);
+}
+
 
 double square(double x){
   return x*x;
@@ -60,4 +65,22 @@ void appendu(unsigned x, unsigned** array, unsigned length, unsigned* flag){
     *array = realloc(*array, (length+1)*sizeof(unsigned));
     *(*array + length) = x;
   }
+}
+
+/* make a vector of zeros */
+unsigned* uzeros(unsigned length){
+  unsigned* out = malloc(length * sizeof(unsigned));
+  for(unsigned i=0; i < length; i++){
+    out[i] = 0;
+  }
+  return out;
+}
+
+/* squared distance between two points */
+double squaredDistance(double* p1, double* p2, unsigned dim){
+  double out = 0;
+  for(unsigned i=0; i < dim; i++){
+    out += square(p1[i] - p2[i]);
+  }
+  return out;
 }

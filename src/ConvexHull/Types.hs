@@ -17,7 +17,7 @@ instance Eq IndexPair where
     Pair i j == Pair i' j' = (i == i' && j == j') || (i == j' && j == i')
 
 instance Hashable IndexPair where
-  hashWithSalt _ (Pair i j) = 2*(i+j)*(i+j+1) + min i j
+  hashWithSalt _ (Pair i j) = (i+j)*(i+j+1) + 2 * min i j
 
 type EdgeMap = HashMap IndexPair ([Double],[Double])
 

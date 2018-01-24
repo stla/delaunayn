@@ -11,6 +11,7 @@ typedef struct Site {
 typedef struct Simplex {
   unsigned* sitesids;
   double*   center;
+  double    radius;
   double*   normal;
   double    offset;
   double    volume;
@@ -34,7 +35,7 @@ typedef struct Tile {
   unsigned* ridgesids;
   unsigned  nridges; //  = dim+1
   int       family;
-  int       orientation; 
+  int       orientation;
 } TileT;
 
 typedef struct Tesselation {

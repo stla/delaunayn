@@ -11,6 +11,7 @@ typedef struct Site {
 typedef struct Simplex {
   unsigned* sitesids;
   double*   center;
+  double    radius;
   double*   normal;
   double    offset;
   double    volume;
