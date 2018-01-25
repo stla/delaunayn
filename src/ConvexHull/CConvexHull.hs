@@ -291,7 +291,7 @@ instance Storable CFace where
           (\hsc_ptr -> pokeByteOff hsc_ptr 88)      ptr r13
 {-# LINE 229 "convexhull.hsc" #-}
 
-cFaceToFace :: Int -> CFace -> IO Face
+cFaceToFace :: Int -> CFace -> IO Facet
 cFaceToFace dim cface = do
   let area      = realToFrac (__area cface)
       neighsize = fromIntegral (__neighborsize cface)
@@ -314,15 +314,15 @@ cFaceToFace dim cface = do
   let edges = H.fromList
               (zip (map (\(i,j) -> Pair i j) edges')
                    (map (both ((IM.!) vertices)) edges'))
-  return Face { _fvertices = vertices
-              , _ridges    = IM.fromAscList ridges
-              , _centroid  = center
-              , _normal    = normal
-              , _offset    = offset
-              , _area      = area
-              , _neighbors = IS.fromAscList neighbors
-              , _family    = if family == -1 then Nothing else Just family
-              , _edges     = edges }
+  return Facet { _fvertices = vertices
+               , _ridges    = IM.fromAscList ridges
+               , _centroid  = center
+               , _normal    = normal
+               , _offset    = offset
+               , _area      = area
+               , _neighbors = IS.fromAscList neighbors
+               , _family    = if family == -1 then Nothing else Just family
+               , _edges     = edges }
 
 data CConvexHull = CConvexHull {
     __dim         :: CUInt
@@ -426,7 +426,7 @@ peekConvexHull ptr = do
                   (zip (map (\(i,j) -> Pair i j) alledges')
                        (map (both ((IM.!) points)) alledges'))
   return ConvexHull { _allvertices = vertices
-                    , _faces = fromAscList (zip [0 .. nfaces-1] faces)
+                    , _facets = fromAscList (zip [0 .. nfaces-1] faces)
                     , _allridges = fromAscList allridges
                     , _alledges = alledges
                     }

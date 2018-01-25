@@ -29,9 +29,9 @@ TesselationT* tesselation(
 	unsigned* exitcode
 )
 {
-	char flags[250];             /* option flags for qhull, see qh_opt.htm */
+	char flags[250]; /* option flags for qhull, see qh_opt.htm */
   sprintf(flags, "qhull d Qt Fn Qbb", "");
-	qhT qh_qh;                /* Qhull's data structure.  First argument of most calls */
+	qhT qh_qh; /* Qhull's data structure */
   qhT *qh= &qh_qh;
   QHULL_LIB_CHECK
   qh_meminit(qh, stderr);
@@ -248,7 +248,7 @@ TesselationT* tesselation(
               allsites[ids[i]].nneighridges++;
             }
 
-            { /* loop on facet neighbors to derive ridgeOf2 */
+            { /* loop on facet neighbors to find ridgeOf2 */
               facetT *neighbor, **neighborp;
               FOREACHneighbor_(facet){
                 unsigned fnid = neighbor->id;
@@ -350,11 +350,11 @@ TesselationT* tesselation(
                         points[0], dim));
               }
             }
-            /* orient the normal (used for unbounded Voronoi cells) */
+            /* orient the normal (used for plotting unbounded Voronoi cells) */
             if(allridges_dup[i_ridge_dup].ridgeOf2 == -1 &&
                (!facet->degenerate || dim==2))
             {
-              pointT* otherpoint = /* the vertex of the facet not in the ridge */
+              pointT* otherpoint = /* the remaining vertex of the facet (the one not in the ridge) */
                 getpoint(sites, allfacets[facet->id].simplex.sitesids[m], dim);
               double thepoint[dim]; /* the point center+normal */
               for(unsigned i=0; i < dim; i++){

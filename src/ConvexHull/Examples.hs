@@ -54,9 +54,7 @@ randomInCircle n = do
   let theta = map (*(2*pi)) (take n (randoms g1 :: [Double]))
   g2 <- newStdGen
   let rho   = take n (randoms g2 :: [Double])
-  return $ zipWith (\r a  -> [r * cos a,
-                              r * sin a])
-                   rho theta
+  return $ zipWith (\r a  -> [r * cos a, r * sin a]) rho theta
 
 randomInSphere :: Int -> IO [[Double]]
 randomInSphere n = do

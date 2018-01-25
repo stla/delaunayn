@@ -157,8 +157,8 @@ instance Storable CSubTile where
           #{poke SubTileT, ridgeOf1} ptr r3
           #{poke SubTileT, ridgeOf2} ptr r4
 
-cSubTiletoSubTile :: [[Double]] -> CSubTile -> IO (Int, SubTile)
-cSubTiletoSubTile points csubtile = do
+cSubTiletoTileFacet :: [[Double]] -> CSubTile -> IO (Int, TileFacet)
+cSubTiletoTileFacet points csubtile = do
   let dim        = length (head points)
       ridgeOf1   = fromIntegral $ __ridgeOf1 csubtile
       ridgeOf2   = fromIntegral $ __ridgeOf2 csubtile
@@ -166,9 +166,9 @@ cSubTiletoSubTile points csubtile = do
       id'        = fromIntegral $ __id' csubtile
       subsimplex = __subsimplex csubtile
   simplex <- cSimplexToSimplex points dim subsimplex
-  return (id', SubTile {
-                        _subsimplex = simplex
-                      , _ridgeOf    = IS.fromAscList ridgeOf
+  return (id', TileFacet {
+                          _subsimplex = simplex
+                        , _facetOf    = IS.fromAscList ridgeOf
                })
 
 data CTile = CTile {
@@ -228,15 +228,13 @@ cTileToTile points ctile = do
                       (peekArray nneighbors (__neighbors ctile))
   ridgesids <- (<$!>) (map fromIntegral)
                       (peekArray nridges (__ridgesids ctile))
-  return (id', Tile {
-                 _simplex      = simplex
-               , _neighborsIds = IS.fromAscList neighbors
-               , _subtilesIds  = IS.fromAscList ridgesids
-               , _family       = if family == -1
-                                  then Nothing
-                                  else Just (fromIntegral family)
-               , _toporiented  = orient == 1
-              })
+  return (id', Tile {  _simplex      = simplex
+                     , _neighborsIds = IS.fromAscList neighbors
+                     , _facetsIds    = IS.fromAscList ridgesids
+                     , _family       = if family == -1
+                                        then Nothing
+                                        else Just (fromIntegral family)
+                     , _toporiented  = orient == 1 })
 
 data CTesselation = CTesselation {
     __sites :: Ptr CSite
@@ -283,15 +281,13 @@ cTesselationToTesselation sites ctess = do
   let ntiles    = fromIntegral $ __ntiles ctess
       nsubtiles = fromIntegral $ __nsubtiles ctess
       nsites    = length sites
-  sites'' <- peekArray nsites (__sites ctess)
-  tiles'' <- peekArray ntiles (__tiles ctess)
+  sites''    <- peekArray nsites (__sites ctess)
+  tiles''    <- peekArray ntiles (__tiles ctess)
   subtiles'' <- peekArray nsubtiles (__subtiles ctess)
-  sites' <- mapM (cSiteToSite sites) sites''
-  tiles' <- mapM (cTileToTile sites) tiles''
-  subtiles' <- mapM (cSubTiletoSubTile sites) subtiles''
+  sites'     <- mapM (cSiteToSite sites) sites''
+  tiles'     <- mapM (cTileToTile sites) tiles''
+  subtiles'  <- mapM (cSubTiletoTileFacet sites) subtiles''
   return Tesselation
-         {
-            _sites    = fromAscList sites'
-          , _tiles    = fromAscList tiles'
-          , _subtiles = fromAscList subtiles'
-         }
+         { _sites      = fromAscList sites'
+         , _tiles      = fromAscList tiles'
+         , _tilefacets = fromAscList subtiles' }

@@ -455,10 +455,6 @@ struct Delaunay* delaunay(
           if((!facet->degenerate || dim==2) && ridges_dup[i_ridge_dup][1] == nf){
             pointT* otherpoint =
               getpoint(vertices, facetsIndices[fid*(dim+1)+m], dim);
-            // pointT* otherpoint = malloc(dim*sizeof(double));
-            // for(unsigned j=0; j<dim; j++){
-            //   otherpoint[j] = vertices[facetsIndices[fid*(dim+1)+m]*dim+j];
-            // }
 //            pointT* otherpoint = ((vertexT*)facet->vertices->e[m].p)->point; WRONG
             double thepoint1[dim]; double thepoint2[dim];
             for(unsigned i=0; i<dim; i++){

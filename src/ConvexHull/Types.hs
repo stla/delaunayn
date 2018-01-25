@@ -33,7 +33,7 @@ data Ridge = Ridge {
   , _ridgeOf   :: IntSet
 } deriving Show
 
-data Face = Face {
+data Facet = Facet { -- ça devrait être facet : (n-1)-face
     _fvertices :: IndexMap [Double]
   , _ridges    :: IntMap Ridge
   , _centroid  :: [Double]
@@ -47,7 +47,7 @@ data Face = Face {
 
 data ConvexHull = ConvexHull {
     _allvertices :: IndexMap Vertex
-  , _faces       :: IntMap Face
+  , _facets      :: IntMap Facet
   , _allridges   :: IntMap Ridge
   , _alledges    :: EdgeMap
 } deriving Show

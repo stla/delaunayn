@@ -23,21 +23,21 @@ data Simplex = Simplex {
   , _volume       :: Double
 } deriving Show
 
-data SubTile = SubTile {
+data TileFacet = TileFacet { -- c'est une facette d'un tile
     _subsimplex :: Simplex
-  , _ridgeOf    :: IntSet
+  , _facetOf    :: IntSet
 } deriving Show
 
 data Tile = Tile {
     _simplex      :: Simplex
   , _neighborsIds :: IntSet
-  , _subtilesIds  :: IntSet
+  , _facetsIds    :: IntSet
   , _family       :: Maybe Int
   , _toporiented  :: Bool
 } deriving Show
 
 data Tesselation = Tesselation {
-    _sites    :: IndexMap Site
-  , _tiles    :: IntMap Tile
-  , _subtiles :: IntMap SubTile
+    _sites      :: IndexMap Site
+  , _tiles      :: IntMap Tile
+  , _tilefacets :: IntMap TileFacet
 } deriving Show

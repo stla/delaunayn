@@ -73,9 +73,9 @@ hullVertices hull = map _point (IM.elems (_allvertices hull))
 xxx :: ConvexHull -> [[Int]]
 xxx chull = map (IM.keys . _rvertices) (IM.elems (_allridges chull))
 
--- | get vertices of a face
-faceVertices :: Face -> [[Double]]
-faceVertices = IM.elems . _fvertices
+-- | get vertices of a facet
+facetVertices :: Facet -> [[Double]]
+facetVertices = IM.elems . _fvertices
 
 -- -- | get edges of a face as a map ; now it is in _edges face
 -- faceEdges :: ConvexHull -> Face -> EdgeMap
@@ -86,37 +86,37 @@ faceVertices = IM.elems . _fvertices
 --     faceVerticesIndices = IM.keys (_fvertices face)
 
 
--- | get faces ids an edge belongs to
+-- | get facets ids an edge belongs to
 edgeOf :: ConvexHull -> (Index, Index) -> Maybe [Int]
 edgeOf hull v1v2@(v1, v2) =
   if not (isEdge hull v1v2)
     then Nothing
     else Just $ IM.keys (IM.filter (elem v1v2') facesEdges)
   where
-    facesEdges = IM.map (H.keys . _edges) (_faces hull)
+    facesEdges = IM.map (H.keys . _edges) (_facets hull)
     v1v2' = if v1<v2 then Pair v1 v2 else Pair v2 v1
 
--- | group faces of the same family
-groupedFaces :: ConvexHull -> [(Maybe Int, [IndexMap [Double]], [EdgeMap])]
-groupedFaces hull =
+-- | group facets of the same family
+groupedFacets :: ConvexHull -> [(Maybe Int, [IndexMap [Double]], [EdgeMap])]
+groupedFacets hull =
   zip3 (map head families) verticesGroups edgesGroups
   where
-    faces          = IM.elems (_faces hull)
+    facets         = IM.elems (_facets hull)
     facesGroups    = groupBy (\f1 f2 -> isJust (_family f1) &&
-                                        (_family f1 == _family f2)) faces
+                                        (_family f1 == _family f2)) facets
     edgesGroups    = map (map _edges) facesGroups
     verticesGroups = map (map _fvertices) facesGroups
     families       = map (map _family) facesGroups
 
 -- | group faces of the same family and merge vertices and edges
-groupedFaces' :: ConvexHull -> [(Maybe Int, IndexMap [Double], EdgeMap)]
-groupedFaces' hull =
+groupedFacets' :: ConvexHull -> [(Maybe Int, IndexMap [Double], EdgeMap)]
+groupedFacets' hull =
   zip3 (map head families) (map (foldr IM.union IM.empty) verticesGroups)
        (map (foldr delta H.empty) edgesGroups)
   where
-    faces          = IM.elems (_faces hull)
+    facets         = IM.elems (_facets hull)
     facesGroups    = groupBy (\f1 f2 -> isJust (_family f1) &&
-                                        (_family f1 == _family f2)) faces
+                                        (_family f1 == _family f2)) facets
     edgesGroups    = map (map _edges) facesGroups
     verticesGroups = map (map _fvertices) facesGroups
     families       = map (map _family) facesGroups
@@ -131,9 +131,9 @@ convexHull3DrglCode points file = do
   let edges = H.elems (_alledges hull1)
   -- get triangles --
   hull2 <- convexHull points True False Nothing
-  let families = map _family (IM.elems $ _faces hull2)
+  let families = map _family (IM.elems $ _facets hull2)
   -- print families
-  let grpFaces = groupedFaces hull2
+  let grpFaces = groupedFacets hull2
   let triangles = map (map IM.elems . snd3) grpFaces
   -- mapM_ (mapM_ (print . length)) triangles
   -- code for edges --
@@ -163,43 +163,3 @@ convexHull3DrglCode points file = do
         p1 = asTriplet $ threepoints!!0
         p2 = asTriplet $ threepoints!!1
         p3 = asTriplet $ threepoints!!2
-  --
-  -- let ridges = _ridges tess in
-  -- (if colors
-  --   then "colors <- topo.colors(" ++ show (length ridges +1) ++ ", alpha=0.5)\n"
-  --   else "\n") ++
-  -- concatMap rglRidge (if onlyinterior
-  --                       then ridges
-  --                       else filter (not . sandwichedRidge) ridges)
-  -- where
-  --   rglRidge :: Ridge -> String
-  --   rglRidge ridge =
-  --     let i = 1 + head (IS.elems $ _ridgeOf ridge) in
-  --     "triangles3d(rbind(c" ++ show (pts!!0) ++
-  --     ", c" ++ show (pts!!1) ++
-  --     ", c" ++ show (pts!!2) ++
-  --     (if colors
-  --       then
-  --         "), color=colors[" ++ show i ++ "]"
-  --       else
-  --         "), color=\"blue\"") ++
-  --     (if isJust alpha
-  --       then ", alpha=" ++ show (fromJust alpha) ++ ")\n"
-  --       else ")\n")
-  --     ++
-  --       -- else "") ++
-  --     if segments
-  --       then
-  --         "segments3d(rbind(c" ++ show (pts!!0) ++
-  --         ", c" ++ show (pts!!1) ++
-  --         "), color=\"black\")\n" ++
-  --         "segments3d(rbind(c" ++ show (pts!!1) ++
-  --         ", c" ++ show (pts!!2) ++
-  --         "), color=\"black\")\n" ++
-  --         "segments3d(rbind(c" ++ show (pts!!2) ++
-  --         ", c" ++ show (pts!!0) ++
-  --         "), color=\"black\")\n"
-  --       else "\n"
-  --     where
-  --       pts = map (\p -> (p!!0,p!!1,p!!2))
-  --                 (IM.elems $ _points $ _subsimplex ridge)
